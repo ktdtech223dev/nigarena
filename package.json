@@ -1,0 +1,27 @@
+{
+  "name": "project-x",
+  "version": "0.2.1",
+  "description": "N Games — Project X",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win portable",
+    "dev": "electron . --dev",
+    "release": "node release.js",
+    "release:minor": "node release.js minor",
+    "release:major": "node release.js major"
+  },
+  "build": {
+    "appId": "com.ngames.projectx",
+    "productName": "Project X",
+    "win": {
+      "target": "portable",
+      "artifactName": "ProjectX-portable.exe"
+    },
+    "files": ["**/*", "!node_modules/.cache"]
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.0.0"
+  }
+}
