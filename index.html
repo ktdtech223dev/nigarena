@@ -202,7 +202,7 @@ canvas{display:block;image-rendering:pixelated}
     <div class="mm-title" data-live-title>BLACK'S ARENA</div>
     <div class="mm-sub">N GAMES NETWORK</div>
     <button class="mm-btn" id="mmSingle" onclick="SFX.play('menu_select');menuFlow='single';showScreen('charSelect')">SINGLE PLAYER</button>
-    <button class="mm-btn" id="mmMulti" onclick="SFX.play('menu_select');menuFlow='multi';showScreen('mpModeSelect')">MULTIPLAYER</button>
+    <button class="mm-btn" id="mmMulti" onclick="SFX.play('menu_select');menuFlow='multi';showScreen('mpCharSelect')">MULTIPLAYER</button>
     <button class="mm-btn secondary" onclick="SFX.play('menu_hover');showScreen('profileScreen')">SWITCH PROFILE</button>
     <div id="socialArea" style="margin-top:20px;width:320px"></div>
   </div>
@@ -247,18 +247,6 @@ canvas{display:block;image-rendering:pixelated}
   </div>
 </div>
 
-<div id="mpModeSelect" class="screen">
-  <canvas id="mpModeBg"></canvas>
-  <div class="mds-content">
-    <div class="mds-title">ONLINE MODE</div>
-    <div class="mds-sub">CHOOSE HOW YOU WANT TO PLAY</div>
-    <div class="mds-grid" id="mpModeGrid"></div>
-    <div class="nav-row">
-      <button class="back-btn" onclick="SFX.play('menu_hover');showScreen('mainMenu')">BACK</button>
-      <button class="nav-btn" onclick="SFX.play('menu_select');showScreen('mpCharSelect')">NEXT</button>
-    </div>
-  </div>
-</div>
 
 <div id="mpCharSelect" class="screen">
   <canvas id="mpCharBg"></canvas>
@@ -267,21 +255,8 @@ canvas{display:block;image-rendering:pixelated}
     <div class="cs-sub">ONLINE MATCH</div>
     <div class="cs-grid" id="mpCharGrid"></div>
     <div class="nav-row">
-      <button class="back-btn" onclick="SFX.play('menu_hover');showScreen('mpModeSelect')">BACK</button>
-      <button class="nav-btn" onclick="SFX.play('menu_select');showScreen('mpMapSelect')">NEXT</button>
-    </div>
-  </div>
-</div>
-
-<div id="mpMapSelect" class="screen">
-  <canvas id="mpMapBg"></canvas>
-  <div class="ms-content">
-    <div class="ms-title">SELECT ARENA</div>
-    <div class="ms-sub">ONLINE BATTLEGROUND</div>
-    <div class="ms-grid" id="mpMapGrid"></div>
-    <div class="nav-row">
-      <button class="back-btn" onclick="SFX.play('menu_hover');showScreen('mpCharSelect')">BACK</button>
-      <button class="nav-btn" onclick="SFX.play('menu_select');showScreen('lobbyScreen')">FIND MATCH</button>
+      <button class="back-btn" onclick="SFX.play('menu_hover');showScreen('mainMenu')">BACK</button>
+      <button class="nav-btn" onclick="SFX.play('menu_select');joinCrewLobby();showScreen('lobbyScreen')">JOIN LOBBY</button>
     </div>
   </div>
 </div>
@@ -289,35 +264,36 @@ canvas{display:block;image-rendering:pixelated}
 <div id="lobbyScreen" class="screen">
   <canvas id="lobbyBg"></canvas>
   <div class="lobby-content">
-    <div class="lobby-title">MULTIPLAYER LOBBY</div>
-    <div class="lobby-sub" id="lobbyModeSub">DEATHMATCH</div>
-    <div style="display:flex;gap:12px;margin-bottom:16px" id="lobbyActions">
-      <div class="lobby-box" style="flex:1">
-        <h3>HOST A GAME</h3>
-        <button class="lobby-btn" style="width:100%;padding:10px" onclick="hostGame()">CREATE ROOM</button>
+    <div class="lobby-title">CREW LOBBY</div>
+    <div class="lobby-sub" id="lobbyModeSub">WAITING FOR CREW</div>
+    <div class="lobby-box" style="width:420px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <h3 style="margin:0">PLAYERS</h3>
+        <div style="font:9px var(--font);color:var(--accent);letter-spacing:1px" id="lobbyOnline">CONNECTING...</div>
       </div>
-      <div class="lobby-box" style="flex:1">
-        <h3>JOIN A GAME</h3>
-        <div class="lobby-row">
-          <input class="lobby-input" id="joinCodeInput" placeholder="ROOM CODE" maxlength="8" style="text-transform:uppercase">
-          <button class="lobby-btn" onclick="joinGame()">JOIN</button>
-        </div>
-      </div>
-    </div>
-    <div class="lobby-box" id="lobbyRoom" style="display:none;width:400px">
-      <h3>ROOM</h3>
-      <div class="lobby-code" id="lobbyCode">----</div>
-      <div style="font:9px var(--font);color:#444;text-align:center;margin-bottom:8px;letter-spacing:1px">SHARE THIS CODE WITH YOUR CREW</div>
       <div class="lobby-players" id="lobbyPlayers"></div>
       <div style="display:flex;gap:8px;margin-top:10px">
         <button class="lobby-btn" style="flex:1" onclick="addLobbyBot()">+ ADD BOT</button>
         <button class="lobby-btn" style="flex:1" onclick="removeLobbyBot()">- REMOVE BOT</button>
       </div>
-      <div class="lobby-status" id="lobbyStatus">Waiting for players...</div>
-      <button class="nav-btn" style="width:100%;margin-top:12px" id="lobbyStartBtn" onclick="launchMultiplayer()">START MATCH</button>
+      <div class="lobby-status" id="lobbyStatus">Waiting for crew...</div>
     </div>
+    <div class="lobby-box" style="width:420px;margin-top:10px">
+      <h3>SETTINGS</h3>
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <div style="flex:1">
+          <div style="font:8px var(--font);color:#444;letter-spacing:2px;margin-bottom:4px">MODE</div>
+          <select id="lobbyModeSelect" class="lobby-input" style="width:100%" onchange="lobbyChangeMode(this.value)"></select>
+        </div>
+        <div style="flex:1">
+          <div style="font:8px var(--font);color:#444;letter-spacing:2px;margin-bottom:4px">MAP</div>
+          <select id="lobbyMapSelect" class="lobby-input" style="width:100%" onchange="lobbyChangeMap(this.value)"></select>
+        </div>
+      </div>
+    </div>
+    <button class="nav-btn" style="width:420px;margin-top:14px" onclick="launchMultiplayer()">START MATCH</button>
     <div class="nav-row">
-      <button class="back-btn" onclick="SFX.play('menu_hover');leaveLobby();showScreen('mpMapSelect')">BACK</button>
+      <button class="back-btn" onclick="SFX.play('menu_hover');leaveLobby();showScreen('mpCharSelect')">BACK</button>
     </div>
   </div>
 </div>
@@ -1055,10 +1031,7 @@ function buildMpModeSelect(){
 
 let lobbyBots=0,isLobbyHost=false;
 function initLobbyScreen(){
-  document.getElementById('lobbyModeSub').textContent=selectedMode.toUpperCase()+' \u00b7 '+selectedMap.toUpperCase();
-  document.getElementById('lobbyActions').style.display='flex';
-  document.getElementById('lobbyRoom').style.display='none';
-  lobbyBots=0;isLobbyHost=false;
+  updateLobbyHeader();updateLobbyPlayers();
 }
 function addLobbyBot(){
   const totalPlayers=(currentRoom?.players?.length||1)+lobbyBots;
@@ -1159,51 +1132,52 @@ setInterval(updateMenuController,1000/60);
 const SERVER='https://ngames-server-production.up.railway.app';
 let currentRoom=null,remotePlayers={},lobbyPollTimer=null,isMultiplayer=false;
 
-function generateRoomCode(){return Math.random().toString(36).substring(2,8).toUpperCase();}
+const CREW_ROOM_ID='blacksarena-crew'; // one persistent lobby for the crew
 
-async function hostGame(){
-  isLobbyHost=true;lobbyBots=0;
-  // Generate a local code as fallback
-  let code=generateRoomCode();
+async function joinCrewLobby(){
+  isLobbyHost=false;lobbyBots=0;
+  // Try to join the persistent crew room on the server
   let serverOk=false;
   try{
-    const res=await fetch(SERVER+'/rooms/create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({profile_id:activeProfile.id,game_id:'project-x',mode:selectedMode,map:selectedMap,max_players:4,character:selectedChar})}).then(r=>r.json());
-    console.log('[Lobby] Server response:',JSON.stringify(res));
-    // Try every possible field name the server might use
-    const serverCode=res.room_id||res.id||res.code||res.roomId||res.room_code;
-    if(serverCode)code=String(serverCode);
-    currentRoom={room_id:code,players:[{profile_id:activeProfile.id,character:selectedChar}],mode:selectedMode,map:selectedMap,...res};
+    // Create-or-join: server returns existing room if it exists
+    const res=await fetch(SERVER+'/rooms/create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({profile_id:activeProfile.id,game_id:'project-x',room_id:CREW_ROOM_ID,mode:selectedMode,map:selectedMap,max_players:4,character:selectedChar,persistent:true})}).then(r=>r.json());
+    console.log('[Lobby] Server:',JSON.stringify(res));
+    const rid=res.room_id||res.id||CREW_ROOM_ID;
+    const players=res.players||[{profile_id:activeProfile.id,character:selectedChar}];
+    // First player in is host
+    if(players.length<=1||players[0]?.profile_id===activeProfile.id)isLobbyHost=true;
+    currentRoom={room_id:rid,players,mode:res.mode||selectedMode,map:res.map||selectedMap,...res};
+    if(res.mode)selectedMode=res.mode;if(res.map)selectedMap=res.map;
     serverOk=true;
   }catch(e){
-    console.log('[Lobby] Server offline, using local room:',code);
-    currentRoom={room_id:code,players:[{profile_id:activeProfile.id,character:selectedChar}],mode:selectedMode,map:selectedMap,local:true};
+    console.log('[Lobby] Server offline, local lobby');
+    currentRoom={room_id:CREW_ROOM_ID,players:[{profile_id:activeProfile.id,character:selectedChar}],mode:selectedMode,map:selectedMap,local:true};
+    isLobbyHost=true;
   }
-  document.getElementById('lobbyCode').textContent=code.toUpperCase();
-  document.getElementById('lobbyActions').style.display='none';
-  document.getElementById('lobbyRoom').style.display='block';
-  document.getElementById('lobbyStatus').textContent=serverOk?'Room created! Share the code with your crew.':'Offline mode — add bots and play locally.';
-  document.getElementById('lobbyStartBtn').style.display='block';
-  updateLobbyPlayers();if(serverOk)startLobbyPoll();SFX.play('menu_select');
+  document.getElementById('lobbyOnline').textContent=serverOk?'CONNECTED':'OFFLINE MODE';
+  document.getElementById('lobbyOnline').style.color=serverOk?'#4f4':'#f44';
+  populateLobbySelects();updateLobbyPlayers();updateLobbyHeader();
+  NGame.ping({screen:'in_lobby',character:selectedChar,mode:selectedMode,map:selectedMap});
+  if(serverOk)startLobbyPoll();
 }
 
-async function joinGame(){
-  const code=document.getElementById('joinCodeInput').value.trim();
-  if(!code)return;
-  try{
-    const res=await fetch(SERVER+'/rooms/'+code+'/join',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({profile_id:activeProfile.id,character:selectedChar})}).then(r=>r.json());
-    console.log('[Lobby] Join response:',JSON.stringify(res));
-    if(res.error){document.getElementById('lobbyStatus').textContent=res.error;document.getElementById('lobbyStatus').style.display='block';return;}
-    currentRoom={room_id:code,players:res.players||[{profile_id:activeProfile.id,character:selectedChar}],...res};
-    isLobbyHost=false;lobbyBots=0;
-    if(res.mode)selectedMode=res.mode;if(res.map)selectedMap=res.map;
-    document.getElementById('lobbyCode').textContent=code.toUpperCase();
-    document.getElementById('lobbyModeSub').textContent=(selectedMode||'?').toUpperCase()+' \u00b7 '+(selectedMap||'?').toUpperCase();
-    document.getElementById('lobbyActions').style.display='none';
-    document.getElementById('lobbyRoom').style.display='block';
-    document.getElementById('lobbyStatus').textContent='Joined! Waiting for host to start...';
-    document.getElementById('lobbyStartBtn').style.display='none';
-    updateLobbyPlayers();startLobbyPoll();SFX.play('menu_select');
-  }catch(e){document.getElementById('lobbyStatus').textContent='Could not connect — check the code or try again';document.getElementById('lobbyStatus').style.display='block';}
+function populateLobbySelects(){
+  const modeEl=document.getElementById('lobbyModeSelect');
+  const mapEl=document.getElementById('lobbyMapSelect');
+  modeEl.innerHTML=MP_MODES.map(m=>`<option value="${m}" ${m===selectedMode?'selected':''}>${m}</option>`).join('');
+  mapEl.innerHTML=Object.keys(MAPS).map(m=>`<option value="${m}" ${m===selectedMap?'selected':''}>${m}</option>`).join('');
+}
+
+function lobbyChangeMode(m){
+  selectedMode=m;updateLobbyHeader();
+  if(currentRoom&&!currentRoom.local){const rid=currentRoom.room_id||currentRoom.id;NGame.sendRoomEvent(rid,'lobby_settings',{mode:m,map:selectedMap});}
+}
+function lobbyChangeMap(m){
+  selectedMap=m;updateLobbyHeader();
+  if(currentRoom&&!currentRoom.local){const rid=currentRoom.room_id||currentRoom.id;NGame.sendRoomEvent(rid,'lobby_settings',{mode:selectedMode,map:m});}
+}
+function updateLobbyHeader(){
+  document.getElementById('lobbyModeSub').textContent=selectedMode.toUpperCase()+' \u00b7 '+selectedMap.toUpperCase();
 }
 
 function startLobbyPoll(){
@@ -1211,10 +1185,21 @@ function startLobbyPoll(){
   lobbyPollTimer=setInterval(async()=>{
     if(!currentRoom)return;
     try{
+      // Try room endpoint first
       const id=currentRoom.room_id||currentRoom.id;
-      const res=await fetch(SERVER+'/rooms/'+id).then(r=>r.json());
-      if(res.players)currentRoom.players=res.players;
-      updateLobbyPlayers();
+      const res=await fetch(SERVER+'/rooms/'+id).then(r=>r.ok?r.json():null);
+      if(res&&res.players){currentRoom.players=res.players;updateLobbyPlayers();return;}
+    }catch(e){}
+    try{
+      // Fallback: check presence to see who's in lobby
+      const pres=await fetch(SERVER+'/presence').then(r=>r.json());
+      if(Array.isArray(pres)){
+        const inLobby=pres.filter(p=>p.online&&p.game_id==='project-x'&&p.game_state?.screen==='in_lobby');
+        if(inLobby.length>0){
+          currentRoom.players=inLobby.map(p=>({profile_id:p.profile_id,character:p.game_state?.character||'?'}));
+          updateLobbyPlayers();
+        }
+      }
     }catch(e){}
   },2000);
 }
@@ -1328,6 +1313,12 @@ function setupMultiplayerListeners(){
     if(msg.event==='weapon_pickup'&&msg.data){
       const idx=game.weaponDrops.findIndex(w=>Math.abs(w.x-msg.data.x)<20&&w.name===msg.data.name);
       if(idx>=0)game.weaponDrops.splice(idx,1);
+    }
+    // Lobby settings changed by another player
+    if(msg.event==='lobby_settings'&&msg.data&&!gameRunning){
+      if(msg.data.mode){selectedMode=msg.data.mode;const el=document.getElementById('lobbyModeSelect');if(el)el.value=msg.data.mode;}
+      if(msg.data.map){selectedMap=msg.data.map;const el=document.getElementById('lobbyMapSelect');if(el)el.value=msg.data.map;}
+      updateLobbyHeader();
     }
   });
 }
