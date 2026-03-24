@@ -555,6 +555,9 @@ function drawWeaponIcon(ctx,name,x,y,w,h,color){
 // CONSTANTS + DATA
 // ═══════════════════════════════════════════════════════════════════════
 const TICK=1/60,GRAVITY=1800,MAX_FALL=900,JUMP_VEL=-580,WALL_SLIDE_SPEED=120,WALL_JUMP_VX=350,WALL_JUMP_VY=-520;
+// Safe character data lookup — returns defaults for enemies
+const DEFAULT_CHAR={hp:150,speed:280,jumpMul:1,ability:{name:'None',cooldown:99,duration:0},passiveFn(){return 1;},abilityFn(){},abilityEnd(){},color:'#888',skin:'#3a2a1a'};
+function getChar(name){return CHARACTERS[name]||DEFAULT_CHAR;}
 const PLAYER_W=28,PLAYER_H=44,RESPAWN_TIME=3,PICKUP_SPAWN_INTERVAL=6;
 
 const W_={
@@ -573,8 +576,15 @@ const W_={
   'Plasma Cannon':{name:'Plasma Cannon',damage:45,pellets:1,spread:.03,rate:1.0,ammo:4,reload:2.0,range:600,speed:800,size:6,color:'#0ff',sfx:'shoot_laser',weight:5,explosive:true,blastRadius:60},
   'Burst Rifle':{name:'Burst Rifle',damage:12,pellets:3,spread:.04,rate:.4,ammo:24,reload:1.5,range:550,speed:1200,size:2,color:'#aaf',sfx:'shoot_smg',weight:3,burst:true},
   'Sawed-Off':{name:'Sawed-Off',damage:10,pellets:10,spread:.35,rate:.8,ammo:2,reload:1.8,range:150,speed:800,size:3,color:'#da8',sfx:'shoot_shotgun',weight:2},
+  // v0.5.0 weapons
+  'Freeze Ray':{name:'Freeze Ray',damage:4,pellets:1,spread:.02,rate:.06,ammo:40,reload:2.0,range:350,speed:900,size:3,color:'#8ff',sfx:'shoot_laser',weight:3,freeze:true},
+  'Bouncer':{name:'Bouncer',damage:20,pellets:1,spread:.04,rate:.5,ammo:8,reload:1.6,range:800,speed:700,size:4,color:'#f4f',sfx:'shoot_pistol',weight:2,bounce:true},
+  'Tesla Gun':{name:'Tesla Gun',damage:8,pellets:5,spread:.6,rate:.3,ammo:15,reload:2.0,range:200,speed:600,size:2,color:'#4af',sfx:'shoot_laser',weight:3,chain:true},
+  'Quad Launcher':{name:'Quad Launcher',damage:25,pellets:4,spread:.15,rate:1.2,ammo:4,reload:2.5,range:500,speed:500,size:4,color:'#fa4',sfx:'shoot_rocket',weight:5,explosive:true,blastRadius:55,arc:true},
+  'Harpoon':{name:'Harpoon',damage:65,pellets:1,spread:0,rate:1.4,ammo:1,reload:2.0,range:600,speed:1600,size:3,color:'#8a8',sfx:'shoot_sniper',weight:3,piercing:true},
+  'Acid Gun':{name:'Acid Gun',damage:2,pellets:2,spread:.15,rate:.05,ammo:50,reload:2.2,range:250,speed:500,size:3,color:'#4f0',sfx:'shoot_flame',weight:3},
 };
-const PICKUP_WEAPONS=['Minigun','Railgun','Grenade Lnchr','Flamethrower','Dual Pistols','Laser Rifle','Crossbow','Plasma Cannon','Burst Rifle','Sawed-Off'];
+const PICKUP_WEAPONS=['Minigun','Railgun','Grenade Lnchr','Flamethrower','Dual Pistols','Laser Rifle','Crossbow','Plasma Cannon','Burst Rifle','Sawed-Off','Freeze Ray','Bouncer','Tesla Gun','Quad Launcher','Harpoon','Acid Gun'];
 
 const POWERUP_TYPES=[
   {name:'Health Pack',type:'health',color:'#4f4',icon:'+',effect(e){e.hp=Math.min(e.maxHp,e.hp+40);}},
@@ -603,6 +613,19 @@ const CREW=[
 ];
 const CHAR_SPRITES={};
 for(const[n,ch]of Object.entries(CHARACTERS))CHAR_SPRITES[n]=createCharSprites(ch.color,ch.skin,ch.hair);
+
+// Enemy types for survival — distinct from crew
+const ENEMY_TYPES=[
+  {name:'Grunt',color:'#884444',skin:'#3a2a1a',hair:'fade',hp:100,speed:240,weapon:'Pistol',role:'basic'},
+  {name:'Heavy',color:'#666644',skin:'#3a2a1a',hair:'twists',hp:220,speed:180,weapon:'Shotgun',role:'tank'},
+  {name:'Sniper',color:'#444488',skin:'#4a3a2a',hair:'fade',hp:80,speed:200,weapon:'Sniper',role:'ranged'},
+  {name:'Rusher',color:'#884488',skin:'#3a2a1a',hair:'locs',hp:90,speed:360,weapon:'SMG',role:'fast'},
+  {name:'Demoman',color:'#886644',skin:'#4a3a2a',hair:'twists',hp:150,speed:220,weapon:'Rocket',role:'explosive'},
+  {name:'Elite',color:'#aa2222',skin:'#3a2a1a',hair:'dreads',hp:200,speed:300,weapon:'Minigun',role:'boss'},
+  {name:'Ghost',color:'#448888',skin:'#4a3a2a',hair:'locs',hp:110,speed:330,weapon:'SMG',role:'stealth'},
+  {name:'Pyro',color:'#aa6600',skin:'#3a2a1a',hair:'twists',hp:140,speed:250,weapon:'Flamethrower',role:'burn'},
+];
+for(const et of ENEMY_TYPES)CHAR_SPRITES['enemy_'+et.name]=createCharSprites(et.color,et.skin,et.hair);
 
 const KILLSTREAKS=[{kills:3,name:'UAV',desc:'Reveals enemies 8s',duration:8},{kills:5,name:'Airstrike',desc:'Bombs a zone',duration:0},{kills:7,name:'Sentry Gun',desc:'Auto-turret 15s',duration:15},{kills:10,name:'Juggernaut',desc:'+100 armor 20s',duration:20},{kills:15,name:'Tactical Nuke',desc:'Kills everyone',duration:0}];
 
@@ -651,6 +674,31 @@ const ACHIEVEMENTS=[
   {id:'play_all_maps',name:'World Tour',desc:'Play on every map',check:(s)=>Object.keys(MAPS).every(m=>(s.mapsPlayed?.[m]||0)>=1)},
   {id:'hundred_games',name:'Dedicated',desc:'Play 100 matches',check:(s)=>s.totalGames>=100},
   {id:'nuke_earned',name:'Nuclear Option',desc:'Earn a Tactical Nuke',check:(s)=>s.nukesEarned>=1},
+  // v0.5.0 achievements
+  {id:'thousand_career',name:'Legend',desc:'Get 1000 career kills',check:(s)=>s.totalKills>=1000},
+  {id:'fifty_wins',name:'Dominant',desc:'Win 50 matches',check:(s)=>s.totalWins>=50},
+  {id:'wave_30',name:'Immortal',desc:'Reach wave 30 in Survival',check:(s)=>s.bestWave>=30},
+  {id:'wave_50',name:'Beyond Death',desc:'Reach wave 50 in Survival',check:(s)=>s.bestWave>=50},
+  {id:'moon_win',name:'Moonwalker',desc:'Win a match on Moon',check:(s)=>(s.mapWins?.Moon||0)>=1},
+  {id:'volcano_win',name:'Floor is Lava',desc:'Win on Volcano without falling in lava',check:(s)=>s.volcanoCleanWin},
+  {id:'space_win',name:'Zero-G Hero',desc:'Win on Space Station',check:(s)=>(s.mapWins?.['Space Station']||0)>=1},
+  {id:'freeze_kills',name:'Ice Cold',desc:'Get 20 kills with the Freeze Ray',check:(s)=>(s.weaponKills?.['Freeze Ray']||0)>=20},
+  {id:'bouncer_kills',name:'Trick Shot',desc:'Get 10 kills with the Bouncer',check:(s)=>(s.weaponKills?.Bouncer||0)>=10},
+  {id:'tesla_kills',name:'Electrifying',desc:'Get 15 kills with the Tesla Gun',check:(s)=>(s.weaponKills?.['Tesla Gun']||0)>=15},
+  {id:'harpoon_kills',name:'Ahab',desc:'Get 10 kills with the Harpoon',check:(s)=>(s.weaponKills?.Harpoon||0)>=10},
+  {id:'acid_kills',name:'Corrosive',desc:'Get 15 kills with the Acid Gun',check:(s)=>(s.weaponKills?.['Acid Gun']||0)>=15},
+  {id:'throw_5',name:'Disarmed',desc:'Kill 5 enemies by throwing weapons',check:(s)=>s.throwKills>=5},
+  {id:'ten_throw',name:'Arms Dealer',desc:'Throw 10 weapons that hit',check:(s)=>s.throwKills>=10},
+  {id:'streak_20',name:'Transcendent',desc:'Get a 20 kill streak',check:(s)=>s.bestStreak>=20},
+  {id:'no_miss',name:'Sharpshooter',desc:'Get 10 kills without dying',check:(s)=>s.bestStreak>=10},
+  {id:'speedrun_wave5',name:'Speedrunner',desc:'Reach wave 5 in under 2 minutes',check:(s)=>s.fastWave5},
+  {id:'play_500',name:'Addicted',desc:'Play 500 matches',check:(s)=>s.totalGames>=500},
+  {id:'all_weapons',name:'Arsenal',desc:'Get a kill with every weapon type',check:(s)=>{const wk=s.weaponKills||{};return Object.keys(W_).filter(w=>!W_[w].base).every(w=>(wk[w]||0)>=1);}},
+  {id:'jump_pad_kill',name:'Launched',desc:'Kill someone while airborne from a jump pad',check:(s)=>s.jumpPadKills>=1},
+  {id:'survivor_100',name:'Exterminator',desc:'Kill 100 enemies in Survival',check:(s)=>s.survivalKills>=100},
+  {id:'ctf_3caps',name:'Flag Master',desc:'Cap 3 flags in one CTF match',check:(s)=>s.bestFlagCaps>=3},
+  {id:'win_streak_3',name:'Streak',desc:'Win 3 matches in a row',check:(s)=>s.winStreak>=3},
+  {id:'win_streak_5',name:'Hot Streak',desc:'Win 5 matches in a row',check:(s)=>s.winStreak>=5},
 ];
 
 // Persistent stats stored in localStorage, synced to server
@@ -714,7 +762,8 @@ function renderAchievementPopups(c,W,H,dt){
   }
 }
 
-function mp(name,bg,bgA,plats,spawns,dY){return{name,bg,bgAccent:bgA,width:1280,height:688,platforms:plats,spawns,pickupSpawns:spawns,weaponSpawns:spawns.slice(0,3),deathY:dY||750};}
+function mp(name,bg,bgA,plats,spawns,dY,extras){return{name,bg,bgAccent:bgA,width:1280,height:688,platforms:plats,spawns,pickupSpawns:spawns,weaponSpawns:spawns.slice(0,3),deathY:dY||750,jumpPads:[],hazards:[],gravity:1,...(extras||{})};}
+
 const MAPS={
 'The Pit':mp('The Pit','#0a0a14','#0f0f1e',[{x:0,y:620,w:440,h:68},{x:840,y:620,w:440,h:68},{x:200,y:480,w:200,h:16},{x:880,y:480,w:200,h:16},{x:490,y:380,w:300,h:16},{x:60,y:320,w:160,h:16},{x:1060,y:320,w:160,h:16},{x:540,y:220,w:200,h:16},{x:420,y:520,w:20,h:100},{x:840,y:520,w:20,h:100}],[{x:100,y:580},{x:1180,y:580},{x:640,y:340},{x:640,y:180}]),
 'Rooftop':mp('Rooftop','#080812','#10101e',[{x:0,y:620,w:300,h:68},{x:400,y:580,w:200,h:108},{x:700,y:540,w:180,h:148},{x:980,y:620,w:300,h:68},{x:100,y:460,w:150,h:16},{x:350,y:400,w:160,h:16},{x:600,y:360,w:140,h:16},{x:850,y:420,w:150,h:16},{x:1080,y:480,w:140,h:16},{x:200,y:280,w:120,h:16},{x:500,y:220,w:160,h:16},{x:800,y:260,w:120,h:16},{x:400,y:120,w:200,h:16}],[{x:150,y:580},{x:1100,y:580},{x:580,y:320},{x:500,y:80}]),
@@ -725,8 +774,50 @@ const MAPS={
 'Courtyard':mp('Courtyard','#0a0808','#141210',[{x:0,y:640,w:1280,h:48},{x:0,y:480,w:180,h:16},{x:1100,y:480,w:180,h:16},{x:250,y:520,w:100,h:16},{x:930,y:520,w:100,h:16},{x:440,y:460,w:400,h:16},{x:200,y:360,w:120,h:16},{x:960,y:360,w:120,h:16},{x:480,y:320,w:320,h:16},{x:100,y:240,w:100,h:16},{x:1080,y:240,w:100,h:16},{x:380,y:200,w:140,h:16},{x:760,y:200,w:140,h:16},{x:540,y:110,w:200,h:16}],[{x:90,y:600},{x:1190,y:600},{x:640,y:420},{x:640,y:70}]),
 'Favela':mp('Favela','#0e0a06','#18140e',[{x:0,y:640,w:400,h:48},{x:500,y:640,w:280,h:48},{x:880,y:640,w:400,h:48},{x:50,y:530,w:120,h:16},{x:220,y:480,w:100,h:16},{x:400,y:440,w:120,h:16},{x:600,y:500,w:80,h:16},{x:760,y:440,w:120,h:16},{x:940,y:480,w:100,h:16},{x:1100,y:530,w:120,h:16},{x:150,y:360,w:100,h:16},{x:350,y:320,w:120,h:16},{x:560,y:350,w:160,h:16},{x:810,y:320,w:120,h:16},{x:1030,y:360,w:100,h:16},{x:250,y:220,w:140,h:16},{x:570,y:200,w:140,h:16},{x:890,y:220,w:140,h:16},{x:500,y:100,w:280,h:16}],[{x:200,y:600},{x:1080,y:600},{x:640,y:460},{x:640,y:60}]),
 'Skyline':mp('Skyline','#060612','#0c0c20',[{x:0,y:640,w:180,h:48},{x:280,y:600,w:140,h:88},{x:520,y:560,w:240,h:128},{x:860,y:600,w:140,h:88},{x:1100,y:640,w:180,h:48},{x:60,y:500,w:120,h:12},{x:300,y:460,w:100,h:12},{x:880,y:460,w:100,h:12},{x:1100,y:500,w:120,h:12},{x:200,y:360,w:120,h:12},{x:580,y:380,w:120,h:12},{x:960,y:360,w:120,h:12},{x:400,y:280,w:100,h:12},{x:780,y:280,w:100,h:12},{x:540,y:200,w:200,h:12},{x:440,y:100,w:100,h:12},{x:740,y:100,w:100,h:12}],[{x:90,y:600},{x:1190,y:600},{x:640,y:520},{x:640,y:60}]),
-'Arena':mp('Arena','#100808','#1a1010',[{x:0,y:640,w:1280,h:48},{x:0,y:500,w:100,h:16},{x:1180,y:500,w:100,h:16},{x:180,y:520,w:140,h:16},{x:960,y:520,w:140,h:16},{x:400,y:480,w:120,h:16},{x:760,y:480,w:120,h:16},{x:540,y:420,w:200,h:16},{x:200,y:380,w:100,h:16},{x:980,y:380,w:100,h:16},{x:350,y:300,w:120,h:16},{x:810,y:300,w:120,h:16},{x:520,y:240,w:240,h:16},{x:400,y:140,w:120,h:16},{x:760,y:140,w:120,h:16},{x:560,y:80,w:160,h:16}],[{x:90,y:600},{x:1190,y:600},{x:640,y:380},{x:640,y:40}]),
+'Arena':mp('Arena','#100808','#1a1010',[{x:0,y:640,w:1280,h:48},{x:0,y:500,w:100,h:16},{x:1180,y:500,w:100,h:16},{x:180,y:520,w:140,h:16},{x:960,y:520,w:140,h:16},{x:400,y:480,w:120,h:16},{x:760,y:480,w:120,h:16},{x:540,y:420,w:200,h:16},{x:200,y:380,w:100,h:16},{x:980,y:380,w:100,h:16},{x:350,y:300,w:120,h:16},{x:810,y:300,w:120,h:16},{x:520,y:240,w:240,h:16},{x:400,y:140,w:120,h:16},{x:760,y:140,w:120,h:16},{x:560,y:80,w:160,h:16}],[{x:90,y:600},{x:1190,y:600},{x:640,y:380},{x:640,y:40}],750,{jumpPads:[{x:200,y:636,w:30,h:8,power:-900},{x:1050,y:636,w:30,h:8,power:-900}]}),
+'Moon':mp('Moon','#02020a','#08081a',[
+  {x:0,y:640,w:300,h:48},{x:500,y:640,w:280,h:48},{x:980,y:640,w:300,h:48},
+  {x:100,y:520,w:120,h:12},{x:400,y:480,w:140,h:12},{x:740,y:480,w:140,h:12},{x:1060,y:520,w:120,h:12},
+  {x:250,y:380,w:100,h:12},{x:580,y:360,w:120,h:12},{x:930,y:380,w:100,h:12},
+  {x:150,y:260,w:140,h:12},{x:540,y:240,w:200,h:12},{x:990,y:260,w:140,h:12},
+  {x:350,y:150,w:120,h:12},{x:810,y:150,w:120,h:12},{x:560,y:80,w:160,h:12},
+],[{x:150,y:600},{x:1130,y:600},{x:640,y:600},{x:640,y:40}],750,{
+  gravity:.35,
+  jumpPads:[{x:140,y:636,w:30,h:8,power:-1100},{x:1110,y:636,w:30,h:8,power:-1100},{x:620,y:636,w:30,h:8,power:-1200},{x:400,y:476,w:24,h:8,power:-900},{x:860,y:476,w:24,h:8,power:-900}],
+}),
+'Volcano':mp('Volcano','#140804','#1e0a04',[
+  {x:0,y:640,w:400,h:48},{x:880,y:640,w:400,h:48},
+  {x:440,y:600,w:400,h:20},
+  {x:100,y:520,w:160,h:14},{x:1020,y:520,w:160,h:14},
+  {x:300,y:440,w:140,h:14},{x:840,y:440,w:140,h:14},
+  {x:520,y:380,w:240,h:14},
+  {x:160,y:340,w:100,h:14},{x:1020,y:340,w:100,h:14},
+  {x:380,y:260,w:120,h:14},{x:780,y:260,w:120,h:14},
+  {x:540,y:170,w:200,h:14},{x:300,y:120,w:100,h:14},{x:880,y:120,w:100,h:14},
+],[{x:200,y:600},{x:1080,y:600},{x:640,y:340},{x:640,y:130}],750,{
+  jumpPads:[{x:460,y:596,w:24,h:8,power:-950},{x:800,y:596,w:24,h:8,power:-950}],
+  hazards:[{x:440,y:620,w:400,h:28,damage:5,type:'lava'}],
+}),
+'Space Station':mp('Space Station','#040410','#0a0a20',[
+  {x:0,y:640,w:200,h:48},{x:360,y:640,w:200,h:48},{x:720,y:640,w:200,h:48},{x:1080,y:640,w:200,h:48},
+  {x:200,y:540,w:160,h:10},{x:560,y:560,w:160,h:10},{x:920,y:540,w:160,h:10},
+  {x:100,y:430,w:120,h:10},{x:420,y:440,w:160,h:10},{x:700,y:440,w:160,h:10},{x:1060,y:430,w:120,h:10},
+  {x:280,y:330,w:140,h:10},{x:860,y:330,w:140,h:10},
+  {x:500,y:300,w:280,h:10},
+  {x:380,y:190,w:120,h:10},{x:780,y:190,w:120,h:10},
+  {x:540,y:100,w:200,h:10},
+],[{x:100,y:600},{x:1180,y:600},{x:640,y:260},{x:640,y:60}],750,{
+  gravity:.6,
+  jumpPads:[{x:260,y:636,w:24,h:8,power:-1000},{x:460,y:636,w:24,h:8,power:-1000},{x:820,y:636,w:24,h:8,power:-1000},{x:1000,y:636,w:24,h:8,power:-1000}],
+}),
 };
+// Add jump pads to existing maps
+MAPS['The Pit'].jumpPads=[{x:420,y:616,w:24,h:8,power:-950},{x:840,y:616,w:24,h:8,power:-950}];
+MAPS['Rooftop'].jumpPads=[{x:200,y:616,w:24,h:8,power:-850}];
+MAPS['Towers'].jumpPads=[{x:100,y:636,w:24,h:8,power:-1100},{x:1160,y:636,w:24,h:8,power:-1100}];
+MAPS['Bridges'].jumpPads=[{x:630,y:636,w:24,h:8,power:-900}];
+MAPS['Skyline'].jumpPads=[{x:620,y:556,w:24,h:8,power:-850}];
+MAPS['Favela'].jumpPads=[{x:640,y:636,w:24,h:8,power:-900},{x:300,y:636,w:24,h:8,power:-850},{x:980,y:636,w:24,h:8,power:-850}];
 const MODES=['Deathmatch','Team DM','Last Man','CTF','Survival','Co-op Survival'];
 
 // ═══════════════════════════════════════════════════════════════════════
@@ -1416,7 +1507,23 @@ class Game{
   resize(){const r=this.canvas.parentElement.getBoundingClientRect();this.canvas.width=r.width;this.canvas.height=r.height;this.scale=Math.min(r.width/this.map.width,r.height/this.map.height);}
   makeWeapon(name){const d=W_[name];if(!d)return null;return{...d,currentAmmo:d.ammo,maxAmmo:d.ammo,reloading:false,reloadTimer:0,fireTimer:0};}
   createPlayer(cn,x,y,isBot,idx){const ch=CHARACTERS[cn];return{type:'player',charName:cn,idx,x,y,vx:0,vy:0,w:PLAYER_W,h:PLAYER_H,hp:ch.hp,maxHp:ch.hp,speed:ch.speed,jumpMul:ch.jumpMul,facing:1,aimAngle:0,onGround:false,canDoubleJump:true,wallSliding:false,wallDir:0,weapons:[this.makeWeapon(ch.primaryName),this.makeWeapon(ch.secondaryName)],activeWeaponIdx:0,abilityCooldown:0,abilityActive:false,abilityTimer:0,invisible:false,slowed:false,slowTimer:0,speedMul:1,dmgMul:1,speedBuff:0,dmgBuff:0,rapidBuff:0,regenBuff:0,maxHpBuff:0,dead:false,respawnTimer:0,kills:0,deaths:0,assists:0,streak:0,streakAnnounced:new Set(),team:0,lives:999,isBot,isSurvivalEnemy:false,botTarget:null,botJumpTimer:0,botShootTimer:0,botAbilityTimer:0,color:ch.color,walkCycle:0,armor:0,armorTimer:0,_jumpHeld:false,_abilityHeld:false,_throwHeld:false};}
-  createSurvivalEnemy(wave){const chars=Object.keys(CHARACTERS);const cn=chars[Math.floor(Math.random()*chars.length)];const sp=this.map.spawns[Math.floor(Math.random()*this.map.spawns.length)];const e=this.createPlayer(cn,sp.x,sp.y,true,100+Math.floor(Math.random()*9000));e.maxHp=CHARACTERS[cn].hp*(1+wave*.12);e.hp=e.maxHp;e.speed=CHARACTERS[cn].speed*(1+wave*.04);e.isSurvivalEnemy=true;e.team=1;if(wave>=3&&Math.random()<.3){const w=PICKUP_WEAPONS[Math.floor(Math.random()*PICKUP_WEAPONS.length)];e.weapons.push(this.makeWeapon(w));e.activeWeaponIdx=e.weapons.length-1;}return e;}
+  createSurvivalEnemy(wave){
+    // Pick an enemy type based on wave difficulty
+    const pool=wave<3?ENEMY_TYPES.filter(t=>t.role==='basic'||t.role==='fast'):
+                wave<7?ENEMY_TYPES.filter(t=>t.role!=='boss'):ENEMY_TYPES;
+    const et=pool[Math.floor(Math.random()*pool.length)];
+    // Use a crew character internally for stats but override the sprite
+    const cn=Object.keys(CHARACTERS)[Math.floor(Math.random()*4)];
+    const sp=this.map.spawns[Math.floor(Math.random()*this.map.spawns.length)];
+    const e=this.createPlayer(cn,sp.x,sp.y,true,100+Math.floor(Math.random()*9000));
+    // Override with enemy type stats
+    e.maxHp=et.hp*(1+wave*.12);e.hp=e.maxHp;e.speed=et.speed*(1+wave*.04);
+    e.color=et.color;e.charName='enemy_'+et.name;e.enemyType=et.name;
+    e.weapons=[this.makeWeapon(et.weapon),this.makeWeapon('Pistol')];e.activeWeaponIdx=0;
+    e.isSurvivalEnemy=true;e.team=1;
+    if(wave>=5&&Math.random()<.3){const w=PICKUP_WEAPONS[Math.floor(Math.random()*PICKUP_WEAPONS.length)];e.weapons.push(this.makeWeapon(w));e.activeWeaponIdx=e.weapons.length-1;}
+    return e;
+  }
   isEnemy(a,b){if(this.mode==='Team DM'||this.mode==='CTF')return a.team!==b.team;if(this.mode==='Survival'||this.mode==='Co-op Survival')return a.isSurvivalEnemy!==b.isSurvivalEnemy;return a!==b;}
 
   loop(now){if(!this.running)return;this.rafId=requestAnimationFrame(t=>this.loop(t));let dt=(now-this.lastTime)/1000;this.lastTime=now;if(dt>.1)dt=.1;this.fpsFrames++;this.fpsTime+=dt;if(this.fpsTime>=1){this.fps=this.fpsFrames;this.fpsFrames=0;this.fpsTime=0;}if(gamePaused){this.render();return;}pollGamepad();this.accumulator+=dt;while(this.accumulator>=TICK){this.update(TICK);this.accumulator-=TICK;}
@@ -1464,14 +1571,14 @@ class Game{
     for(let ei=this.entities.length-1;ei>=0;ei--){const e=this.entities[ei];
       if(e.dead){e.respawnTimer-=dt;if(e.respawnTimer<=0){if(e.isSurvivalEnemy){this.entities.splice(ei,1);continue;}else this.respawnPlayer(e);}continue;}
       if(e.slowed){e.slowTimer-=dt;if(e.slowTimer<=0)e.slowed=false;}
-      if(e.abilityActive){e.abilityTimer-=dt;if(e.abilityTimer<=0)CHARACTERS[e.charName].abilityEnd(e);}
+      if(e.abilityActive){e.abilityTimer-=dt;if(e.abilityTimer<=0)getChar(e.charName).abilityEnd(e);}
       if(e.abilityCooldown>0)e.abilityCooldown-=dt;
       if(e.armorTimer>0){e.armorTimer-=dt;if(e.armorTimer<=0)e.armor=0;}
       if(e.speedBuff>0){e.speedBuff-=dt;if(e.speedBuff<=0)e.speedMul=1;}
       if(e.dmgBuff>0){e.dmgBuff-=dt;if(e.dmgBuff<=0)e.dmgMul=1;}
       if(e.rapidBuff>0)e.rapidBuff-=dt;
       if(e.regenBuff>0){e.regenBuff-=dt;e.hp=Math.min(e.maxHp,e.hp+10*dt);}
-      if(e.maxHpBuff>0){e.maxHpBuff-=dt;if(e.maxHpBuff<=0&&e.hp>CHARACTERS[e.charName].hp){e.maxHp=CHARACTERS[e.charName].hp;e.hp=Math.min(e.hp,e.maxHp);}}
+      if(e.maxHpBuff>0){e.maxHpBuff-=dt;if(e.maxHpBuff<=0&&e.hp>getChar(e.charName).hp){e.maxHp=getChar(e.charName).hp;e.hp=Math.min(e.hp,e.maxHp);}}
       for(const w of e.weapons){if(w.fireTimer>0)w.fireTimer-=dt*(e.rapidBuff>0?2:1);if(w.reloading){w.reloadTimer-=dt;if(w.reloadTimer<=0){w.currentAmmo=w.ammo;w.reloading=false;}}}
       if(e.isRemote){/* remote players are positioned by syncRemotePlayers */}
       else if(e.isBot)this.updateBot(e,dt);
@@ -1507,7 +1614,7 @@ class Game{
     if(gamepad&&gpState.buttons[3]&&!e._switchHeld){e.activeWeaponIdx=(e.activeWeaponIdx+1)%e.weapons.length;e._switchHeld=true;}if(gamepad&&!gpState.buttons[3])e._switchHeld=false;
     if(isKeyDown('reload')||(gamepad&&gpState.buttons[2])){const w=e.weapons[e.activeWeaponIdx];if(w&&!w.reloading&&w.currentAmmo<w.ammo){w.reloading=true;w.reloadTimer=w.reload;SFX.play('reload');}}
     const abilityPressed=rightMouseDown||isKeyDown('ability')||(gamepad&&gpState.buttons[6]);
-    if(abilityPressed&&!e._abilityHeld&&e.abilityCooldown<=0&&!e.abilityActive){CHARACTERS[e.charName].abilityFn(e,this);e.abilityCooldown=CHARACTERS[e.charName].ability.cooldown;e._abilityHeld=true;}if(!abilityPressed)e._abilityHeld=false;
+    if(abilityPressed&&!e._abilityHeld&&e.abilityCooldown<=0&&!e.abilityActive){getChar(e.charName).abilityFn(e,this);e.abilityCooldown=getChar(e.charName).ability.cooldown;e._abilityHeld=true;}if(!abilityPressed)e._abilityHeld=false;
     const throwPressed=isKeyDown('throwWeapon')||(gamepad&&gpState.buttons[4]);if(throwPressed&&!e._throwHeld){this.throwWeapon(e);e._throwHeld=true;}if(!throwPressed)e._throwHeld=false;
   }
 
@@ -1515,9 +1622,14 @@ class Game{
 
   updateThrownWeapons(dt){for(let i=this.thrownWeapons.length-1;i>=0;i--){const tw=this.thrownWeapons[i];tw.vy+=GRAVITY*dt;tw.x+=tw.vx*dt;tw.y+=tw.vy*dt;tw.spin+=dt*15;tw.life-=dt;if(tw.life<=0||tw.y>this.map.deathY){this.thrownWeapons.splice(i,1);continue;}let removed=false;for(const p of this.map.platforms){if(this.pointInBox(tw.x,tw.y,p.x,p.y,p.w,p.h)){this.weaponDrops.push({x:tw.x,y:p.y-10,name:tw.name,life:20,bob:0,vy:0});this.thrownWeapons.splice(i,1);removed=true;break;}}if(removed)continue;for(const e of this.entities){if(e===tw.owner||e.dead||!this.isEnemy(tw.owner,e))continue;if(Math.hypot(e.x-tw.x,(e.y-e.h/2)-tw.y)<25){this.dealDamage(e,tw.damage,tw.owner);this.weaponDrops.push({x:tw.x,y:tw.y,name:tw.name,life:20,bob:0,vy:-100});this.thrownWeapons.splice(i,1);break;}}}}
 
-  updateBot(e,dt){e.botShootTimer-=dt;e.botJumpTimer-=dt;e.botAbilityTimer-=dt;const enemies=this.entities.filter(p=>p!==e&&!p.dead&&this.isEnemy(e,p));if(!enemies.length){e.vx*=.9;return;}let closest=enemies[0],cd=Infinity;for(const en of enemies){const d=Math.hypot(en.x-e.x,en.y-e.y);if(d<cd){cd=d;closest=en;}}e.botTarget=closest;e.facing=closest.x-e.x>0?1:-1;e.aimAngle=Math.atan2(closest.y-closest.h/2-(e.y-e.h*.6),closest.x-e.x);const spd=e.speed*(e.slowed?.5:1)*(e.speedMul||1);const w=e.weapons[e.activeWeaponIdx];const ideal=w?.name==='Sniper'?400:(w?.name==='Flamethrower'||w?.name==='SMG'?150:220);if(cd>ideal+50)e.vx=spd*e.facing;else if(cd<ideal-50)e.vx=-spd*e.facing;else e.vx*=.8;if(e.botJumpTimer<=0&&(closest.y-e.y<-50||(e.onGround&&Math.random()<.02))){if(e.onGround){e.vy=JUMP_VEL*e.jumpMul;e.onGround=false;e.canDoubleJump=true;}else if(e.canDoubleJump&&Math.random()<.3){e.vy=JUMP_VEL*e.jumpMul;e.canDoubleJump=false;}e.botJumpTimer=.3+Math.random()*.5;}if(e.botShootTimer<=0&&cd<(w?.range||300)){this.tryShoot(e);e.botShootTimer=.05+Math.random()*.2;}if(w&&w.currentAmmo<=0&&!w.reloading){w.reloading=true;w.reloadTimer=w.reload;}if(w&&w.currentAmmo<=0&&e.weapons.length>1){const o=e.weapons.findIndex((ww,i)=>i!==e.activeWeaponIdx&&ww.currentAmmo>0);if(o>=0)e.activeWeaponIdx=o;}if(e.botAbilityTimer<=0&&e.abilityCooldown<=0&&!e.abilityActive&&cd<300){CHARACTERS[e.charName].abilityFn(e,this);e.abilityCooldown=CHARACTERS[e.charName].ability.cooldown;e.botAbilityTimer=5+Math.random()*10;}}
+  updateBot(e,dt){e.botShootTimer-=dt;e.botJumpTimer-=dt;e.botAbilityTimer-=dt;const enemies=this.entities.filter(p=>p!==e&&!p.dead&&this.isEnemy(e,p));if(!enemies.length){e.vx*=.9;return;}let closest=enemies[0],cd=Infinity;for(const en of enemies){const d=Math.hypot(en.x-e.x,en.y-e.y);if(d<cd){cd=d;closest=en;}}e.botTarget=closest;e.facing=closest.x-e.x>0?1:-1;e.aimAngle=Math.atan2(closest.y-closest.h/2-(e.y-e.h*.6),closest.x-e.x);const spd=e.speed*(e.slowed?.5:1)*(e.speedMul||1);const w=e.weapons[e.activeWeaponIdx];const ideal=w?.name==='Sniper'?400:(w?.name==='Flamethrower'||w?.name==='SMG'?150:220);if(cd>ideal+50)e.vx=spd*e.facing;else if(cd<ideal-50)e.vx=-spd*e.facing;else e.vx*=.8;if(e.botJumpTimer<=0&&(closest.y-e.y<-50||(e.onGround&&Math.random()<.02))){if(e.onGround){e.vy=JUMP_VEL*e.jumpMul;e.onGround=false;e.canDoubleJump=true;}else if(e.canDoubleJump&&Math.random()<.3){e.vy=JUMP_VEL*e.jumpMul;e.canDoubleJump=false;}e.botJumpTimer=.3+Math.random()*.5;}if(e.botShootTimer<=0&&cd<(w?.range||300)){this.tryShoot(e);e.botShootTimer=.05+Math.random()*.2;}if(w&&w.currentAmmo<=0&&!w.reloading){w.reloading=true;w.reloadTimer=w.reload;}if(w&&w.currentAmmo<=0&&e.weapons.length>1){const o=e.weapons.findIndex((ww,i)=>i!==e.activeWeaponIdx&&ww.currentAmmo>0);if(o>=0)e.activeWeaponIdx=o;}if(e.botAbilityTimer<=0&&e.abilityCooldown<=0&&!e.abilityActive&&cd<300){getChar(e.charName).abilityFn(e,this);e.abilityCooldown=getChar(e.charName).ability.cooldown;e.botAbilityTimer=5+Math.random()*10;}}
 
-  applyPhysics(e,dt){e.vy+=GRAVITY*dt;if(e.vy>MAX_FALL)e.vy=MAX_FALL;e.wallSliding=false;if(!e.onGround&&e.vy>0){const dir=e.vx>0?1:(e.vx<0?-1:0);if(dir){const wx=dir>0?e.x+e.w/2:e.x-e.w/2;for(const p of this.map.platforms){if(wx>=p.x&&wx<=p.x+p.w&&e.y>p.y&&e.y-e.h<p.y+p.h){e.wallSliding=true;e.wallDir=dir;e.vy=Math.min(e.vy,WALL_SLIDE_SPEED);break;}}}}e.x+=e.vx*dt;for(const p of this.map.platforms){if(this.boxOverlap(e.x-e.w/2,e.y-e.h,e.w,e.h,p.x,p.y,p.w,p.h)){if(e.vx>0)e.x=p.x-e.w/2;else if(e.vx<0)e.x=p.x+p.w+e.w/2;e.vx=0;}}e.y+=e.vy*dt;e.onGround=false;for(const p of this.map.platforms){if(this.boxOverlap(e.x-e.w/2,e.y-e.h,e.w,e.h,p.x,p.y,p.w,p.h)){if(e.vy>0){e.y=p.y;e.vy=0;e.onGround=true;e.canDoubleJump=true;}else{e.y=p.y+p.h+e.h;e.vy=0;}}}if(e.x<e.w/2){e.x=e.w/2;e.vx=0;}if(e.x>this.map.width-e.w/2){e.x=this.map.width-e.w/2;e.vx=0;}if(e.y>this.map.deathY)this.killPlayer(e,null);}
+  applyPhysics(e,dt){const grav=GRAVITY*(this.map.gravity||1);e.vy+=grav*dt;if(e.vy>MAX_FALL)e.vy=MAX_FALL;e.wallSliding=false;if(!e.onGround&&e.vy>0){const dir=e.vx>0?1:(e.vx<0?-1:0);if(dir){const wx=dir>0?e.x+e.w/2:e.x-e.w/2;for(const p of this.map.platforms){if(wx>=p.x&&wx<=p.x+p.w&&e.y>p.y&&e.y-e.h<p.y+p.h){e.wallSliding=true;e.wallDir=dir;e.vy=Math.min(e.vy,WALL_SLIDE_SPEED);break;}}}}e.x+=e.vx*dt;for(const p of this.map.platforms){if(this.boxOverlap(e.x-e.w/2,e.y-e.h,e.w,e.h,p.x,p.y,p.w,p.h)){if(e.vx>0)e.x=p.x-e.w/2;else if(e.vx<0)e.x=p.x+p.w+e.w/2;e.vx=0;}}e.y+=e.vy*dt;e.onGround=false;for(const p of this.map.platforms){if(this.boxOverlap(e.x-e.w/2,e.y-e.h,e.w,e.h,p.x,p.y,p.w,p.h)){if(e.vy>0){e.y=p.y;e.vy=0;e.onGround=true;e.canDoubleJump=true;}else{e.y=p.y+p.h+e.h;e.vy=0;}}}if(e.x<e.w/2){e.x=e.w/2;e.vx=0;}if(e.x>this.map.width-e.w/2){e.x=this.map.width-e.w/2;e.vx=0;}if(e.y>this.map.deathY)this.killPlayer(e,null);
+    // jump pads
+    if(this.map.jumpPads)for(const jp of this.map.jumpPads){if(this.boxOverlap(e.x-e.w/2,e.y-e.h,e.w,e.h,jp.x,jp.y,jp.w,jp.h)){e.vy=jp.power*(this.map.gravity||1);e.onGround=false;e.canDoubleJump=true;SFX.play('jump');for(let i=0;i<6;i++)this.particles.push({x:jp.x+jp.w/2,y:jp.y,vx:(Math.random()-.5)*100,vy:-Math.random()*150,life:.2,maxLife:.2,size:2,color:'#0ff',grav:false});break;}}
+    // hazards (lava etc)
+    if(this.map.hazards)for(const hz of this.map.hazards){if(this.boxOverlap(e.x-e.w/2,e.y-e.h,e.w,e.h,hz.x,hz.y,hz.w,hz.h)){this.dealDamage(e,hz.damage*dt*60,null,true);}}
+  }
   boxOverlap(ax,ay,aw,ah,bx,by,bw,bh){return ax<bx+bw&&ax+aw>bx&&ay<by+bh&&ay+ah>by;}
   pointInBox(px,py,bx,by,bw,bh){return px>=bx&&px<=bx+bw&&py>=by&&py<=by+bh;}
 
@@ -1559,7 +1671,7 @@ class Game{
       return;
     }
     // Apply damage locally (own player, bots, or network-confirmed hits)
-    dmg*=CHARACTERS[t.charName].passiveFn(t);
+    dmg*=getChar(t.charName).passiveFn(t);
     if(t.armor>0){const ab=Math.min(dmg*.5,t.armor);t.armor-=ab;dmg-=ab;}
     t.hp-=dmg;
     if(settings.damageNumbers)this.damageNums.push({x:t.x+(Math.random()-.5)*20,y:t.y-t.h-10,text:Math.round(dmg),life:1,color:attacker?attacker.color:'#fff',scale:1});
@@ -1637,6 +1749,24 @@ class Game{
       c.strokeStyle='#22223a';c.lineWidth=.5;c.strokeRect(p.x,p.y,p.w,p.h);
     }
 
+    // jump pads
+    if(this.map.jumpPads)for(const jp of this.map.jumpPads){
+      c.fillStyle='#0ff';c.globalAlpha=.3+Math.sin(this.time*4)*.15;
+      c.fillRect(jp.x,jp.y,jp.w,jp.h);
+      // glow arrow
+      c.globalAlpha=.2+Math.sin(this.time*6)*.1;
+      const cx=jp.x+jp.w/2,cy=jp.y-4;
+      c.beginPath();c.moveTo(cx-6,cy+4);c.lineTo(cx,cy-4);c.lineTo(cx+6,cy+4);c.closePath();c.fill();
+      c.globalAlpha=1;
+    }
+    // hazards
+    if(this.map.hazards)for(const hz of this.map.hazards){
+      if(hz.type==='lava'){c.fillStyle='#f40';c.globalAlpha=.4+Math.sin(this.time*3)*.1;c.fillRect(hz.x,hz.y,hz.w,hz.h);c.fillStyle='#fa0';c.globalAlpha=.2;c.fillRect(hz.x,hz.y,hz.w,4);c.globalAlpha=1;
+        // lava particles
+        if(Math.random()<.1)this.particles.push({x:hz.x+Math.random()*hz.w,y:hz.y,vx:(Math.random()-.5)*30,vy:-20-Math.random()*40,life:.3+Math.random()*.3,maxLife:.6,size:2+Math.random()*2,color:Math.random()>.5?'#f80':'#f40',grav:false});
+      }else{c.fillStyle='#f00';c.globalAlpha=.3;c.fillRect(hz.x,hz.y,hz.w,hz.h);c.globalAlpha=1;}
+    }
+
     // pickups with glow
     for(const p of this.pickups){const by=Math.sin(p.bob)*5;c.save();c.translate(p.x,p.y+by);
       c.globalAlpha=p.life<3?(Math.sin(this.time*10)*.3+.7):.8;
@@ -1706,12 +1836,12 @@ class Game{
     c.save();if(e.facing<0)c.scale(-1,1);c.imageSmoothingEnabled=false;c.drawImage(frame,-24,-46,48,48);c.restore();
     // gun arm
     const ga=e.aimAngle,gl=this.getGunLen(e.weapons[e.activeWeaponIdx]);
-    c.strokeStyle=CHARACTERS[e.charName].skin;c.lineWidth=3;c.beginPath();c.moveTo(0,-e.h*.55);c.lineTo(Math.cos(ga)*gl,-e.h*.55+Math.sin(ga)*gl);c.stroke();
+    c.strokeStyle=getChar(e.charName).skin;c.lineWidth=3;c.beginPath();c.moveTo(0,-e.h*.55);c.lineTo(Math.cos(ga)*gl,-e.h*.55+Math.sin(ga)*gl);c.stroke();
     // gun
     c.save();c.translate(Math.cos(ga)*gl*.5,-e.h*.55+Math.sin(ga)*gl*.5);c.rotate(ga);
     const w=e.weapons[e.activeWeaponIdx];drawWeaponIcon(c,w?.name||'Pistol',-gl*.3,-4,gl*.6,8,w?.color||'#888');c.restore();
     // hand
-    c.fillStyle=CHARACTERS[e.charName].skin;c.beginPath();c.arc(Math.cos(ga)*6,-e.h*.55+Math.sin(ga)*6,3,0,Math.PI*2);c.fill();
+    c.fillStyle=getChar(e.charName).skin;c.beginPath();c.arc(Math.cos(ga)*6,-e.h*.55+Math.sin(ga)*6,3,0,Math.PI*2);c.fill();
     c.shadowBlur=0;c.globalAlpha=1;c.restore();
     // HP bar
     if(!e.invisible||e===this.player||this.uavTimer>0){

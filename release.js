@@ -166,9 +166,20 @@ fs.writeFileSync(notesFile, [
 try {
   run(`gh release create v${newVer} --repo ${REPO} --title "v${newVer}" --notes-file "${notesFile}"`, { silent: true });
 } catch(e) {
-  console.log('  Release may already exist, trying to overwrite...');
-  try { run(`gh release delete v${newVer} --repo ${REPO} -y`, { silent: true }); } catch(e2) {}
-  run(`gh release create v${newVer} --repo ${REPO} --title "v${newVer}" --notes-file "${notesFile}"`, { silent: true });
+  if(e.stderr && e.stderr.includes('already exists')) {
+    console.log('  Tag exists, bumping patch...');
+    const parts = newVer.split('.').map(Number);
+    parts[2]++;
+    newVer = parts.join('.');
+    setVersion(newVer);
+    run('git add -A');
+    try { run(`git commit -m "v${newVer}"`, { silent: true }); } catch(e3){}
+    run(`git tag -f v${newVer}`);
+    run('git push -u origin main --force');
+    run(`git push origin v${newVer} --force`);
+    fs.writeFileSync(notesFile, fs.readFileSync(notesFile,'utf8').replace(/v[\d.]+/, `v${newVer}`));
+    run(`gh release create v${newVer} --repo ${REPO} --title "v${newVer}" --notes-file "${notesFile}"`, { silent: true });
+  } else { throw e; }
 }
 
 // Step 5: Upload .exe to the release
