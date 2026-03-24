@@ -1,6 +1,6 @@
 {
   "name": "project-x",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "N Games — Project X",
   "main": "main.js",
   "scripts": {
@@ -13,12 +13,15 @@
   },
   "build": {
     "appId": "com.ngames.projectx",
-    "productName": "Project X",
+    "productName": "BlacksArena",
     "win": {
       "target": "portable",
-      "artifactName": "ProjectX-portable.exe"
+      "artifactName": "BlacksArena-portable.exe"
     },
-    "files": ["**/*", "!node_modules/.cache"]
+    "files": [
+      "**/*",
+      "!node_modules/.cache"
+    ]
   },
   "devDependencies": {
     "electron": "^28.0.0",
