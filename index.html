@@ -858,11 +858,11 @@ function setupGodPanelListener(){
 // ═══════════════════════════════════════════════════════════════════════
 class MenuBG{
   constructor(canvasId){
-    this.canvas=document.getElementById(canvasId);this.ctx=this.canvas.getContext('2d');
+    this.canvas=document.getElementById(canvasId);if(!this.canvas)return;this.ctx=this.canvas.getContext('2d');
     this.particles=[];this.time=0;this.running=false;this.rafId=null;
     for(let i=0;i<40;i++)this.particles.push({x:Math.random()*1400,y:Math.random()*800,vx:(Math.random()-.5)*.3,vy:-.1-Math.random()*.3,size:1+Math.random()*2,alpha:.05+Math.random()*.15,color:CREW[Math.floor(Math.random()*4)].color});
   }
-  start(){this.running=true;this.resize();window.addEventListener('resize',this._re=()=>this.resize());this.loop();}
+  start(){if(!this.canvas)return;this.running=true;this.resize();window.addEventListener('resize',this._re=()=>this.resize());this.loop();}
   stop(){this.running=false;if(this.rafId)cancelAnimationFrame(this.rafId);window.removeEventListener('resize',this._re);}
   resize(){const r=this.canvas.parentElement.getBoundingClientRect();this.canvas.width=r.width;this.canvas.height=r.height;}
   loop(){
@@ -979,10 +979,12 @@ function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   // manage animated backgrounds
-  const bgMap={profileScreen:'profileBg',mainMenu:'menuBg',charSelect:'charBg',mapSelect:'mapBg',modeSelect:'modeBg',mpModeSelect:'mpModeBg',mpCharSelect:'mpCharBg',mpMapSelect:'mpMapBg',lobbyScreen:'lobbyBg'};
+  const bgMap={profileScreen:'profileBg',mainMenu:'menuBg',charSelect:'charBg',mapSelect:'mapBg',modeSelect:'modeBg',mpCharSelect:'mpCharBg',lobbyScreen:'lobbyBg'};
   for(const[screenId,canvasId]of Object.entries(bgMap)){
-    if(id===screenId&&!activeBGs[canvasId]){const bg=new MenuBG(canvasId);bg.start();activeBGs[canvasId]=bg;}
-    if(id!==screenId&&activeBGs[canvasId]){activeBGs[canvasId].stop();delete activeBGs[canvasId];}
+    try{
+      if(id===screenId&&!activeBGs[canvasId]){const bg=new MenuBG(canvasId);bg.start();activeBGs[canvasId]=bg;}
+      if(id!==screenId&&activeBGs[canvasId]){activeBGs[canvasId].stop();delete activeBGs[canvasId];}
+    }catch(e){}
   }
   // rebuild selectors when entering their screens
   if(id==='charSelect')buildCharSelect();
@@ -1327,7 +1329,6 @@ function leaveLobby(){
     fetch(SERVER+'/rooms/'+id+'/leave',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({profile_id:activeProfile.id})}).catch(()=>{});
   }
   currentRoom=null;remotePlayers={};isMultiplayer=false;
-  document.getElementById('lobbyRoom').style.display='none';
 }
 
 function launchMultiplayer(){
