@@ -99,6 +99,28 @@ canvas{display:block;image-rendering:pixelated}
 .mds-card .mds-name{font:700 15px var(--display);letter-spacing:3px;color:#ccc;margin-bottom:4px}
 .mds-card.selected .mds-name{color:var(--accent)}
 .mds-card .mds-desc{font:10px var(--font);color:#555;line-height:1.5}
+/* ─── LOBBY ─── */
+#lobbyScreen{background:var(--bg0);overflow:hidden}
+#lobbyScreen canvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:0}
+.lobby-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center}
+.lobby-title{font:bold 36px var(--display);letter-spacing:5px;color:#fff;margin-bottom:6px}
+.lobby-sub{font:10px var(--font);letter-spacing:3px;color:#444;margin-bottom:24px}
+.lobby-box{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:20px;width:360px;backdrop-filter:blur(8px)}
+.lobby-box h3{font:700 13px var(--display);letter-spacing:3px;color:var(--accent);margin-bottom:12px}
+.lobby-row{display:flex;gap:8px;margin-bottom:10px}
+.lobby-input{flex:1;padding:8px 12px;border:1px solid #222;border-radius:6px;background:#0a0a14;color:#ccc;font:12px var(--font);outline:none;letter-spacing:1px}
+.lobby-input:focus{border-color:var(--accent)}
+.lobby-input::placeholder{color:#333}
+.lobby-btn{padding:8px 18px;border:1px solid var(--accent);border-radius:6px;background:transparent;color:var(--accent);font:700 11px var(--display);letter-spacing:2px;cursor:pointer;transition:all .2s}
+.lobby-btn:hover{background:var(--accent);color:#000}
+.lobby-players{margin-top:12px}
+.lobby-player{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #111}
+.lobby-player .lp-dot{width:8px;height:8px;border-radius:50%}
+.lobby-player .lp-name{font:600 12px var(--font);color:#ccc}
+.lobby-player .lp-char{font:10px var(--font);color:#666}
+.lobby-player .lp-ready{font:600 9px var(--font);color:#4f4;margin-left:auto}
+.lobby-status{font:10px var(--font);color:#555;margin-top:10px;text-align:center}
+.lobby-code{font:bold 28px var(--display);letter-spacing:8px;color:var(--accent);text-align:center;margin:10px 0;padding:8px;background:#0a0a14;border-radius:6px;border:1px dashed #222}
 /* shared nav */
 .nav-btn{padding:10px 40px;border:2px solid var(--accent);border-radius:8px;background:transparent;color:var(--accent);font:700 15px var(--display);letter-spacing:5px;cursor:pointer;transition:all .2s;margin-top:24px}
 .nav-btn:hover{background:var(--accent);color:#000;box-shadow:0 0 30px color-mix(in srgb,var(--accent) 40%,transparent)}
@@ -220,7 +242,37 @@ canvas{display:block;image-rendering:pixelated}
     <div class="mds-grid" id="modeGrid"></div>
     <div class="nav-row">
       <button class="back-btn" onclick="SFX.play('menu_hover');showScreen('mapSelect')">BACK</button>
-      <button class="nav-btn" onclick="SFX.play('menu_deploy');startGame()">DEPLOY</button>
+      <button class="nav-btn" onclick="SFX.play('menu_deploy');if(menuFlow==='multi'){showScreen('lobbyScreen');}else{startGame();}">DEPLOY</button>
+    </div>
+  </div>
+</div>
+
+<div id="lobbyScreen" class="screen">
+  <canvas id="lobbyBg"></canvas>
+  <div class="lobby-content">
+    <div class="lobby-title">MULTIPLAYER LOBBY</div>
+    <div class="lobby-sub" id="lobbyModeSub">DEATHMATCH</div>
+    <div class="lobby-box">
+      <h3>HOST A GAME</h3>
+      <button class="lobby-btn" style="width:100%;padding:10px" onclick="hostGame()">CREATE ROOM</button>
+    </div>
+    <div style="color:#333;font:10px var(--font);margin:12px 0;letter-spacing:3px">— OR —</div>
+    <div class="lobby-box">
+      <h3>JOIN A GAME</h3>
+      <div class="lobby-row">
+        <input class="lobby-input" id="joinCodeInput" placeholder="ENTER ROOM CODE" maxlength="8" style="text-transform:uppercase">
+        <button class="lobby-btn" onclick="joinGame()">JOIN</button>
+      </div>
+    </div>
+    <div class="lobby-box" id="lobbyRoom" style="display:none;margin-top:12px">
+      <h3>ROOM</h3>
+      <div class="lobby-code" id="lobbyCode">----</div>
+      <div class="lobby-players" id="lobbyPlayers"></div>
+      <div class="lobby-status" id="lobbyStatus">Waiting for players...</div>
+      <button class="nav-btn" style="width:100%;margin-top:12px" onclick="launchMultiplayer()">START MATCH</button>
+    </div>
+    <div class="nav-row">
+      <button class="back-btn" onclick="SFX.play('menu_hover');leaveLobby();showScreen('modeSelect')">BACK</button>
     </div>
   </div>
 </div>
@@ -815,7 +867,7 @@ function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   // manage animated backgrounds
-  const bgMap={profileScreen:'profileBg',mainMenu:'menuBg',charSelect:'charBg',mapSelect:'mapBg',modeSelect:'modeBg'};
+  const bgMap={profileScreen:'profileBg',mainMenu:'menuBg',charSelect:'charBg',mapSelect:'mapBg',modeSelect:'modeBg',lobbyScreen:'lobbyBg'};
   for(const[screenId,canvasId]of Object.entries(bgMap)){
     if(id===screenId&&!activeBGs[canvasId]){const bg=new MenuBG(canvasId);bg.start();activeBGs[canvasId]=bg;}
     if(id!==screenId&&activeBGs[canvasId]){activeBGs[canvasId].stop();delete activeBGs[canvasId];}
@@ -985,10 +1037,119 @@ function isKeyDown(action){return keys[binds[action]]||false;}
 // ═══════════════════════════════════════════════════════════════════════
 // MULTIPLAYER
 // ═══════════════════════════════════════════════════════════════════════
-let currentRoom=null,remotePlayers={};
-async function createRoom(){try{const res=await fetch('https://ngames-server-production.up.railway.app/rooms/create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({profile_id:activeProfile.id,game_id:'project-x',mode:selectedMode,max_players:4})}).then(r=>r.json());currentRoom=res;return res;}catch(e){return null;}}
-async function joinRoom(roomId){try{const res=await fetch(`https://ngames-server-production.up.railway.app/rooms/${roomId}/join`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({profile_id:activeProfile.id})}).then(r=>r.json());currentRoom=res;return res;}catch(e){return null;}}
-function setupMultiplayerListeners(){NGame.on('player_state',msg=>{if(msg.profile_id===activeProfile.id)return;remotePlayers[msg.profile_id]=msg.state;});NGame.on('player_left',msg=>{delete remotePlayers[msg.profile_id];});NGame.on('game_start',()=>{if(game)game.onlineStarted=true;});}
+// ═══════════════════════════════════════════════════════════════════════
+// MULTIPLAYER — Full lobby + real-time game sync
+// ═══════════════════════════════════════════════════════════════════════
+const SERVER='https://ngames-server-production.up.railway.app';
+let currentRoom=null,remotePlayers={},lobbyPollTimer=null,isMultiplayer=false;
+
+async function hostGame(){
+  try{
+    const res=await fetch(SERVER+'/rooms/create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({profile_id:activeProfile.id,game_id:'project-x',mode:selectedMode,map:selectedMap,max_players:4})}).then(r=>r.json());
+    currentRoom=res;
+    const code=res.room_id||res.id||'????';
+    document.getElementById('lobbyCode').textContent=String(code).toUpperCase();
+    document.getElementById('lobbyRoom').style.display='block';
+    document.getElementById('lobbyModeSub').textContent=selectedMode.toUpperCase()+' on '+selectedMap.toUpperCase();
+    document.getElementById('lobbyStatus').textContent='Waiting for players... Share the code!';
+    updateLobbyPlayers();
+    startLobbyPoll();
+    SFX.play('menu_select');
+  }catch(e){document.getElementById('lobbyStatus').textContent='Failed to create room';}
+}
+
+async function joinGame(){
+  const code=document.getElementById('joinCodeInput').value.trim();
+  if(!code)return;
+  try{
+    const res=await fetch(SERVER+'/rooms/'+code+'/join',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({profile_id:activeProfile.id,character:selectedChar})}).then(r=>r.json());
+    if(res.error){document.getElementById('lobbyStatus').textContent=res.error;return;}
+    currentRoom=res;
+    document.getElementById('lobbyCode').textContent=code.toUpperCase();
+    document.getElementById('lobbyRoom').style.display='block';
+    document.getElementById('lobbyStatus').textContent='Joined! Waiting for host to start...';
+    updateLobbyPlayers();
+    startLobbyPoll();
+    SFX.play('menu_select');
+  }catch(e){document.getElementById('lobbyStatus').textContent='Room not found';}
+}
+
+function startLobbyPoll(){
+  stopLobbyPoll();
+  lobbyPollTimer=setInterval(async()=>{
+    if(!currentRoom)return;
+    try{
+      const id=currentRoom.room_id||currentRoom.id;
+      const res=await fetch(SERVER+'/rooms/'+id).then(r=>r.json());
+      if(res.players)currentRoom.players=res.players;
+      updateLobbyPlayers();
+    }catch(e){}
+  },2000);
+}
+function stopLobbyPoll(){if(lobbyPollTimer){clearInterval(lobbyPollTimer);lobbyPollTimer=null;}}
+
+function updateLobbyPlayers(){
+  const el=document.getElementById('lobbyPlayers');
+  const players=currentRoom?.players||[];
+  if(!Array.isArray(players)){el.innerHTML='';return;}
+  el.innerHTML=players.map(p=>{
+    const cr=CREW.find(c=>c.id===p.profile_id);
+    return`<div class="lobby-player"><div class="lp-dot" style="background:${cr?.color||'#888'}"></div><span class="lp-name">${p.profile_id}</span><span class="lp-char">${p.character||'?'}</span><span class="lp-ready">${p.ready?'READY':''}</span></div>`;
+  }).join('');
+}
+
+function leaveLobby(){
+  stopLobbyPoll();
+  if(currentRoom){
+    const id=currentRoom.room_id||currentRoom.id;
+    fetch(SERVER+'/rooms/'+id+'/leave',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({profile_id:activeProfile.id})}).catch(()=>{});
+  }
+  currentRoom=null;remotePlayers={};isMultiplayer=false;
+  document.getElementById('lobbyRoom').style.display='none';
+}
+
+function launchMultiplayer(){
+  if(!currentRoom)return;
+  isMultiplayer=true;stopLobbyPoll();
+  // Tell other players to start via room event
+  const id=currentRoom.room_id||currentRoom.id;
+  NGame.sendRoomEvent(id,'game_start',{mode:selectedMode,map:selectedMap});
+  startGame();
+}
+
+// WebSocket listeners for multiplayer
+function setupMultiplayerListeners(){
+  NGame.on('player_state',msg=>{
+    if(!msg||msg.profile_id===activeProfile?.id)return;
+    remotePlayers[msg.profile_id]={...msg.state,lastUpdate:Date.now()};
+  });
+  NGame.on('player_left',msg=>{
+    if(msg)delete remotePlayers[msg.profile_id];
+  });
+  NGame.on('game_start',msg=>{
+    // Another player started the match
+    if(!gameRunning&&currentRoom){
+      isMultiplayer=true;stopLobbyPoll();
+      if(msg?.mode)selectedMode=msg.mode;
+      if(msg?.map)selectedMap=msg.map;
+      startGame();
+    }
+  });
+  NGame.on('room_event',msg=>{
+    if(!msg)return;
+    if(msg.event==='game_start'&&!gameRunning&&currentRoom){
+      isMultiplayer=true;stopLobbyPoll();
+      if(msg.data?.mode)selectedMode=msg.data.mode;
+      if(msg.data?.map)selectedMap=msg.data.map;
+      startGame();
+    }
+    // Damage events from other players
+    if(msg.event==='hit'&&game&&msg.data){
+      const target=game.entities.find(e=>e.onlineId===msg.data.targetId);
+      if(target&&!target.dead)game.dealDamage(target,msg.data.damage,game.entities.find(e=>e.onlineId===msg.data.attackerId)||null);
+    }
+  });
+}
 setupMultiplayerListeners();
 
 // ═══════════════════════════════════════════════════════════════════════
@@ -997,10 +1158,12 @@ setupMultiplayerListeners();
 function startGame(){
   SFX.play('menu_deploy');
   showScreen('gameScreen');radioShow();gameRunning=true;gamePaused=false;
-  game=new Game(selectedChar,selectedMode,selectedMap);game.start();
-  NGame.ping({screen:'in_game',mode:selectedMode,map:selectedMap,character:selectedChar});
+  game=new Game(selectedChar,selectedMode,selectedMap);
+  game.isMultiplayer=isMultiplayer;
+  game.start();
+  NGame.ping({screen:'in_game',mode:selectedMode,map:selectedMap,character:selectedChar,room:currentRoom?.room_id||currentRoom?.id||null});
 }
-function quitToMenu(){gameRunning=false;gamePaused=false;document.getElementById('pauseOverlay').classList.remove('active');if(game){game.stop();game=null;}radioHide();showScreen('mainMenu');NGame.ping({screen:'in_menu'});}
+function quitToMenu(){gameRunning=false;gamePaused=false;document.getElementById('pauseOverlay').classList.remove('active');if(game){game.stop();game=null;}leaveLobby();radioHide();showScreen('mainMenu');NGame.ping({screen:'in_menu'});}
 
 // ═══════════════════════════════════════════════════════════════════════
 // GAME ENGINE — with polished VFX
@@ -1018,6 +1181,7 @@ class Game{
     // match tracking for achievements
     this.matchWeaponKills={};this.matchThrowKills=0;this.matchWeaponsPickedUp=0;
     this.matchAbilityKills=0;this.matchAirKills=0;this.matchNukes=0;this.matchFlagsCaps=0;this.matchBestStreak=0;
+    this.isMultiplayer=false;this.remoteEntityMap={}; // profile_id → entity
     // dynamic bg
     this.bgParticles=[];this.bgStars=[];this.bgBuildings=[];
     this.initDynamicBG();
@@ -1057,9 +1221,16 @@ class Game{
   }
   start(){
     this.resize();window.addEventListener('resize',this._onResize=()=>this.resize());
-    const sp=this.map.spawns[0];this.player=this.createPlayer(this.charName,sp.x,sp.y,false,0);this.player.team=0;this.entities.push(this.player);
+    const sp=this.map.spawns[0];this.player=this.createPlayer(this.charName,sp.x,sp.y,false,0);
+    this.player.team=0;this.player.onlineId=activeProfile?.id||'local';this.entities.push(this.player);
     const isSurv=this.mode==='Survival'||this.mode==='Co-op Survival';
-    if(isSurv){this.survivalWave=0;this.survivalBetweenWaves=true;this.survivalWaveTimer=3;}
+    if(this.isMultiplayer){
+      // No bots in multiplayer — remote players sync in via WebSocket
+      remotePlayers={};
+      if(this.mode==='Team DM'||this.mode==='CTF')this.player.team=0;
+      if(this.mode==='Last Man')this.player.lives=3;
+      if(this.mode==='CTF'){this.flags=[{team:0,x:100,y:580,baseX:100,baseY:580,carrier:null,color:'#4488ff'},{team:1,x:1180,y:580,baseX:1180,baseY:580,carrier:null,color:'#ff4444'}];this.captures=[0,0];}
+    }else if(isSurv){this.survivalWave=0;this.survivalBetweenWaves=true;this.survivalWaveTimer=3;}
     else{const botChars=Object.keys(CHARACTERS).filter(c=>c!==this.charName);for(let i=0;i<3;i++){const s=this.map.spawns[(i+1)%this.map.spawns.length];const bot=this.createPlayer(botChars[i%botChars.length],s.x,s.y,true,i+1);if(this.mode==='Team DM'||this.mode==='CTF')bot.team=i<1?0:1;this.entities.push(bot);}
       if(this.mode==='Team DM'||this.mode==='CTF')this.player.team=0;
       if(this.mode==='Last Man')this.entities.forEach(e=>{e.lives=3;});
@@ -1074,7 +1245,41 @@ class Game{
   createSurvivalEnemy(wave){const chars=Object.keys(CHARACTERS);const cn=chars[Math.floor(Math.random()*chars.length)];const sp=this.map.spawns[Math.floor(Math.random()*this.map.spawns.length)];const e=this.createPlayer(cn,sp.x,sp.y,true,100+Math.floor(Math.random()*9000));e.maxHp=CHARACTERS[cn].hp*(1+wave*.12);e.hp=e.maxHp;e.speed=CHARACTERS[cn].speed*(1+wave*.04);e.isSurvivalEnemy=true;e.team=1;if(wave>=3&&Math.random()<.3){const w=PICKUP_WEAPONS[Math.floor(Math.random()*PICKUP_WEAPONS.length)];e.weapons.push(this.makeWeapon(w));e.activeWeaponIdx=e.weapons.length-1;}return e;}
   isEnemy(a,b){if(this.mode==='Team DM'||this.mode==='CTF')return a.team!==b.team;if(this.mode==='Survival'||this.mode==='Co-op Survival')return a.isSurvivalEnemy!==b.isSurvivalEnemy;return a!==b;}
 
-  loop(now){if(!this.running)return;this.rafId=requestAnimationFrame(t=>this.loop(t));let dt=(now-this.lastTime)/1000;this.lastTime=now;if(dt>.1)dt=.1;this.fpsFrames++;this.fpsTime+=dt;if(this.fpsTime>=1){this.fps=this.fpsFrames;this.fpsFrames=0;this.fpsTime=0;}if(gamePaused){this.render();return;}pollGamepad();this.accumulator+=dt;while(this.accumulator>=TICK){this.update(TICK);this.accumulator-=TICK;}this.render();if(currentRoom&&this.player&&!this.player.dead)NGame.sendRoomState(currentRoom.id||currentRoom.room_id,{x:this.player.x,y:this.player.y,vx:this.player.vx,vy:this.player.vy,hp:this.player.hp,facing:this.player.facing,aimAngle:this.player.aimAngle,character:this.player.charName,weapon:this.player.weapons[this.player.activeWeaponIdx]?.name,kills:this.player.kills,deaths:this.player.deaths});}
+  loop(now){if(!this.running)return;this.rafId=requestAnimationFrame(t=>this.loop(t));let dt=(now-this.lastTime)/1000;this.lastTime=now;if(dt>.1)dt=.1;this.fpsFrames++;this.fpsTime+=dt;if(this.fpsTime>=1){this.fps=this.fpsFrames;this.fpsFrames=0;this.fpsTime=0;}if(gamePaused){this.render();return;}pollGamepad();this.accumulator+=dt;while(this.accumulator>=TICK){this.update(TICK);this.accumulator-=TICK;}
+    // Multiplayer sync
+    if(this.isMultiplayer){this.syncRemotePlayers();}
+    this.render();
+    // Send local state to room
+    if(currentRoom&&this.player){const rid=currentRoom.room_id||currentRoom.id;NGame.sendRoomState(rid,{x:this.player.x,y:this.player.y,vx:this.player.vx,vy:this.player.vy,hp:this.player.hp,facing:this.player.facing,aimAngle:this.player.aimAngle,character:this.player.charName,weapon:this.player.weapons[this.player.activeWeaponIdx]?.name,kills:this.player.kills,deaths:this.player.deaths,dead:this.player.dead});}}
+
+  syncRemotePlayers(){
+    const now=Date.now();
+    for(const[pid,state]of Object.entries(remotePlayers)){
+      // Remove stale players (no update in 5s)
+      if(now-state.lastUpdate>5000){delete remotePlayers[pid];if(this.remoteEntityMap[pid]){const idx=this.entities.indexOf(this.remoteEntityMap[pid]);if(idx>=0)this.entities.splice(idx,1);delete this.remoteEntityMap[pid];}continue;}
+      let ent=this.remoteEntityMap[pid];
+      if(!ent){
+        // Create entity for this remote player
+        const cn=state.character||'Keshawn';const sp=this.map.spawns[Math.floor(Math.random()*this.map.spawns.length)];
+        ent=this.createPlayer(cn,state.x||sp.x,state.y||sp.y,false,Object.keys(this.remoteEntityMap).length+10);
+        ent.onlineId=pid;ent.isRemote=true;ent.isBot=false;
+        if(this.mode==='Team DM'||this.mode==='CTF')ent.team=1;
+        this.entities.push(ent);this.remoteEntityMap[pid]=ent;
+      }
+      // Interpolate position smoothly
+      if(state.x!==undefined){ent.x+=(state.x-ent.x)*.3;ent.y+=(state.y-ent.y)*.3;}
+      if(state.vx!==undefined){ent.vx=state.vx;ent.vy=state.vy;}
+      if(state.hp!==undefined)ent.hp=state.hp;
+      if(state.facing!==undefined)ent.facing=state.facing;
+      if(state.aimAngle!==undefined)ent.aimAngle=state.aimAngle;
+      if(state.dead)ent.dead=true;else ent.dead=false;
+      if(state.kills!==undefined)ent.kills=state.kills;
+      if(state.deaths!==undefined)ent.deaths=state.deaths;
+      // Update walk cycle for animation
+      if(Math.abs(ent.vx)>10)ent.walkCycle+=TICK*10;
+      ent.onGround=ent.vy>=0&&ent.vy<50;
+    }
+  }
 
   update(dt){
     this.time+=dt;this.screenShake=Math.max(0,this.screenShake-dt*2);if(this.uavTimer>0)this.uavTimer-=dt;
@@ -1091,8 +1296,10 @@ class Game{
       if(e.regenBuff>0){e.regenBuff-=dt;e.hp=Math.min(e.maxHp,e.hp+10*dt);}
       if(e.maxHpBuff>0){e.maxHpBuff-=dt;if(e.maxHpBuff<=0&&e.hp>CHARACTERS[e.charName].hp){e.maxHp=CHARACTERS[e.charName].hp;e.hp=Math.min(e.hp,e.maxHp);}}
       for(const w of e.weapons){if(w.fireTimer>0)w.fireTimer-=dt*(e.rapidBuff>0?2:1);if(w.reloading){w.reloadTimer-=dt;if(w.reloadTimer<=0){w.currentAmmo=w.ammo;w.reloading=false;}}}
-      if(e.isBot)this.updateBot(e,dt);else this.updatePlayerInput(e,dt);
-      this.applyPhysics(e,dt);
+      if(e.isRemote){/* remote players are positioned by syncRemotePlayers */}
+      else if(e.isBot)this.updateBot(e,dt);
+      else this.updatePlayerInput(e,dt);
+      if(!e.isRemote)this.applyPhysics(e,dt);
       if(Math.abs(e.vx)>10&&e.onGround)e.walkCycle+=dt*10;else if(e.onGround)e.walkCycle=0;
     }
     this.updateBullets(dt);this.updateThrownWeapons(dt);this.updateParticles(dt);this.updatePickups(dt);this.updateWeaponDrops(dt);this.updateSentries(dt);
