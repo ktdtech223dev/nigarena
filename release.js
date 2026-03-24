@@ -137,7 +137,7 @@ run(`git push origin v${newVer} --force`);
 
 // Step 4: Create GitHub release
 console.log('  [4/5] Creating GitHub release...');
-try { run(`gh release delete v${newVer} --repo ${REPO} -y`, { silent: true }); } catch {}
+// Never delete old releases — launcher checks latest tag for updates
 
 const notes = [
   `## Black's Arena v${newVer}`,

@@ -58,13 +58,13 @@ canvas{display:block;image-rendering:pixelated}
 .cs-title{font:bold 36px var(--display);letter-spacing:5px;color:#fff;margin-bottom:6px}
 .cs-sub{font:10px var(--font);letter-spacing:3px;color:#444;margin-bottom:24px}
 .cs-grid{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
-.cs-card{width:200px;border:1px solid #1a1a28;border-radius:14px;background:var(--panel);backdrop-filter:blur(10px);cursor:pointer;display:flex;flex-direction:column;align-items:center;padding:20px 16px 16px;gap:4px;transition:all .25s;position:relative;overflow:hidden}
+.cs-card{width:170px;border:1px solid #1a1a28;border-radius:14px;background:var(--panel);backdrop-filter:blur(10px);cursor:pointer;display:flex;flex-direction:column;align-items:center;padding:20px 16px 16px;gap:4px;transition:all .25s;position:relative;overflow:hidden}
 .cs-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--c);opacity:0;transition:.25s}
 .cs-card:hover{border-color:var(--c);transform:translateY(-6px);box-shadow:0 12px 40px #0006}
 .cs-card:hover::before{opacity:1}
 .cs-card.selected{border-color:var(--c);box-shadow:0 0 30px color-mix(in srgb,var(--c) 25%,transparent)}
 .cs-card.selected::before{opacity:1}
-.cs-card .cs-portrait{width:64px;height:64px;image-rendering:pixelated}
+.cs-card .cs-portrait{width:40px;height:40px;image-rendering:pixelated}
 .cs-card .cs-name{font:700 18px var(--font);color:var(--c);letter-spacing:1px;margin-top:4px}
 .cs-card .cs-role{font:600 10px var(--font);color:#666;letter-spacing:2px;text-transform:uppercase}
 .cs-card .cs-divider{width:60%;height:1px;background:#1a1a30;margin:6px 0}
@@ -88,7 +88,7 @@ canvas{display:block;image-rendering:pixelated}
 .ms-card.selected .ms-label{color:var(--accent)}
 /* ─── MODE SELECT ─── */
 #modeSelect{background:var(--bg0);overflow:hidden}
-#modeSelect canvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:0}
+#modeSelect canvas,#mpModeSelect canvas,#mpCharSelect canvas,#mpMapSelect canvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:0}
 .mds-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center}
 .mds-title{font:bold 36px var(--display);letter-spacing:5px;color:#fff;margin-bottom:6px}
 .mds-sub{font:10px var(--font);letter-spacing:3px;color:#444;margin-bottom:24px}
@@ -976,9 +976,9 @@ function buildCharSelect(gridId){
     const ci=CREW.find(c=>c.char===n);
     const card=document.createElement('div');card.className='cs-card'+(n===selectedChar?' selected':'');card.style.setProperty('--c',ch.color);
     // portrait
-    const pCan=document.createElement('canvas');pCan.width=64;pCan.height=64;pCan.className='cs-portrait';
+    const pCan=document.createElement('canvas');pCan.width=40;pCan.height=40;pCan.className='cs-portrait';
     const pCtx=pCan.getContext('2d');pCtx.imageSmoothingEnabled=false;
-    const spr=CHAR_SPRITES[n]?.idle;if(spr)pCtx.drawImage(spr,0,0,64,64);
+    const spr=CHAR_SPRITES[n]?.idle;if(spr)pCtx.drawImage(spr,0,0,40,40);
     card.innerHTML=`<div class="cs-suit">${ci?.suit||''}</div>`;
     card.appendChild(pCan);
     const info=document.createElement('div');info.style.cssText='width:100%;display:flex;flex-direction:column;align-items:center;gap:2px';
@@ -1494,7 +1494,7 @@ class Game{
     if(gamepad&&Math.abs(gpState.axes[0])>.2)moveX=gpState.axes[0];
     if(moveX<0){e.vx=-spd*Math.abs(moveX);e.facing=-1;}else if(moveX>0){e.vx=spd*Math.abs(moveX);e.facing=1;}else e.vx*=.8;
     const rect=this.canvas.getBoundingClientRect();const s=this.scale;const offX=(rect.width-this.map.width*s)/2,offY=(rect.height-this.map.height*s)/2;
-    if(gamepad&&(Math.abs(gpState.axes[2])>.2||Math.abs(gpState.axes[3])>.2))e.aimAngle=Math.atan2(gpState.axes[3],gpState.axes[2]);
+    if(gamepad&&(Math.abs(gpState.axes[2])>.15||Math.abs(gpState.axes[3])>.15)){e.aimAngle=Math.atan2(gpState.axes[3],gpState.axes[2]);e.facing=gpState.axes[2]>=0?1:-1;}
     else{const wmx=(mouseX-rect.left-offX)/s,wmy=(mouseY-rect.top-offY)/s;e.aimAngle=Math.atan2(wmy-(e.y-e.h*.6),wmx-e.x);}
     e.facing=Math.cos(e.aimAngle)>=0?1:-1;
     const jumpPressed=isKeyDown('jump')||(gamepad&&gpState.buttons[0]);
