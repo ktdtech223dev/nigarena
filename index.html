@@ -201,8 +201,8 @@ canvas{display:block;image-rendering:pixelated}
   <div class="mm-content">
     <div class="mm-title" data-live-title>BLACK'S ARENA</div>
     <div class="mm-sub">N GAMES NETWORK</div>
-    <button class="mm-btn" onclick="SFX.play('menu_select');menuFlow='single';showScreen('charSelect')">SINGLE PLAYER</button>
-    <button class="mm-btn" onclick="SFX.play('menu_select');menuFlow='multi';showScreen('charSelect')">MULTIPLAYER</button>
+    <button class="mm-btn" id="mmSingle" onclick="SFX.play('menu_select');menuFlow='single';showScreen('charSelect')">SINGLE PLAYER</button>
+    <button class="mm-btn" id="mmMulti" onclick="SFX.play('menu_select');menuFlow='multi';showScreen('mpModeSelect')">MULTIPLAYER</button>
     <button class="mm-btn secondary" onclick="SFX.play('menu_hover');showScreen('profileScreen')">SWITCH PROFILE</button>
     <div id="socialArea" style="margin-top:20px;width:320px"></div>
   </div>
@@ -247,32 +247,77 @@ canvas{display:block;image-rendering:pixelated}
   </div>
 </div>
 
+<div id="mpModeSelect" class="screen">
+  <canvas id="mpModeBg"></canvas>
+  <div class="mds-content">
+    <div class="mds-title">ONLINE MODE</div>
+    <div class="mds-sub">CHOOSE HOW YOU WANT TO PLAY</div>
+    <div class="mds-grid" id="mpModeGrid"></div>
+    <div class="nav-row">
+      <button class="back-btn" onclick="SFX.play('menu_hover');showScreen('mainMenu')">BACK</button>
+      <button class="nav-btn" onclick="SFX.play('menu_select');showScreen('mpCharSelect')">NEXT</button>
+    </div>
+  </div>
+</div>
+
+<div id="mpCharSelect" class="screen">
+  <canvas id="mpCharBg"></canvas>
+  <div class="cs-content">
+    <div class="cs-title">CHOOSE YOUR FIGHTER</div>
+    <div class="cs-sub">ONLINE MATCH</div>
+    <div class="cs-grid" id="mpCharGrid"></div>
+    <div class="nav-row">
+      <button class="back-btn" onclick="SFX.play('menu_hover');showScreen('mpModeSelect')">BACK</button>
+      <button class="nav-btn" onclick="SFX.play('menu_select');showScreen('mpMapSelect')">NEXT</button>
+    </div>
+  </div>
+</div>
+
+<div id="mpMapSelect" class="screen">
+  <canvas id="mpMapBg"></canvas>
+  <div class="ms-content">
+    <div class="ms-title">SELECT ARENA</div>
+    <div class="ms-sub">ONLINE BATTLEGROUND</div>
+    <div class="ms-grid" id="mpMapGrid"></div>
+    <div class="nav-row">
+      <button class="back-btn" onclick="SFX.play('menu_hover');showScreen('mpCharSelect')">BACK</button>
+      <button class="nav-btn" onclick="SFX.play('menu_select');showScreen('lobbyScreen')">FIND MATCH</button>
+    </div>
+  </div>
+</div>
+
 <div id="lobbyScreen" class="screen">
   <canvas id="lobbyBg"></canvas>
   <div class="lobby-content">
     <div class="lobby-title">MULTIPLAYER LOBBY</div>
     <div class="lobby-sub" id="lobbyModeSub">DEATHMATCH</div>
-    <div class="lobby-box">
-      <h3>HOST A GAME</h3>
-      <button class="lobby-btn" style="width:100%;padding:10px" onclick="hostGame()">CREATE ROOM</button>
-    </div>
-    <div style="color:#333;font:10px var(--font);margin:12px 0;letter-spacing:3px">— OR —</div>
-    <div class="lobby-box">
-      <h3>JOIN A GAME</h3>
-      <div class="lobby-row">
-        <input class="lobby-input" id="joinCodeInput" placeholder="ENTER ROOM CODE" maxlength="8" style="text-transform:uppercase">
-        <button class="lobby-btn" onclick="joinGame()">JOIN</button>
+    <div style="display:flex;gap:12px;margin-bottom:16px" id="lobbyActions">
+      <div class="lobby-box" style="flex:1">
+        <h3>HOST A GAME</h3>
+        <button class="lobby-btn" style="width:100%;padding:10px" onclick="hostGame()">CREATE ROOM</button>
+      </div>
+      <div class="lobby-box" style="flex:1">
+        <h3>JOIN A GAME</h3>
+        <div class="lobby-row">
+          <input class="lobby-input" id="joinCodeInput" placeholder="ROOM CODE" maxlength="8" style="text-transform:uppercase">
+          <button class="lobby-btn" onclick="joinGame()">JOIN</button>
+        </div>
       </div>
     </div>
-    <div class="lobby-box" id="lobbyRoom" style="display:none;margin-top:12px">
+    <div class="lobby-box" id="lobbyRoom" style="display:none;width:400px">
       <h3>ROOM</h3>
       <div class="lobby-code" id="lobbyCode">----</div>
+      <div style="font:9px var(--font);color:#444;text-align:center;margin-bottom:8px;letter-spacing:1px">SHARE THIS CODE WITH YOUR CREW</div>
       <div class="lobby-players" id="lobbyPlayers"></div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="lobby-btn" style="flex:1" onclick="addLobbyBot()">+ ADD BOT</button>
+        <button class="lobby-btn" style="flex:1" onclick="removeLobbyBot()">- REMOVE BOT</button>
+      </div>
       <div class="lobby-status" id="lobbyStatus">Waiting for players...</div>
-      <button class="nav-btn" style="width:100%;margin-top:12px" onclick="launchMultiplayer()">START MATCH</button>
+      <button class="nav-btn" style="width:100%;margin-top:12px" id="lobbyStartBtn" onclick="launchMultiplayer()">START MATCH</button>
     </div>
     <div class="nav-row">
-      <button class="back-btn" onclick="SFX.play('menu_hover');leaveLobby();showScreen('modeSelect')">BACK</button>
+      <button class="back-btn" onclick="SFX.play('menu_hover');leaveLobby();showScreen('mpMapSelect')">BACK</button>
     </div>
   </div>
 </div>
@@ -867,7 +912,7 @@ function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   // manage animated backgrounds
-  const bgMap={profileScreen:'profileBg',mainMenu:'menuBg',charSelect:'charBg',mapSelect:'mapBg',modeSelect:'modeBg',lobbyScreen:'lobbyBg'};
+  const bgMap={profileScreen:'profileBg',mainMenu:'menuBg',charSelect:'charBg',mapSelect:'mapBg',modeSelect:'modeBg',mpModeSelect:'mpModeBg',mpCharSelect:'mpCharBg',mpMapSelect:'mpMapBg',lobbyScreen:'lobbyBg'};
   for(const[screenId,canvasId]of Object.entries(bgMap)){
     if(id===screenId&&!activeBGs[canvasId]){const bg=new MenuBG(canvasId);bg.start();activeBGs[canvasId]=bg;}
     if(id!==screenId&&activeBGs[canvasId]){activeBGs[canvasId].stop();delete activeBGs[canvasId];}
@@ -876,6 +921,10 @@ function showScreen(id){
   if(id==='charSelect')buildCharSelect();
   if(id==='mapSelect')buildMapSelect();
   if(id==='modeSelect')buildModeSelect();
+  if(id==='mpModeSelect')buildMpModeSelect();
+  if(id==='mpCharSelect')buildCharSelect('mpCharGrid');
+  if(id==='mpMapSelect')buildMapSelect('mpMapGrid');
+  if(id==='lobbyScreen')initLobbyScreen();
 }
 
 (function buildProfileGrid(){
@@ -921,8 +970,8 @@ const MODE_DESC={
   'Co-op Survival':'Survive together. Online co-op.',
 };
 
-function buildCharSelect(){
-  const grid=document.getElementById('charGrid');grid.innerHTML='';
+function buildCharSelect(gridId){
+  const grid=document.getElementById(gridId||'charGrid');grid.innerHTML='';
   Object.entries(CHARACTERS).forEach(([n,ch])=>{
     const ci=CREW.find(c=>c.char===n);
     const card=document.createElement('div');card.className='cs-card'+(n===selectedChar?' selected':'');card.style.setProperty('--c',ch.color);
@@ -943,13 +992,13 @@ function buildCharSelect(){
       <div class="cs-ability">${ch.ability.name}</div>`;
     card.appendChild(info);
     card.onmouseenter=()=>SFX.play('menu_hover');
-    card.onclick=()=>{SFX.play('menu_select');selectedChar=n;buildCharSelect();};
+    card.onclick=()=>{SFX.play('menu_select');selectedChar=n;buildCharSelect(gridId);};
     grid.appendChild(card);
   });
 }
 
-function buildMapSelect(){
-  const grid=document.getElementById('mapGrid');grid.innerHTML='';
+function buildMapSelect(gridId){
+  const grid=document.getElementById(gridId||'mapGrid');grid.innerHTML='';
   Object.entries(MAPS).forEach(([name,map])=>{
     const card=document.createElement('div');card.className='ms-card'+(name===selectedMap?' selected':'');
     // mini preview canvas
@@ -968,7 +1017,7 @@ function buildMapSelect(){
     const label=document.createElement('div');label.className='ms-label';label.textContent=name;
     card.appendChild(label);
     card.onmouseenter=()=>SFX.play('menu_hover');
-    card.onclick=()=>{SFX.play('menu_select');selectedMap=name;buildMapSelect();};
+    card.onclick=()=>{SFX.play('menu_select');selectedMap=name;buildMapSelect(gridId);};
     grid.appendChild(card);
   });
 }
@@ -983,6 +1032,42 @@ function buildModeSelect(){
     card.onclick=()=>{SFX.play('menu_select');selectedMode=m;buildModeSelect();};
     grid.appendChild(card);
   });
+}
+
+const MP_MODES=['Deathmatch','Team DM','Last Man','CTF','Co-op Survival'];
+const MP_MODE_DESC={
+  'Deathmatch':'Free-for-all. First to 20 kills. Up to 4 players + bots.',
+  'Team DM':'2v2 teams. First team to 30 kills.',
+  'Last Man':'Limited lives. Last one standing wins.',
+  'CTF':'2v2. Capture the enemy flag 3 times.',
+  'Co-op Survival':'Team up against waves of enemies.',
+};
+function buildMpModeSelect(){
+  const grid=document.getElementById('mpModeGrid');grid.innerHTML='';
+  MP_MODES.forEach(m=>{
+    const card=document.createElement('div');card.className='mds-card'+(m===selectedMode?' selected':'');
+    card.innerHTML=`<div class="mds-name">${m.toUpperCase()}</div><div class="mds-desc">${MP_MODE_DESC[m]||''}</div>`;
+    card.onmouseenter=()=>SFX.play('menu_hover');
+    card.onclick=()=>{SFX.play('menu_select');selectedMode=m;buildMpModeSelect();};
+    grid.appendChild(card);
+  });
+}
+
+let lobbyBots=0,isLobbyHost=false;
+function initLobbyScreen(){
+  document.getElementById('lobbyModeSub').textContent=selectedMode.toUpperCase()+' \u00b7 '+selectedMap.toUpperCase();
+  document.getElementById('lobbyActions').style.display='flex';
+  document.getElementById('lobbyRoom').style.display='none';
+  lobbyBots=0;isLobbyHost=false;
+}
+function addLobbyBot(){
+  const totalPlayers=(currentRoom?.players?.length||1)+lobbyBots;
+  if(totalPlayers>=4)return;
+  lobbyBots++;updateLobbyPlayers();SFX.play('menu_select');
+}
+function removeLobbyBot(){
+  if(lobbyBots<=0)return;
+  lobbyBots--;updateLobbyPlayers();SFX.play('menu_hover');
 }
 
 // ═══════════════════════════════════════════════════════════════════════
@@ -1035,6 +1120,37 @@ document.addEventListener('contextmenu',e=>e.preventDefault());
 function isKeyDown(action){return keys[binds[action]]||false;}
 
 // ═══════════════════════════════════════════════════════════════════════
+// CONTROLLER MENU NAVIGATION
+// ═══════════════════════════════════════════════════════════════════════
+let menuNavCooldown=0,menuFocusIdx=0;
+function updateMenuController(){
+  if(gameRunning)return;
+  pollGamepad();if(!gamepad)return;
+  menuNavCooldown-=1/60;if(menuNavCooldown>0)return;
+  const activeScreen=document.querySelector('.screen.active');if(!activeScreen)return;
+  // find all focusable elements
+  const btns=[...activeScreen.querySelectorAll('button,.cs-card,.ms-card,.mds-card,.profile-card,.mm-btn')];
+  if(!btns.length)return;
+  menuFocusIdx=Math.max(0,Math.min(menuFocusIdx,btns.length-1));
+  // D-pad / left stick navigation
+  const ax=gpState.axes[0]||0,ay=gpState.axes[1]||0;
+  const up=ay<-.5||(gpState.buttons[12]?.pressed||gpState.buttons[12]);
+  const down=ay>.5||(gpState.buttons[13]?.pressed||gpState.buttons[13]);
+  const left=ax<-.5||(gpState.buttons[14]?.pressed||gpState.buttons[14]);
+  const right=ax>.5||(gpState.buttons[15]?.pressed||gpState.buttons[15]);
+  if(up||left){menuFocusIdx=(menuFocusIdx-1+btns.length)%btns.length;menuNavCooldown=.18;SFX.play('menu_hover');}
+  if(down||right){menuFocusIdx=(menuFocusIdx+1)%btns.length;menuNavCooldown=.18;SFX.play('menu_hover');}
+  // highlight
+  btns.forEach((b,i)=>{b.style.outline=i===menuFocusIdx?'2px solid var(--accent)':'';});
+  // A button = click
+  if(gpState.buttons[0]){btns[menuFocusIdx]?.click();menuNavCooldown=.3;}
+  // B button = back
+  if(gpState.buttons[1]){const back=activeScreen.querySelector('.back-btn');if(back){back.click();menuNavCooldown=.3;}}
+}
+// Run menu controller polling when not in game
+setInterval(updateMenuController,1000/60);
+
+// ═══════════════════════════════════════════════════════════════════════
 // MULTIPLAYER
 // ═══════════════════════════════════════════════════════════════════════
 // ═══════════════════════════════════════════════════════════════════════
@@ -1045,17 +1161,19 @@ let currentRoom=null,remotePlayers={},lobbyPollTimer=null,isMultiplayer=false;
 
 async function hostGame(){
   try{
-    const res=await fetch(SERVER+'/rooms/create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({profile_id:activeProfile.id,game_id:'project-x',mode:selectedMode,map:selectedMap,max_players:4})}).then(r=>r.json());
-    currentRoom=res;
+    const res=await fetch(SERVER+'/rooms/create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({profile_id:activeProfile.id,game_id:'project-x',mode:selectedMode,map:selectedMap,max_players:4,character:selectedChar})}).then(r=>r.json());
+    currentRoom=res;isLobbyHost=true;lobbyBots=0;
     const code=res.room_id||res.id||'????';
     document.getElementById('lobbyCode').textContent=String(code).toUpperCase();
+    document.getElementById('lobbyActions').style.display='none';
     document.getElementById('lobbyRoom').style.display='block';
-    document.getElementById('lobbyModeSub').textContent=selectedMode.toUpperCase()+' on '+selectedMap.toUpperCase();
-    document.getElementById('lobbyStatus').textContent='Waiting for players... Share the code!';
-    updateLobbyPlayers();
-    startLobbyPoll();
-    SFX.play('menu_select');
-  }catch(e){document.getElementById('lobbyStatus').textContent='Failed to create room';}
+    document.getElementById('lobbyStatus').textContent='Waiting for players... Share the room code!';
+    document.getElementById('lobbyStartBtn').style.display='block';
+    updateLobbyPlayers();startLobbyPoll();SFX.play('menu_select');
+  }catch(e){
+    document.getElementById('lobbyStatus').textContent='Failed to create room — server may be offline';
+    document.getElementById('lobbyStatus').style.display='block';
+  }
 }
 
 async function joinGame(){
@@ -1063,15 +1181,18 @@ async function joinGame(){
   if(!code)return;
   try{
     const res=await fetch(SERVER+'/rooms/'+code+'/join',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({profile_id:activeProfile.id,character:selectedChar})}).then(r=>r.json());
-    if(res.error){document.getElementById('lobbyStatus').textContent=res.error;return;}
-    currentRoom=res;
+    if(res.error){document.getElementById('lobbyStatus').textContent=res.error;document.getElementById('lobbyStatus').style.display='block';return;}
+    currentRoom=res;isLobbyHost=false;lobbyBots=0;
+    // Read mode/map from room if available
+    if(res.mode)selectedMode=res.mode;if(res.map)selectedMap=res.map;
     document.getElementById('lobbyCode').textContent=code.toUpperCase();
+    document.getElementById('lobbyModeSub').textContent=(selectedMode||'?').toUpperCase()+' \u00b7 '+(selectedMap||'?').toUpperCase();
+    document.getElementById('lobbyActions').style.display='none';
     document.getElementById('lobbyRoom').style.display='block';
     document.getElementById('lobbyStatus').textContent='Joined! Waiting for host to start...';
-    updateLobbyPlayers();
-    startLobbyPoll();
-    SFX.play('menu_select');
-  }catch(e){document.getElementById('lobbyStatus').textContent='Room not found';}
+    document.getElementById('lobbyStartBtn').style.display=isLobbyHost?'block':'none';
+    updateLobbyPlayers();startLobbyPoll();SFX.play('menu_select');
+  }catch(e){document.getElementById('lobbyStatus').textContent='Room not found';document.getElementById('lobbyStatus').style.display='block';}
 }
 
 function startLobbyPoll(){
@@ -1091,11 +1212,25 @@ function stopLobbyPoll(){if(lobbyPollTimer){clearInterval(lobbyPollTimer);lobbyP
 function updateLobbyPlayers(){
   const el=document.getElementById('lobbyPlayers');
   const players=currentRoom?.players||[];
-  if(!Array.isArray(players)){el.innerHTML='';return;}
-  el.innerHTML=players.map(p=>{
+  let html='';
+  const list=Array.isArray(players)?players:[{profile_id:activeProfile?.id||'you',character:selectedChar}];
+  list.forEach(p=>{
     const cr=CREW.find(c=>c.id===p.profile_id);
-    return`<div class="lobby-player"><div class="lp-dot" style="background:${cr?.color||'#888'}"></div><span class="lp-name">${p.profile_id}</span><span class="lp-char">${p.character||'?'}</span><span class="lp-ready">${p.ready?'READY':''}</span></div>`;
-  }).join('');
+    html+=`<div class="lobby-player"><div class="lp-dot" style="background:${cr?.color||'#888'}"></div><span class="lp-name">${p.profile_id}</span><span class="lp-char">${p.character||selectedChar}</span><span class="lp-ready" style="color:#4f4">${p.profile_id===activeProfile?.id?'YOU':''}</span></div>`;
+  });
+  // show bots
+  const botChars=Object.keys(CHARACTERS);
+  for(let i=0;i<lobbyBots;i++){
+    const bc=botChars[(i+1)%botChars.length];const ch=CHARACTERS[bc];
+    html+=`<div class="lobby-player"><div class="lp-dot" style="background:${ch.color}"></div><span class="lp-name" style="color:#555">BOT</span><span class="lp-char">${bc}</span><span class="lp-ready" style="color:#666">CPU</span></div>`;
+  }
+  // empty slots
+  const total=list.length+lobbyBots;
+  for(let i=total;i<4;i++){
+    html+=`<div class="lobby-player"><div class="lp-dot" style="background:#222"></div><span class="lp-name" style="color:#333">Empty Slot</span><span class="lp-char"></span></div>`;
+  }
+  el.innerHTML=html;
+  document.getElementById('lobbyStatus').textContent=total+'/4 players'+((4-total)>0?' \u00b7 Add bots or invite crew':'  \u00b7 Ready!');
 }
 
 function leaveLobby(){
@@ -1109,11 +1244,11 @@ function leaveLobby(){
 }
 
 function launchMultiplayer(){
-  if(!currentRoom)return;
   isMultiplayer=true;stopLobbyPoll();
-  // Tell other players to start via room event
-  const id=currentRoom.room_id||currentRoom.id;
-  NGame.sendRoomEvent(id,'game_start',{mode:selectedMode,map:selectedMap});
+  if(currentRoom){
+    const id=currentRoom.room_id||currentRoom.id;
+    NGame.sendRoomEvent(id,'game_start',{mode:selectedMode,map:selectedMap,bots:lobbyBots});
+  }
   startGame();
 }
 
@@ -1137,16 +1272,51 @@ function setupMultiplayerListeners(){
   });
   NGame.on('room_event',msg=>{
     if(!msg)return;
+    // Game start broadcast
     if(msg.event==='game_start'&&!gameRunning&&currentRoom){
       isMultiplayer=true;stopLobbyPoll();
       if(msg.data?.mode)selectedMode=msg.data.mode;
       if(msg.data?.map)selectedMap=msg.data.map;
+      if(msg.data?.bots)lobbyBots=msg.data.bots;
       startGame();
     }
-    // Damage events from other players
-    if(msg.event==='hit'&&game&&msg.data){
-      const target=game.entities.find(e=>e.onlineId===msg.data.targetId);
-      if(target&&!target.dead)game.dealDamage(target,msg.data.damage,game.entities.find(e=>e.onlineId===msg.data.attackerId)||null);
+    if(!game)return;
+    // Incoming damage — someone hit US
+    if(msg.event==='hit'&&msg.data){
+      if(msg.data.targetId===activeProfile?.id){
+        // We got hit by a remote player — apply damage to our local player
+        const attacker=game.entities.find(e=>e.onlineId===msg.data.attackerId)||null;
+        game.dealDamage(game.player,msg.data.damage,attacker,true);
+      }
+    }
+    // Someone died
+    if(msg.event==='death'&&msg.data){
+      const dead=game.entities.find(e=>e.onlineId===msg.data.playerId);
+      if(dead&&!dead.dead){
+        dead.dead=true;dead.respawnTimer=RESPAWN_TIME;dead.deaths++;
+        // Death VFX
+        for(let i=0;i<30;i++){const ang=Math.random()*Math.PI*2;const spd=100+Math.random()*350;game.particles.push({x:dead.x,y:dead.y-dead.h/2,vx:Math.cos(ang)*spd,vy:Math.sin(ang)*spd-100,life:.4+Math.random()*.6,maxLife:1,size:2+Math.random()*4,color:i%3===0?'#fff':dead.color,grav:true});}
+        SFX.play('death');
+        // Credit the killer
+        if(msg.data.killerId===activeProfile?.id){game.player.kills++;game.player.streak++;game.matchBestStreak=Math.max(game.matchBestStreak,game.player.streak);SFX.play('kill');}
+        const killerName=msg.data.killerChar||'?';
+        game.killFeed.push({killer:killerName,victim:dead.charName,killerColor:game.entities.find(e=>e.onlineId===msg.data.killerId)?.color||'#888',victimColor:dead.color,weapon:'',life:4});
+      }
+    }
+    // Someone respawned
+    if(msg.event==='respawn'&&msg.data){
+      const ent=game.entities.find(e=>e.onlineId===msg.data.playerId);
+      if(ent){ent.dead=false;ent.hp=ent.maxHp;ent.x=msg.data.x||ent.x;ent.y=msg.data.y||ent.y;}
+    }
+    // Pickup collected by remote player
+    if(msg.event==='pickup'&&msg.data){
+      const idx=game.pickups.findIndex(p=>Math.abs(p.x-msg.data.x)<20&&Math.abs(p.y-msg.data.y)<20);
+      if(idx>=0)game.pickups.splice(idx,1);
+    }
+    // Weapon picked up by remote player
+    if(msg.event==='weapon_pickup'&&msg.data){
+      const idx=game.weaponDrops.findIndex(w=>Math.abs(w.x-msg.data.x)<20&&w.name===msg.data.name);
+      if(idx>=0)game.weaponDrops.splice(idx,1);
     }
   });
 }
@@ -1225,10 +1395,12 @@ class Game{
     this.player.team=0;this.player.onlineId=activeProfile?.id||'local';this.entities.push(this.player);
     const isSurv=this.mode==='Survival'||this.mode==='Co-op Survival';
     if(this.isMultiplayer){
-      // No bots in multiplayer — remote players sync in via WebSocket
+      // Remote players sync in via WebSocket; add bots to fill slots
       remotePlayers={};
+      const botChars=Object.keys(CHARACTERS).filter(c=>c!==this.charName);
+      for(let i=0;i<lobbyBots;i++){const s=this.map.spawns[(i+1)%this.map.spawns.length];const bot=this.createPlayer(botChars[i%botChars.length],s.x,s.y,true,i+1);if(this.mode==='Team DM'||this.mode==='CTF')bot.team=i<1?0:1;this.entities.push(bot);}
       if(this.mode==='Team DM'||this.mode==='CTF')this.player.team=0;
-      if(this.mode==='Last Man')this.player.lives=3;
+      if(this.mode==='Last Man')this.entities.forEach(e=>{e.lives=3;});
       if(this.mode==='CTF'){this.flags=[{team:0,x:100,y:580,baseX:100,baseY:580,carrier:null,color:'#4488ff'},{team:1,x:1180,y:580,baseX:1180,baseY:580,carrier:null,color:'#ff4444'}];this.captures=[0,0];}
     }else if(isSurv){this.survivalWave=0;this.survivalBetweenWaves=true;this.survivalWaveTimer=3;}
     else{const botChars=Object.keys(CHARACTERS).filter(c=>c!==this.charName);for(let i=0;i<3;i++){const s=this.map.spawns[(i+1)%this.map.spawns.length];const bot=this.createPlayer(botChars[i%botChars.length],s.x,s.y,true,i+1);if(this.mode==='Team DM'||this.mode==='CTF')bot.team=i<1?0:1;this.entities.push(bot);}
@@ -1249,8 +1421,11 @@ class Game{
     // Multiplayer sync
     if(this.isMultiplayer){this.syncRemotePlayers();}
     this.render();
-    // Send local state to room
-    if(currentRoom&&this.player){const rid=currentRoom.room_id||currentRoom.id;NGame.sendRoomState(rid,{x:this.player.x,y:this.player.y,vx:this.player.vx,vy:this.player.vy,hp:this.player.hp,facing:this.player.facing,aimAngle:this.player.aimAngle,character:this.player.charName,weapon:this.player.weapons[this.player.activeWeaponIdx]?.name,kills:this.player.kills,deaths:this.player.deaths,dead:this.player.dead});}}
+    // Send local state to room every frame (60Hz) — only 4 players, tiny packets
+    if(currentRoom&&this.player){
+      const rid=currentRoom.room_id||currentRoom.id;const p=this.player;
+      NGame.sendRoomState(rid,{x:Math.round(p.x),y:Math.round(p.y),vx:Math.round(p.vx),vy:Math.round(p.vy),hp:Math.round(p.hp),facing:p.facing,aimAngle:+(p.aimAngle.toFixed(2)),character:p.charName,weapon:p.weapons[p.activeWeaponIdx]?.name,kills:p.kills,deaths:p.deaths,dead:p.dead,onGround:p.onGround});
+    }}
 
   syncRemotePlayers(){
     const now=Date.now();
@@ -1266,8 +1441,8 @@ class Game{
         if(this.mode==='Team DM'||this.mode==='CTF')ent.team=1;
         this.entities.push(ent);this.remoteEntityMap[pid]=ent;
       }
-      // Interpolate position smoothly
-      if(state.x!==undefined){ent.x+=(state.x-ent.x)*.3;ent.y+=(state.y-ent.y)*.3;}
+      // Interpolate position — tight lerp at 60Hz for responsive feel
+      if(state.x!==undefined){ent.x+=(state.x-ent.x)*.5;ent.y+=(state.y-ent.y)*.5;}
       if(state.vx!==undefined){ent.vx=state.vx;ent.vy=state.vy;}
       if(state.hp!==undefined)ent.hp=state.hp;
       if(state.facing!==undefined)ent.facing=state.facing;
@@ -1369,11 +1544,34 @@ class Game{
 
   aoeHit(cx,cy,r,dmg,owner){for(const e of this.entities){if(e.dead||e===owner&&e.charName==='Dart')continue;if(!this.isEnemy(owner,e)&&e!==owner)continue;const d=Math.hypot(e.x-cx,(e.y-e.h/2)-cy);if(d<r)this.dealDamage(e,dmg*(1-d/r)*.8,owner);}this.screenShake=Math.max(this.screenShake,.3);SFX.play('explosion');}
 
-  dealDamage(t,dmg,attacker){if(t.dead)return;dmg*=CHARACTERS[t.charName].passiveFn(t);if(t.armor>0){const ab=Math.min(dmg*.5,t.armor);t.armor-=ab;dmg-=ab;}t.hp-=dmg;
+  dealDamage(t,dmg,attacker,fromNetwork){
+    if(t.dead)return;
+    // In multiplayer: if WE hit a REMOTE player, send damage over network instead of applying locally
+    if(this.isMultiplayer&&t.isRemote&&!fromNetwork&&currentRoom){
+      const rid=currentRoom.room_id||currentRoom.id;
+      NGame.sendRoomEvent(rid,'hit',{targetId:t.onlineId,attackerId:this.player.onlineId,damage:dmg,attackerChar:this.player.charName,weapon:this.player.weapons[this.player.activeWeaponIdx]?.name||'?'});
+      // Still show local VFX for responsiveness
+      if(settings.damageNumbers)this.damageNums.push({x:t.x+(Math.random()-.5)*20,y:t.y-t.h-10,text:Math.round(dmg),life:1,color:attacker?attacker.color:'#fff',scale:1});
+      for(let i=0;i<3;i++)this.particles.push({x:t.x+(Math.random()-.5)*10,y:t.y-t.h/2,vx:(Math.random()-.5)*200,vy:(Math.random()-.5)*200,life:.15+Math.random()*.15,maxLife:.3,size:2+Math.random(),color:t.color,grav:true});
+      SFX.play('hit');
+      return;
+    }
+    // Apply damage locally (own player, bots, or network-confirmed hits)
+    dmg*=CHARACTERS[t.charName].passiveFn(t);
+    if(t.armor>0){const ab=Math.min(dmg*.5,t.armor);t.armor-=ab;dmg-=ab;}
+    t.hp-=dmg;
     if(settings.damageNumbers)this.damageNums.push({x:t.x+(Math.random()-.5)*20,y:t.y-t.h-10,text:Math.round(dmg),life:1,color:attacker?attacker.color:'#fff',scale:1});
-    // blood particles
     for(let i=0;i<6;i++)this.particles.push({x:t.x+(Math.random()-.5)*10,y:t.y-t.h/2,vx:(Math.random()-.5)*300,vy:(Math.random()-.5)*300,life:.2+Math.random()*.3,maxLife:.5,size:2+Math.random()*2,color:t.color,grav:true});
-    SFX.play('hit');if(t.hp<=0)this.killPlayer(t,attacker);}
+    SFX.play('hit');
+    if(t.hp<=0){
+      this.killPlayer(t,attacker);
+      // In multiplayer: broadcast our death so others see it
+      if(this.isMultiplayer&&t===this.player&&currentRoom){
+        const rid=currentRoom.room_id||currentRoom.id;
+        NGame.sendRoomEvent(rid,'death',{playerId:t.onlineId,killerId:attacker?.onlineId||null,killerChar:attacker?.charName||null});
+      }
+    }
+  }
 
   killPlayer(t,attacker){t.dead=true;t.respawnTimer=t.isSurvivalEnemy?999:RESPAWN_TIME;t.deaths++;t.streak=0;t.streakAnnounced=new Set();if(this.mode==='Last Man')t.lives--;
     for(let i=t.weapons.length-1;i>=0;i--){if(!t.weapons[i].base){this.weaponDrops.push({x:t.x,y:t.y-20,name:t.weapons[i].name,life:20,bob:0,vy:-200});t.weapons.splice(i,1);}}t.activeWeaponIdx=0;
@@ -1388,7 +1586,10 @@ class Game{
 
   updateSentries(dt){for(let i=this.sentries.length-1;i>=0;i--){const s=this.sentries[i];s.life-=dt;if(s.life<=0){this.sentries.splice(i,1);continue;}s.fireTimer-=dt;const enemies=this.entities.filter(e=>!e.dead&&e!==s.owner&&this.isEnemy(s.owner,e));if(enemies.length){let c=enemies[0],cd=Infinity;for(const e of enemies){const d=Math.hypot(e.x-s.x,e.y-s.y);if(d<cd){cd=d;c=e;}}s.angle=Math.atan2(c.y-c.h/2-s.y,c.x-s.x);if(s.fireTimer<=0&&cd<500){s.fireTimer=.2;this.bullets.push({x:s.x+Math.cos(s.angle)*15,y:s.y+Math.sin(s.angle)*15,vx:Math.cos(s.angle)*1200,vy:Math.sin(s.angle)*1200,damage:10,owner:s.owner,range:500,traveled:0,size:2,color:'#ff8',explosive:false,blastRadius:0,piercing:false,arc:false,prevX:s.x,prevY:s.y});}}}}
 
-  respawnPlayer(e){if(this.mode==='Last Man'&&e.lives<=0)return;const sp=this.map.spawns[Math.floor(Math.random()*this.map.spawns.length)];e.x=sp.x;e.y=sp.y;e.vx=0;e.vy=0;e.hp=e.maxHp;e.dead=false;e.invisible=false;e.slowed=false;e.abilityActive=false;e.speedMul=1;e.dmgMul=1;e.weapons=e.weapons.filter(w=>w.base);if(!e.weapons.length){const ch=CHARACTERS[e.charName];e.weapons=[this.makeWeapon(ch.primaryName),this.makeWeapon(ch.secondaryName)];}for(const w of e.weapons){w.currentAmmo=w.ammo;w.reloading=false;}e.activeWeaponIdx=0;}
+  respawnPlayer(e){if(this.mode==='Last Man'&&e.lives<=0)return;const sp=this.map.spawns[Math.floor(Math.random()*this.map.spawns.length)];e.x=sp.x;e.y=sp.y;e.vx=0;e.vy=0;e.hp=e.maxHp;e.dead=false;e.invisible=false;e.slowed=false;e.abilityActive=false;e.speedMul=1;e.dmgMul=1;e.weapons=e.weapons.filter(w=>w.base);if(!e.weapons.length){const ch=CHARACTERS[e.charName];e.weapons=[this.makeWeapon(ch.primaryName),this.makeWeapon(ch.secondaryName)];}for(const w of e.weapons){w.currentAmmo=w.ammo;w.reloading=false;}e.activeWeaponIdx=0;
+    // Broadcast respawn in multiplayer
+    if(this.isMultiplayer&&e===this.player&&currentRoom){const rid=currentRoom.room_id||currentRoom.id;NGame.sendRoomEvent(rid,'respawn',{playerId:e.onlineId,x:e.x,y:e.y});}
+  }
 
   spawnExplosion(x,y,r){
     // ring + debris
@@ -1399,8 +1600,10 @@ class Game{
 
   spawnPickup(){if(this.pickups.length>=6)return;const sp=this.map.pickupSpawns[Math.floor(Math.random()*this.map.pickupSpawns.length)];const pu=POWERUP_TYPES[Math.floor(Math.random()*POWERUP_TYPES.length)];this.pickups.push({x:sp.x,y:sp.y-20,type:pu.type,name:pu.name,color:pu.color,icon:pu.icon,effect:pu.effect,life:20,bob:Math.random()*Math.PI*2});}
   spawnWeaponDrop(){if(this.weaponDrops.length>=4)return;const sp=(this.map.weaponSpawns||this.map.pickupSpawns)[Math.floor(Math.random()*(this.map.weaponSpawns||this.map.pickupSpawns).length)];this.weaponDrops.push({x:sp.x,y:sp.y-20,name:PICKUP_WEAPONS[Math.floor(Math.random()*PICKUP_WEAPONS.length)],life:25,bob:0,vy:0});}
-  updatePickups(dt){for(let i=this.pickups.length-1;i>=0;i--){const p=this.pickups[i];p.life-=dt;p.bob+=dt*3;if(p.life<=0){this.pickups.splice(i,1);continue;}for(const e of this.entities){if(e.dead)continue;if(Math.hypot(e.x-p.x,(e.y-e.h/2)-p.y)<30){p.effect(e);SFX.play('pickup');for(let j=0;j<10;j++)this.particles.push({x:p.x,y:p.y,vx:(Math.random()-.5)*180,vy:-Math.random()*180,life:.25+Math.random()*.15,maxLife:.4,size:2+Math.random(),color:p.color,grav:false});this.pickups.splice(i,1);break;}}}}
-  updateWeaponDrops(dt){for(let i=this.weaponDrops.length-1;i>=0;i--){const wd=this.weaponDrops[i];wd.life-=dt;wd.bob+=dt*2.5;if(wd.vy){wd.vy+=GRAVITY*dt;wd.y+=wd.vy*dt;for(const p of this.map.platforms){if(wd.x>=p.x&&wd.x<=p.x+p.w&&wd.y>=p.y&&wd.y<=p.y+10){wd.y=p.y;wd.vy=0;break;}}}if(wd.life<=0||wd.y>this.map.deathY){this.weaponDrops.splice(i,1);continue;}for(const e of this.entities){if(e.dead)continue;if(Math.hypot(e.x-wd.x,(e.y-e.h/2)-wd.y)<35){if(e.weapons.length>=4){const nb=e.weapons.findIndex(w=>!w.base);if(nb>=0){this.weaponDrops.push({x:e.x,y:e.y-20,name:e.weapons[nb].name,life:15,bob:0,vy:-150});e.weapons.splice(nb,1);}else continue;}const nw=this.makeWeapon(wd.name);if(!nw)continue;e.weapons.push(nw);e.activeWeaponIdx=e.weapons.length-1;if(e===this.player)this.matchWeaponsPickedUp++;SFX.play('pickup');for(let j=0;j<6;j++)this.particles.push({x:wd.x,y:wd.y,vx:(Math.random()-.5)*120,vy:-Math.random()*120,life:.3,maxLife:.3,size:2,color:'#8f8',grav:false});this.weaponDrops.splice(i,1);break;}}}}
+  updatePickups(dt){for(let i=this.pickups.length-1;i>=0;i--){const p=this.pickups[i];p.life-=dt;p.bob+=dt*3;if(p.life<=0){this.pickups.splice(i,1);continue;}for(const e of this.entities){if(e.dead||e.isRemote)continue;if(Math.hypot(e.x-p.x,(e.y-e.h/2)-p.y)<30){p.effect(e);SFX.play('pickup');for(let j=0;j<10;j++)this.particles.push({x:p.x,y:p.y,vx:(Math.random()-.5)*180,vy:-Math.random()*180,life:.25+Math.random()*.15,maxLife:.4,size:2+Math.random(),color:p.color,grav:false});
+      if(this.isMultiplayer&&currentRoom){const rid=currentRoom.room_id||currentRoom.id;NGame.sendRoomEvent(rid,'pickup',{x:p.x,y:p.y});}
+      this.pickups.splice(i,1);break;}}}}
+  updateWeaponDrops(dt){for(let i=this.weaponDrops.length-1;i>=0;i--){const wd=this.weaponDrops[i];wd.life-=dt;wd.bob+=dt*2.5;if(wd.vy){wd.vy+=GRAVITY*dt;wd.y+=wd.vy*dt;for(const p of this.map.platforms){if(wd.x>=p.x&&wd.x<=p.x+p.w&&wd.y>=p.y&&wd.y<=p.y+10){wd.y=p.y;wd.vy=0;break;}}}if(wd.life<=0||wd.y>this.map.deathY){this.weaponDrops.splice(i,1);continue;}for(const e of this.entities){if(e.dead||e.isRemote)continue;if(Math.hypot(e.x-wd.x,(e.y-e.h/2)-wd.y)<35){if(e.weapons.length>=4){const nb=e.weapons.findIndex(w=>!w.base);if(nb>=0){this.weaponDrops.push({x:e.x,y:e.y-20,name:e.weapons[nb].name,life:15,bob:0,vy:-150});e.weapons.splice(nb,1);}else continue;}const nw=this.makeWeapon(wd.name);if(!nw)continue;e.weapons.push(nw);e.activeWeaponIdx=e.weapons.length-1;if(e===this.player){this.matchWeaponsPickedUp++;if(this.isMultiplayer&&currentRoom){const rid=currentRoom.room_id||currentRoom.id;NGame.sendRoomEvent(rid,'weapon_pickup',{x:wd.x,name:wd.name});}}SFX.play('pickup');for(let j=0;j<6;j++)this.particles.push({x:wd.x,y:wd.y,vx:(Math.random()-.5)*120,vy:-Math.random()*120,life:.3,maxLife:.3,size:2,color:'#8f8',grav:false});this.weaponDrops.splice(i,1);break;}}}}
   updateSurvival(dt){if(this.player.dead&&this.player.lives<=0)return;if(this.survivalBetweenWaves){this.survivalWaveTimer-=dt;if(this.survivalWaveTimer<=0){this.survivalWave++;this.survivalBetweenWaves=false;SFX.play('wave');const count=Math.min(2+this.survivalWave,10);for(let i=0;i<count;i++)setTimeout(()=>{if(!this.running)return;const e=this.createSurvivalEnemy(this.survivalWave);e.team=1;this.entities.push(e);},i*700);}}else{const alive=this.entities.filter(e=>e.isSurvivalEnemy&&!e.dead);if(!alive.length&&this.time>4){this.survivalBetweenWaves=true;this.survivalWaveTimer=4;this.player.hp=Math.min(this.player.maxHp,this.player.hp+25);}}this.player.lives=1;}
   updateCTF(dt){if(!this.flags)return;for(const f of this.flags){if(f.carrier){f.x=f.carrier.x;f.y=f.carrier.y-f.carrier.h-10;const mf=this.flags.find(fl=>fl.team===f.carrier.team);if(mf&&Math.hypot(f.carrier.x-mf.baseX,f.carrier.y-mf.baseY)<40){this.captures[f.carrier.team]++;f.carrier=null;f.x=f.baseX;f.y=f.baseY;}}else{for(const e of this.entities){if(e.dead||e.team===f.team)continue;if(Math.hypot(e.x-f.x,e.y-f.y)<40){f.carrier=e;break;}}for(const e of this.entities){if(e.dead||e.team!==f.team)continue;if(Math.abs(f.x-f.baseX)<5)break;if(Math.hypot(e.x-f.x,e.y-f.y)<40){f.x=f.baseX;f.y=f.baseY;break;}}}}}
   checkWinCondition(){if(this.matchOver)return;let w=null;if(this.mode==='Deathmatch'){for(const e of this.entities)if(e.kills>=20){w=e;break;}}else if(this.mode==='Team DM'){const tk=[0,0];this.entities.forEach(e=>{tk[e.team]+=e.kills;});if(tk[0]>=30)w={team:0};if(tk[1]>=30)w={team:1};}else if(this.mode==='Last Man'){const al=this.entities.filter(e=>e.lives>0||!e.dead);if(al.length<=1)w=al[0]||this.player;}else if(this.mode==='CTF'){if(this.captures&&this.captures[0]>=3)w={team:0};if(this.captures&&this.captures[1]>=3)w={team:1};}else if(this.mode==='Survival'||this.mode==='Co-op Survival'){if(this.player.dead&&this.player.lives<=0)w={team:1};}if(w)this.endMatch(w);}
