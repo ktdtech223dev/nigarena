@@ -1159,21 +1159,31 @@ setInterval(updateMenuController,1000/60);
 const SERVER='https://ngames-server-production.up.railway.app';
 let currentRoom=null,remotePlayers={},lobbyPollTimer=null,isMultiplayer=false;
 
+function generateRoomCode(){return Math.random().toString(36).substring(2,8).toUpperCase();}
+
 async function hostGame(){
+  isLobbyHost=true;lobbyBots=0;
+  // Generate a local code as fallback
+  let code=generateRoomCode();
+  let serverOk=false;
   try{
     const res=await fetch(SERVER+'/rooms/create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({profile_id:activeProfile.id,game_id:'project-x',mode:selectedMode,map:selectedMap,max_players:4,character:selectedChar})}).then(r=>r.json());
-    currentRoom=res;isLobbyHost=true;lobbyBots=0;
-    const code=res.room_id||res.id||'????';
-    document.getElementById('lobbyCode').textContent=String(code).toUpperCase();
-    document.getElementById('lobbyActions').style.display='none';
-    document.getElementById('lobbyRoom').style.display='block';
-    document.getElementById('lobbyStatus').textContent='Waiting for players... Share the room code!';
-    document.getElementById('lobbyStartBtn').style.display='block';
-    updateLobbyPlayers();startLobbyPoll();SFX.play('menu_select');
+    console.log('[Lobby] Server response:',JSON.stringify(res));
+    // Try every possible field name the server might use
+    const serverCode=res.room_id||res.id||res.code||res.roomId||res.room_code;
+    if(serverCode)code=String(serverCode);
+    currentRoom={room_id:code,players:[{profile_id:activeProfile.id,character:selectedChar}],mode:selectedMode,map:selectedMap,...res};
+    serverOk=true;
   }catch(e){
-    document.getElementById('lobbyStatus').textContent='Failed to create room — server may be offline';
-    document.getElementById('lobbyStatus').style.display='block';
+    console.log('[Lobby] Server offline, using local room:',code);
+    currentRoom={room_id:code,players:[{profile_id:activeProfile.id,character:selectedChar}],mode:selectedMode,map:selectedMap,local:true};
   }
+  document.getElementById('lobbyCode').textContent=code.toUpperCase();
+  document.getElementById('lobbyActions').style.display='none';
+  document.getElementById('lobbyRoom').style.display='block';
+  document.getElementById('lobbyStatus').textContent=serverOk?'Room created! Share the code with your crew.':'Offline mode — add bots and play locally.';
+  document.getElementById('lobbyStartBtn').style.display='block';
+  updateLobbyPlayers();if(serverOk)startLobbyPoll();SFX.play('menu_select');
 }
 
 async function joinGame(){
@@ -1181,18 +1191,19 @@ async function joinGame(){
   if(!code)return;
   try{
     const res=await fetch(SERVER+'/rooms/'+code+'/join',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({profile_id:activeProfile.id,character:selectedChar})}).then(r=>r.json());
+    console.log('[Lobby] Join response:',JSON.stringify(res));
     if(res.error){document.getElementById('lobbyStatus').textContent=res.error;document.getElementById('lobbyStatus').style.display='block';return;}
-    currentRoom=res;isLobbyHost=false;lobbyBots=0;
-    // Read mode/map from room if available
+    currentRoom={room_id:code,players:res.players||[{profile_id:activeProfile.id,character:selectedChar}],...res};
+    isLobbyHost=false;lobbyBots=0;
     if(res.mode)selectedMode=res.mode;if(res.map)selectedMap=res.map;
     document.getElementById('lobbyCode').textContent=code.toUpperCase();
     document.getElementById('lobbyModeSub').textContent=(selectedMode||'?').toUpperCase()+' \u00b7 '+(selectedMap||'?').toUpperCase();
     document.getElementById('lobbyActions').style.display='none';
     document.getElementById('lobbyRoom').style.display='block';
     document.getElementById('lobbyStatus').textContent='Joined! Waiting for host to start...';
-    document.getElementById('lobbyStartBtn').style.display=isLobbyHost?'block':'none';
+    document.getElementById('lobbyStartBtn').style.display='none';
     updateLobbyPlayers();startLobbyPoll();SFX.play('menu_select');
-  }catch(e){document.getElementById('lobbyStatus').textContent='Room not found';document.getElementById('lobbyStatus').style.display='block';}
+  }catch(e){document.getElementById('lobbyStatus').textContent='Could not connect — check the code or try again';document.getElementById('lobbyStatus').style.display='block';}
 }
 
 function startLobbyPoll(){
