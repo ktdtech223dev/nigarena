@@ -30,7 +30,13 @@ const EXE_NAME = 'BlacksArena-portable.exe';
 
 function run(cmd, opts = {}) {
   console.log(`  > ${cmd}`);
-  return execSync(cmd, { cwd: __dirname, encoding: 'utf8', stdio: opts.silent ? 'pipe' : 'inherit', ...opts });
+  try {
+    return execSync(cmd, { cwd: __dirname, encoding: 'utf8', stdio: opts.silent ? 'pipe' : 'inherit', ...opts });
+  } catch(e) {
+    if(e.stderr) console.error('  STDERR:', e.stderr.toString());
+    if(e.stdout) console.error('  STDOUT:', e.stdout.toString());
+    throw e;
+  }
 }
 
 function getVersion() {
@@ -157,7 +163,13 @@ fs.writeFileSync(notesFile, [
   '```',
 ].join('\n'));
 
-run(`gh release create v${newVer} --repo ${REPO} --title "v${newVer}" --notes-file "${notesFile}"`);
+try {
+  run(`gh release create v${newVer} --repo ${REPO} --title "v${newVer}" --notes-file "${notesFile}"`, { silent: true });
+} catch(e) {
+  console.log('  Release may already exist, trying to overwrite...');
+  try { run(`gh release delete v${newVer} --repo ${REPO} -y`, { silent: true }); } catch(e2) {}
+  run(`gh release create v${newVer} --repo ${REPO} --title "v${newVer}" --notes-file "${notesFile}"`, { silent: true });
+}
 
 // Step 5: Upload .exe to the release
 console.log('  [5/5] Uploading .exe to release...');
