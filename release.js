@@ -139,24 +139,25 @@ run(`git push origin v${newVer} --force`);
 console.log('  [4/5] Creating GitHub release...');
 // Never delete old releases — launcher checks latest tag for updates
 
-const notes = [
+const notesFile = path.join(__dirname, '.release-notes.md');
+fs.writeFileSync(notesFile, [
   `## Black's Arena v${newVer}`,
   '',
-  'N Games Network — 2D Arena Shooter',
+  'N Games Network - 2D Arena Shooter',
   '',
   '### Download',
-  `Download **${EXE_NAME}** below — no install needed, just run it.`,
+  `Download **${EXE_NAME}** below. No install needed, just run it.`,
   '',
   '### From Source',
   '```',
-  'git clone https://github.com/' + REPO + '.git',
+  `git clone https://github.com/${REPO}.git`,
   'cd nigarena',
   'npm install',
   'npm start',
   '```',
-].join('\\n');
+].join('\n'));
 
-run(`gh release create v${newVer} --repo ${REPO} --title "Black's Arena v${newVer}" --notes "${notes}"`);
+run(`gh release create v${newVer} --repo ${REPO} --title "v${newVer}" --notes-file "${notesFile}"`);
 
 // Step 5: Upload .exe to the release
 console.log('  [5/5] Uploading .exe to release...');

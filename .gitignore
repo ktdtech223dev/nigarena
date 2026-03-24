@@ -2,3 +2,4 @@
 dist/
 *.exe
 .cache/
+.release-notes.md
