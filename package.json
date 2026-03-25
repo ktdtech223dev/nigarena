@@ -1,6 +1,6 @@
 {
   "name": "project-x",
-  "version": "0.7.8",
+  "version": "0.8.0",
   "description": "N Games — Project X",
   "main": "main.js",
   "scripts": {
