@@ -675,9 +675,9 @@ function makeSprite25D(grid,charColor,skinTone){
 // Each character: big head, visible torso, arms, legs, distinct clothing
 function createCharSprites(charColor,skinTone,style){
   const S={};
-  // Head templates per hairstyle (rows 0-12)
+  // Head templates per hairstyle (rows 0-11)
   const heads={
-    dreads:[// Keshawn — dreads, tank top, chain
+    dreads:[// Keshawn — dreads, hoodie
       '        OOOO            ',
       '       OHHHHO           ',
       '      OHHHHHHOO         ',
@@ -690,7 +690,20 @@ function createCharSprites(charColor,skinTone,style){
       '       ONSSNO           ',
       '        OSSO            ',
     ],
-    fade:[// Sean — fade, jacket, watch
+    taper:[// Sean — high taper fade (hair on top, tight sides)
+      '        OOOO            ',
+      '       OHHHHO           ',
+      '      OHHHHHhO          ',
+      '      OHHSSSSdO         ',
+      '       OSSSSSSO         ',
+      '       OSEPPESO         ',
+      '       OSSSSSSSO        ',
+      '        sSQQSs          ',
+      '         SSSS           ',
+      '         OSSO           ',
+      '         OSSO           ',
+    ],
+    fade:[// Dart — clean fade
       '        OOOO            ',
       '       OHhhhO           ',
       '      OHhSSSShO         ',
@@ -703,20 +716,7 @@ function createCharSprites(charColor,skinTone,style){
       '         OSSO           ',
       '         OSSO           ',
     ],
-    twists:[// Dart — twists, military jacket
-      '       OHHHHHO          ',
-      '      OHHHHHHHHO        ',
-      '      OHHHHHHHO         ',
-      '      OHHSSSSHHO        ',
-      '       OSSSSSSO         ',
-      '       OSEPPESO         ',
-      '       OSSSSSSSO        ',
-      '        sSQQSs          ',
-      '        OSSSSO          ',
-      '         OSSO           ',
-      '         OSSO           ',
-    ],
-    locs:[// Amari — locs, hoodie
+    locs:[// Amari — locs, tank top + chain
       '      OH OOOO HO        ',
       '      OHHHHHHHHHO       ',
       '      OHHSSSSSHO        ',
@@ -725,25 +725,25 @@ function createCharSprites(charColor,skinTone,style){
       '       OSEPPESO         ',
       '       OSSSSSSSO        ',
       '        sSQQSs          ',
-      '        OSSSSO          ',
+      '       ONSSNO           ',
       '         OSSO           ',
       '         OSSO           ',
     ],
   };
   // Torso templates per character style
   const torsos={
-    dreads:{// tank top + chain
+    dreads:{// Keshawn — hoodie (swapped from Amari)
       idle:[
-        '        SCCCS           ',
-        '       SCCCCCCS         ',
-        '       SLCCCCCLS        ',
-        '      SSLCCCCCLSS       ',
+        '       OLCCCLO          ',
+        '      SOLCCCCLOS        ',
+        '      SOLCCCCLOS        ',
+        '     SSOLCCCCCLOSS      ',
         '       OCCCCCCCO        ',
         '       OcCCCCcO         ',
         '        OcCCcO          ',
       ],
     },
-    fade:{// jacket + collar
+    taper:{// Sean — jacket + collar
       idle:[
         '       OLCCCLO          ',
         '      SOLCCCCLOS        ',
@@ -754,7 +754,7 @@ function createCharSprites(charColor,skinTone,style){
         '        OcCCcO          ',
       ],
     },
-    twists:{// military vest
+    fade:{// Dart — military vest
       idle:[
         '       OVCCCCVO         ',
         '      SOVCCCCVOS        ',
@@ -765,12 +765,12 @@ function createCharSprites(charColor,skinTone,style){
         '        OcCCcO          ',
       ],
     },
-    locs:{// hoodie
+    locs:{// Amari — tank top + chain (swapped from Keshawn)
       idle:[
-        '       OLCCCLO          ',
-        '      SOLCCCCLOS        ',
-        '      SOLCCCCLOS        ',
-        '     SSOLCCCCCLOSS      ',
+        '        SCCCS           ',
+        '       SCCCCCCS         ',
+        '       SLCCCCCLS        ',
+        '      SSLCCCCCLSS       ',
         '       OCCCCCCCO        ',
         '       OcCCCCcO         ',
         '        OcCCcO          ',
@@ -920,8 +920,8 @@ const POWERUP_TYPES=[
 
 const CHARACTERS={
   Keshawn:{hp:180,speed:310,jumpMul:1.0,primaryName:'Shotgun',secondaryName:'Pistol',ability:{name:'Adrenaline',cooldown:18,duration:5},passiveFn(p){return p.hp<p.maxHp*.3?.88:1;},abilityFn(p){p.abilityActive=true;p.abilityTimer=5;p.speedMul=1.5;p.dmgMul=1.3;SFX.play('ability');},abilityEnd(p){p.speedMul=1;p.dmgMul=1;p.abilityActive=false;},color:'#80e060',skin:SKIN_DARK,hair:'dreads',role:'Rushdown'},
-  Sean:{hp:140,speed:275,jumpMul:1.1,primaryName:'Sniper',secondaryName:'Pistol',ability:{name:'Market Crash',cooldown:22,duration:3},passiveFn(){return 1;},abilityFn(p,g){g.entities.filter(e=>e!==p&&!e.dead&&g.isEnemy(p,e)).forEach(e=>{e.slowed=true;e.slowTimer=3;});SFX.play('ability');},abilityEnd(){},color:'#f0c040',skin:SKIN_MID,hair:'fade',role:'Sniper'},
-  Dart:{hp:170,speed:285,jumpMul:.95,primaryName:'Rocket',secondaryName:'Pistol',ability:{name:'Nuke',cooldown:30,duration:0},passiveFn(){return 1;},abilityFn(p,g){g.spawnExplosion(p.x,p.y,250);g.entities.filter(e=>e!==p&&!e.dead).forEach(e=>{const d=Math.hypot(e.x-p.x,e.y-p.y);if(d<250)g.dealDamage(e,80*(1-d/250),p);});g.screenShake=.6;SFX.play('nuke');},abilityEnd(){},color:'#e04040',skin:SKIN_MID,hair:'twists',role:'Explosives'},
+  Sean:{hp:140,speed:275,jumpMul:1.1,primaryName:'Sniper',secondaryName:'Pistol',ability:{name:'Market Crash',cooldown:22,duration:3},passiveFn(){return 1;},abilityFn(p,g){g.entities.filter(e=>e!==p&&!e.dead&&g.isEnemy(p,e)).forEach(e=>{e.slowed=true;e.slowTimer=3;});SFX.play('ability');},abilityEnd(){},color:'#f0c040',skin:SKIN_MID,hair:'taper',role:'Sniper'},
+  Dart:{hp:170,speed:285,jumpMul:.95,primaryName:'Rocket',secondaryName:'Pistol',ability:{name:'Nuke',cooldown:30,duration:0},passiveFn(){return 1;},abilityFn(p,g){g.spawnExplosion(p.x,p.y,250);g.entities.filter(e=>e!==p&&!e.dead).forEach(e=>{const d=Math.hypot(e.x-p.x,e.y-p.y);if(d<250)g.dealDamage(e,80*(1-d/250),p);});g.screenShake=.6;SFX.play('nuke');},abilityEnd(){},color:'#e04040',skin:SKIN_MID,hair:'fade',role:'Explosives'},
   Amari:{hp:150,speed:335,jumpMul:1.15,primaryName:'SMG',secondaryName:'Pistol',ability:{name:'Ghost',cooldown:15,duration:3},passiveFn(){return 1;},abilityFn(p){p.abilityActive=true;p.abilityTimer=3;p.invisible=true;p.speedMul=1.4;SFX.play('ability');},abilityEnd(p){p.invisible=false;p.speedMul=1;p.abilityActive=false;},color:'#40c0e0',skin:SKIN_LIGHT,hair:'locs',role:'Stealth'},
 };
 const CREW=[
