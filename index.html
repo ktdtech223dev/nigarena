@@ -852,7 +852,7 @@ function createCharSprites(charColor,skinTone,style){
   };
 }
 
-// Legacy compat — unused but keeps old code from crashing
+// Legacy makeSprite25D — only used by enemy sprite generator
 function makeSprite25D(grid,charColor,skinTone){
   const px=2,cols=24,rows=32;
   const W=cols*px,H=rows*px;
@@ -880,9 +880,8 @@ function makeSprite25D(grid,charColor,skinTone){
   return can;
 }
 
-// 24-wide x 32-tall character grids — Terraria-style proportions
-// Each character: big head, visible torso, arms, legs, distinct clothing
-function createCharSprites(charColor,skinTone,style){
+// Legacy grid sprites for enemies only
+function createCharSpritesLegacy(charColor,skinTone,style){
   const S={};
   // Compact sprites: body centered columns 8-15 (8 cols max width)
   // Arms are S pixels at columns 7 and 16 only (not wider)
