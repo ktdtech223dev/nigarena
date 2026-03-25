@@ -34,7 +34,7 @@ canvas{display:block;image-rendering:pixelated}
 .profile-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--c);opacity:0;transition:.25s}
 .profile-card:hover{border-color:var(--c);transform:translateY(-6px);box-shadow:0 12px 40px #0006}
 .profile-card:hover::before{opacity:1}
-.profile-card .portrait{width:80px;height:80px;image-rendering:pixelated;margin-bottom:4px}
+.profile-card .portrait{width:60px;height:80px;image-rendering:pixelated;margin-bottom:4px}
 .profile-card .name{font:700 17px var(--font);color:var(--c);letter-spacing:1px}
 .profile-card .role{font:11px var(--font);color:#666;letter-spacing:1px}
 .profile-card .suit{font:24px var(--font);color:var(--c);opacity:.3;position:absolute;top:10px;right:14px}
@@ -64,7 +64,7 @@ canvas{display:block;image-rendering:pixelated}
 .cs-card:hover::before{opacity:1}
 .cs-card.selected{border-color:var(--c);box-shadow:0 0 30px color-mix(in srgb,var(--c) 25%,transparent)}
 .cs-card.selected::before{opacity:1}
-.cs-card .cs-portrait{width:40px;height:40px;image-rendering:pixelated}
+.cs-card .cs-portrait{width:36px;height:48px;image-rendering:pixelated}
 .cs-card .cs-name{font:700 18px var(--font);color:var(--c);letter-spacing:1px;margin-top:4px}
 .cs-card .cs-role{font:600 10px var(--font);color:#666;letter-spacing:2px;text-transform:uppercase}
 .cs-card .cs-divider{width:60%;height:1px;background:#1a1a30;margin:6px 0}
@@ -169,6 +169,78 @@ canvas{display:block;image-rendering:pixelated}
 .radio-bar button{background:none;border:none;color:#555;cursor:pointer;font-size:12px;padding:2px 4px;transition:.15s}
 .radio-bar button:hover{color:#fff}
 .radio-bar .station{color:var(--accent);font-weight:700}
+/* ─── INVENTORY ─── */
+#inventoryScreen{background:var(--bg0);overflow:hidden}
+#inventoryScreen canvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:0}
+.inv-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:100%;max-height:calc(100vh - 32px);overflow-y:auto;padding:20px 40px}
+.inv-header{display:flex;width:100%;max-width:1000px;align-items:center;justify-content:space-between;margin-bottom:16px}
+.inv-title{font:bold 36px var(--display);letter-spacing:5px;color:#fff}
+.inv-tabs{display:flex;gap:4px}
+.inv-tab{padding:6px 16px;border:1px solid #1a1a28;border-radius:6px;background:var(--panel);color:#666;font:600 10px var(--font);letter-spacing:2px;cursor:pointer;transition:.2s;text-transform:uppercase}
+.inv-tab:hover{color:#ccc;border-color:#333}
+.inv-tab.active{color:var(--accent);border-color:var(--accent);background:#0c0c18}
+.inv-grid{display:flex;flex-wrap:wrap;gap:8px;width:100%;max-width:1000px;justify-content:flex-start}
+.inv-item{width:110px;border:1px solid #1a1a28;border-radius:8px;background:var(--panel);cursor:pointer;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;transition:.2s;position:relative;overflow:hidden}
+.inv-item::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:.2s}
+.inv-item:hover{transform:translateY(-2px);border-color:#333}
+.inv-item:hover::before{opacity:1}
+.inv-item.equipped{border-color:var(--accent)}
+.inv-item.equipped::before{opacity:1;background:var(--accent)}
+.inv-item .ii-icon{font-size:28px;line-height:1}
+.inv-item .ii-name{font:600 9px var(--font);color:#ccc;text-align:center;letter-spacing:.5px}
+.inv-item .ii-rarity{font:700 7px var(--font);letter-spacing:1.5px;text-transform:uppercase;padding:2px 6px;border-radius:3px}
+.inv-item .ii-equipped{font:700 7px var(--font);color:var(--accent);letter-spacing:1px;margin-top:2px}
+.rarity-common{color:#b0b0b0;border-color:#444}.rarity-common .ii-rarity{background:#333;color:#b0b0b0}
+.rarity-uncommon{color:#4488ff;border-color:#2255aa}.rarity-uncommon .ii-rarity{background:#1a2a44;color:#4488ff}
+.rarity-rare{color:#aa44ff;border-color:#6622aa}.rarity-rare .ii-rarity{background:#2a1a44;color:#aa44ff}
+.rarity-epic{color:#ff44aa;border-color:#aa2266}.rarity-epic .ii-rarity{background:#441a2a;color:#ff44aa}
+.rarity-legendary{color:#ffaa00;border-color:#aa6600}.rarity-legendary .ii-rarity{background:#442a0a;color:#ffaa00}
+/* Cases section */
+.inv-cases{display:flex;gap:10px;flex-wrap:wrap;width:100%;max-width:1000px;margin-bottom:16px}
+.case-card{width:140px;border:1px solid #1a1a28;border-radius:10px;background:var(--panel);padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;transition:.2s;position:relative}
+.case-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 8px 24px #0006}
+.case-card .cc-icon{font-size:36px;filter:drop-shadow(0 4px 12px #0008)}
+.case-card .cc-name{font:700 11px var(--font);color:#ccc;text-align:center}
+.case-card .cc-count{font:600 9px var(--font);color:#888}
+.case-card .cc-status{font:600 9px var(--font);padding:3px 8px;border-radius:4px;margin-top:2px}
+.case-card .cc-status.has-key{background:#1a2a1a;color:#4f4;border:1px solid #2a4a2a}
+.case-card .cc-status.no-key{background:#2a1a1a;color:#a44;border:1px solid #4a2a2a}
+.inv-keys{font:600 11px var(--font);color:#888;margin-bottom:12px;width:100%;max-width:1000px;display:flex;align-items:center;gap:8px}
+.inv-keys span{color:#ffaa00;font-weight:700}
+/* Unbox overlay */
+#unboxOverlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(2,2,6,.95);backdrop-filter:blur(12px);z-index:800;flex-direction:column;align-items:center;justify-content:center}
+#unboxOverlay.active{display:flex}
+.unbox-strip{position:relative;width:660px;height:120px;overflow:hidden;border:2px solid #222;border-radius:12px;background:#08080e;margin-bottom:24px}
+.unbox-strip-inner{display:flex;position:absolute;top:0;left:0;height:100%;transition:none}
+.unbox-item{width:110px;height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;flex-shrink:0;border-right:1px solid #1a1a28}
+.unbox-item .ui-icon{font-size:32px}
+.unbox-item .ui-name{font:600 8px var(--font);color:#888;text-align:center}
+.unbox-pointer{position:absolute;top:0;left:50%;transform:translateX(-50%);width:3px;height:100%;background:var(--accent);z-index:2;box-shadow:0 0 12px var(--accent)}
+.unbox-result{text-align:center}
+.unbox-result .ur-rarity{font:700 10px var(--font);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px}
+.unbox-result .ur-icon{font-size:64px;margin-bottom:8px;filter:drop-shadow(0 0 20px currentColor)}
+.unbox-result .ur-name{font:bold 28px var(--display);letter-spacing:4px;color:#fff;margin-bottom:4px}
+.unbox-result .ur-desc{font:11px var(--font);color:#666;margin-bottom:20px}
+.unbox-btn{padding:10px 32px;border:2px solid var(--accent);border-radius:8px;background:transparent;color:var(--accent);font:700 14px var(--display);letter-spacing:4px;cursor:pointer;transition:.2s}
+.unbox-btn:hover{background:var(--accent);color:#000}
+/* Customize panel in inventory */
+.customize-panel{width:100%;max-width:1000px;display:flex;gap:16px;margin-bottom:16px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px}
+.customize-preview{width:180px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.customize-preview canvas{width:120px;height:120px;image-rendering:pixelated;border:1px solid #222;border-radius:8px;background:#0a0a14}
+.customize-preview .cp-name{font:700 14px var(--font);color:var(--accent)}
+.customize-slots{flex:1;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start}
+.customize-slot{padding:8px 12px;border:1px solid #1a1a28;border-radius:6px;background:#0a0a14;min-width:130px;cursor:pointer;transition:.2s}
+.customize-slot:hover{border-color:#444}
+.customize-slot .cs-label{font:600 8px var(--font);color:#555;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.customize-slot .cs-value{font:600 11px var(--font);color:#ccc}
+.customize-slot .cs-value.empty{color:#333;font-style:italic}
+/* Drop notification */
+.drop-notif{position:fixed;top:40px;right:16px;z-index:700;display:flex;flex-direction:column;gap:6px}
+.drop-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:10px 16px;display:flex;align-items:center;gap:10px;backdrop-filter:blur(8px);animation:dropSlideIn .4s ease-out;min-width:200px}
+.drop-card .dc-icon{font-size:24px}
+.drop-card .dc-text{font:600 11px var(--font);color:#ccc;line-height:1.5}
+.drop-card .dc-sub{font:9px var(--font);color:#555}
+@keyframes dropSlideIn{from{transform:translateX(100px);opacity:0}to{transform:translateX(0);opacity:1}}
 </style>
 </head>
 <body>
@@ -203,6 +275,7 @@ canvas{display:block;image-rendering:pixelated}
     <div class="mm-sub">N GAMES NETWORK</div>
     <button class="mm-btn" id="mmSingle" onclick="SFX.play('menu_select');menuFlow='single';showScreen('charSelect')">SINGLE PLAYER</button>
     <button class="mm-btn" id="mmMulti" onclick="SFX.play('menu_select');menuFlow='multi';showScreen('mpCharSelect')">MULTIPLAYER</button>
+    <button class="mm-btn" onclick="SFX.play('menu_select');openInventory()">LOCKER</button>
     <button class="mm-btn secondary" onclick="SFX.play('menu_hover');showScreen('profileScreen')">SWITCH PROFILE</button>
     <div id="socialArea" style="margin-top:20px;width:320px"></div>
   </div>
@@ -314,8 +387,45 @@ canvas{display:block;image-rendering:pixelated}
 <div id="resultsScreen" class="screen">
   <h1 id="resultTitle"></h1>
   <div class="stats" id="resultStats"></div>
+  <div id="resultDrops" style="margin-bottom:16px"></div>
   <button class="continue-btn" onclick="showScreen('mainMenu')">CONTINUE</button>
 </div>
+
+<div id="inventoryScreen" class="screen">
+  <canvas></canvas>
+  <div class="inv-content">
+    <div class="inv-header">
+      <div class="inv-title">LOCKER</div>
+      <div class="inv-tabs">
+        <button class="inv-tab active" onclick="invShowTab('customize',this)">CUSTOMIZE</button>
+        <button class="inv-tab" onclick="invShowTab('cases',this)">CASES</button>
+        <button class="inv-tab" onclick="invShowTab('skins',this)">SKINS</button>
+        <button class="inv-tab" onclick="invShowTab('effects',this)">EFFECTS</button>
+        <button class="inv-tab" onclick="invShowTab('trails',this)">TRAILS</button>
+        <button class="inv-tab" onclick="invShowTab('badges',this)">BADGES</button>
+        <button class="inv-tab" onclick="invShowTab('emotes',this)">EMOTES</button>
+        <button class="inv-tab" onclick="invShowTab('battlepass',this)">BATTLE PASS</button>
+      </div>
+    </div>
+    <div id="invBody"></div>
+    <div class="nav-row"><button class="back-btn" onclick="showScreen('mainMenu')">BACK</button></div>
+  </div>
+</div>
+
+<div id="unboxOverlay">
+  <div style="font:bold 28px var(--display);letter-spacing:5px;color:#fff;margin-bottom:20px" id="unboxCaseName"></div>
+  <div class="unbox-strip">
+    <div class="unbox-pointer"></div>
+    <div class="unbox-strip-inner" id="unboxStrip"></div>
+  </div>
+  <div class="unbox-result" id="unboxResult" style="display:none"></div>
+  <div style="display:flex;gap:10px">
+    <button class="unbox-btn" id="unboxOpenBtn" onclick="unboxOpen()">OPEN</button>
+    <button class="back-btn" id="unboxCloseBtn" onclick="unboxClose()">CLOSE</button>
+  </div>
+</div>
+
+<div class="drop-notif" id="dropNotifs"></div>
 
 <div class="radio-bar" id="radioBar" style="display:none">
   <button onclick="radioSwitch(-1)">&#9664;</button>
@@ -458,6 +568,56 @@ function radioStop(){if(radioAudio){radioAudio.pause();radioAudio.src='';radioAu
 function radioSetVol(v){if(radioAudio)radioAudio.volume=v/100;}
 
 // ═══════════════════════════════════════════════════════════════════════
+// ANNOUNCER — Web Speech API for kill callouts
+// ═══════════════════════════════════════════════════════════════════════
+const Announcer={
+  enabled:true,vol:.6,
+  _voice:null,
+  _getVoice(){
+    if(this._voice)return this._voice;
+    const voices=window.speechSynthesis?.getVoices()||[];
+    this._voice=voices.find(v=>v.name.includes('David'))||voices.find(v=>v.lang==='en-US'&&v.name.includes('Male'))||voices[0]||null;
+    return this._voice;
+  },
+  say(text,priority){
+    if(!this.enabled||!window.speechSynthesis)return;
+    if(!priority&&window.speechSynthesis.speaking)return;
+    if(priority)window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);u.rate=1.1;u.pitch=.8;u.volume=this.vol;
+    const v=this._getVoice();if(v)u.voice=v;
+    window.speechSynthesis.speak(u);
+  },
+  onKillStreak(streak){
+    if(streak===2)this.say('Double Kill');
+    else if(streak===3)this.say('Triple Kill!');
+    else if(streak===4)this.say('Quad Kill!',true);
+    else if(streak===5)this.say('Killing Spree!',true);
+    else if(streak===7)this.say('Rampage!',true);
+    else if(streak===10)this.say('Unstoppable!',true);
+    else if(streak===15)this.say('God Like!',true);
+    else if(streak===20)this.say('LEGENDARY!',true);
+  },
+  onEvent(evt,data){
+    switch(evt){
+      case'first_blood':this.say('First Blood');break;
+      case'headshot':this.say('Headshot');break;
+      case'nuke':this.say('Tactical Nuke Incoming!',true);break;
+      case'airstrike':this.say('Airstrike inbound!',true);break;
+      case'wave':this.say('Wave '+(data?.wave||'')+'!');break;
+      case'wave_clear':this.say('Wave cleared!');break;
+      case'boss':this.say('Boss incoming!',true);break;
+      case'match_start':this.say('Fight!',true);break;
+      case'victory':this.say('Victory!',true);break;
+      case'defeat':this.say('Defeated.',true);break;
+      case'flag_taken':this.say('Flag taken!');break;
+      case'flag_captured':this.say('Flag captured!',true);break;
+    }
+  }
+};
+// Load voices (async on some browsers)
+if(window.speechSynthesis)window.speechSynthesis.onvoiceschanged=()=>Announcer._getVoice();
+
+// ═══════════════════════════════════════════════════════════════════════
 // SETTINGS + KEYBINDS
 // ═══════════════════════════════════════════════════════════════════════
 const DEFAULT_SETTINGS={sfxVol:50,musicVol:30,screenShake:true,showFPS:false,damageNumbers:true,crosshair:'dot'};
@@ -477,52 +637,207 @@ window.addEventListener('gamepadconnected',e=>{gamepad=e.gamepad;});
 window.addEventListener('gamepaddisconnected',()=>{gamepad=null;});
 
 // ═══════════════════════════════════════════════════════════════════════
-// SPRITE SYSTEM — 8-bit style characters
+// SPRITE SYSTEM — 2.5D Terraria/Metroid Fusion style (24x32 grid, 2px)
 // ═══════════════════════════════════════════════════════════════════════
 const SKIN_DARK='#5C3A1E',SKIN_MID='#7A4E2D',SKIN_LIGHT='#8B6038',SKIN_SHADOW='#3D2510';
+const SKIN_HI_DARK='#7A5030',SKIN_HI_MID='#9A6840',SKIN_HI_LIGHT='#A87850';
 function darkenHex(h,a){h=h.replace('#','');const r=parseInt(h.substr(0,2),16),g=parseInt(h.substr(2,2),16),b=parseInt(h.substr(4,2),16);return`rgb(${Math.floor(r*(1-a))},${Math.floor(g*(1-a))},${Math.floor(b*(1-a))})`;}
 function lightenHex(h,a){h=h.replace('#','');const r=parseInt(h.substr(0,2),16),g=parseInt(h.substr(2,2),16),b=parseInt(h.substr(4,2),16);return`rgb(${Math.min(255,r+Math.floor((255-r)*a))},${Math.min(255,g+Math.floor((255-g)*a))},${Math.min(255,b+Math.floor((255-b)*a))})`;}
 
-function makeSprite(grid,charColor,skinTone){
-  const px=3,W=16*px,H=16*px,can=document.createElement('canvas');can.width=W;can.height=H;
+function makeSprite25D(grid,charColor,skinTone){
+  const px=2,cols=24,rows=32;
+  const W=cols*px,H=rows*px;
+  const can=document.createElement('canvas');can.width=W;can.height=H;
   const ctx=can.getContext('2d');
-  for(let y=0;y<16;y++){const row=grid[y]||'';for(let x=0;x<16;x++){const ch=row[x]||' ';let color=null;
-    switch(ch){case'S':color=skinTone;break;case's':color=SKIN_SHADOW;break;case'H':color='#1a1a1a';break;case'h':color='#282828';break;case'E':color='#fff';break;case'P':color='#111';break;case'C':color=charColor;break;case'c':color=darkenHex(charColor,.4);break;case'D':color='#222';break;case'd':color='#1a1a1a';break;case'B':color='#333';break;case'b':color='#252525';break;case'N':color='#DAA520';break;case'W':color='#fff';break;default:continue;}
+  const skinHi=skinTone===SKIN_DARK?SKIN_HI_DARK:(skinTone===SKIN_MID?SKIN_HI_MID:SKIN_HI_LIGHT);
+  const charDark=darkenHex(charColor,.35);const charLight=lightenHex(charColor,.25);
+  for(let y=0;y<rows;y++){const row=grid[y]||'';for(let x=0;x<cols;x++){const ch=row[x]||' ';let color=null;
+    switch(ch){
+      case'S':color=skinTone;break;case's':color=SKIN_SHADOW;break;case'Q':color=skinHi;break;
+      case'H':color='#1a1a1a';break;case'h':color='#282828';break;case'G':color='#333';break;
+      case'E':color='#fff';break;case'P':color='#111';break;case'R':color='#331111';break;
+      case'C':color=charColor;break;case'c':color=charDark;break;case'L':color=charLight;break;
+      case'O':color='#0a0a0a';break;case'D':color='#222';break;case'd':color='#181818';break;
+      case'B':color='#333';break;case'b':color='#252525';break;case'Z':color='#2a2a2a';break;
+      case'z':color='#1a1a1a';break;case'N':color='#DAA520';break;case'n':color='#B8860B';break;
+      case'W':color='#ddd';break;case'w':color='#aaa';break;case'A':color='#444';break;
+      case'V':color='#1a3a1a';break;case'v':color='#143014';break;
+      case'T':color='#3a2a1a';break;case't':color='#2a1a0a';break;
+      case'X':color='#555';break;case'x':color='#444';break;
+      default:continue;
+    }
     if(color){ctx.fillStyle=color;ctx.fillRect(x*px,y*px,px,px);}
-  }}return can;
+  }}
+  return can;
 }
 
+// 24-wide x 32-tall character grids — Terraria-style proportions
+// Each character: big head, visible torso, arms, legs, distinct clothing
 function createCharSprites(charColor,skinTone,style){
   const S={};
-  const styles={
-    dreads:{
-      base:['    HHHH        ','   HHHHHH       ','  HHSSSSHH      ','  H SSSS HH     ','  HSEPPES H     ','   SSSSSS       ','   sSSSSs       ','    NSSN        ','   CCCCCC       ','   CCCCCC       ','  cCCCCCCc      ','   SSCCSS       '],
-      jumpHead:['    HHHH        ','   HHHHHH       ','  HHSSSSHH      ','  H SSSS HH     ','  HSEPPES H     ','   SSSSSS       ','   sSSSSs       ','    NSSN        ','  SSCCCCSS      ','   CCCCCC       ','   CCCCCC       ','   cCCCCc       '],
+  // Head templates per hairstyle (rows 0-12)
+  const heads={
+    dreads:[// Keshawn — dreads, tank top, chain
+      '        OOOO            ',
+      '       OHHHHO           ',
+      '      OHHHHHHOO         ',
+      '     OHHHHHHHHHO        ',
+      '     OHHSSSSHHO         ',
+      '     OH SQQSS HO        ',
+      '      OSEPPESO          ',
+      '      OSSSSSSSO         ',
+      '       sSQQSs           ',
+      '       ONSSNO           ',
+      '        OSSO            ',
+    ],
+    fade:[// Sean — fade, jacket, watch
+      '        OOOO            ',
+      '       OHhhhO           ',
+      '      OHhSSSShO         ',
+      '      OhSSSSShO         ',
+      '       OSSSSSSO         ',
+      '       OSEPPESO         ',
+      '       OSSSSSSSO        ',
+      '        sSQQSs          ',
+      '         SSSS           ',
+      '         OSSO           ',
+      '         OSSO           ',
+    ],
+    twists:[// Dart — twists, military jacket
+      '       OHHHHHO          ',
+      '      OHHHHHHHHO        ',
+      '      OHHHHHHHO         ',
+      '      OHHSSSSHHO        ',
+      '       OSSSSSSO         ',
+      '       OSEPPESO         ',
+      '       OSSSSSSSO        ',
+      '        sSQQSs          ',
+      '        OSSSSO          ',
+      '         OSSO           ',
+      '         OSSO           ',
+    ],
+    locs:[// Amari — locs, hoodie
+      '      OH OOOO HO        ',
+      '      OHHHHHHHHHO       ',
+      '      OHHSSSSSHO        ',
+      '      OH SSSSSS         ',
+      '       OSSSSSSO         ',
+      '       OSEPPESO         ',
+      '       OSSSSSSSO        ',
+      '        sSQQSs          ',
+      '        OSSSSO          ',
+      '         OSSO           ',
+      '         OSSO           ',
+    ],
+  };
+  // Torso templates per character style
+  const torsos={
+    dreads:{// tank top + chain
+      idle:[
+        '        SCCCS           ',
+        '       SCCCCCCS         ',
+        '       SLCCCCCLS        ',
+        '      SSLCCCCCLSS       ',
+        '       OCCCCCCCO        ',
+        '       OcCCCCcO         ',
+        '        OcCCcO          ',
+      ],
     },
-    fade:{
-      base:['    HHHH        ','   HhhhHH       ','   hSSSSh       ','   SSSSSS       ','   SEPPES       ','   SSSSSS       ','   sSSSSs       ','    SSSS        ','   CCCCCC       ','   CCCCCC       ','  cCCCCCCc      ','   SSCCSS       '],
-      jumpHead:['    HHHH        ','   HhhhHH       ','   hSSSSh       ','   SSSSSS       ','   SEPPES       ','   SSSSSS       ','   sSSSSs       ','    SSSS        ','  SSCCCCSS      ','   CCCCCC       ','   CCCCCC       ','   cCCCCc       '],
+    fade:{// jacket + collar
+      idle:[
+        '       OLCCCLO          ',
+        '      SOLCCCCLOS        ',
+        '      SOCCCCCCCOS       ',
+        '     SS OCCCCCO SS      ',
+        '       OcCCCCcO         ',
+        '       OcCCCCcO         ',
+        '        OcCCcO          ',
+      ],
     },
-    twists:{
-      base:['   HHHHHH       ','  HHHHHHHH      ','  HHSSSSSH      ','   SSSSSS       ','   SEPPES       ','   SSSSSS       ','   sSSSSs       ','    SSSS        ','  HCCCCCCCH     ','  HCCCCCCCH     ','   CCCCCC       ','   SSCCSS       '],
-      jumpHead:['   HHHHHH       ','  HHHHHHHH      ','  HHSSSSSH      ','   SSSSSS       ','   SEPPES       ','   SSSSSS       ','   sSSSSs       ','    SSSS        ',' SSHCCCCCCHSS   ','  HCCCCCCCH     ','   CCCCCC       ','   cCCCCc       '],
+    twists:{// military vest
+      idle:[
+        '       OVCCCCVO         ',
+        '      SOVCCCCVOS        ',
+        '      SOVCCCCCVOS       ',
+        '     SS OVCCCVO SS      ',
+        '       OvCCCCvO         ',
+        '       OvCCCCvO         ',
+        '        OcCCcO          ',
+      ],
     },
-    locs:{
-      base:['  HH HHHH HH    ','  HHHHHHHHHH    ','  HHSSSSSSH     ','  H SSSSSS      ','   SEPPES       ','   SSSSSS       ','   sSSSSs       ','    SSSS        ','   CCCCCC       ','   CCCCCC       ','   cCCCCc       ','   SSCCSS       '],
-      jumpHead:['  HH HHHH HH    ','  HHHHHHHHHH    ','  HHSSSSSSH     ','  H SSSSSS      ','   SEPPES       ','   SSSSSS       ','   sSSSSs       ','    SSSS        ','  SSCCCCSS      ','   CCCCCC       ','   CCCCCC       ','   cCCCCc       '],
+    locs:{// hoodie
+      idle:[
+        '       OLCCCLO          ',
+        '      SOLCCCCLOS        ',
+        '      SOLCCCCLOS        ',
+        '     SSOLCCCCCLOSS      ',
+        '       OCCCCCCCO        ',
+        '       OcCCCCcO         ',
+        '        OcCCcO          ',
+      ],
     },
   };
-  const st=styles[style]||styles.fade;
+  // Leg templates
   const legs={
-    idle:['   SS  SS       ','   DD  DD       ','   BB  BB       ','   bb  bb       '],
-    run1:['    SS SS       ','   DD   DD      ','   BB   BB      ','   bb   bb      '],
-    run2:['  SS    SS      ',' DD      DD     ',' BB      BB     ',' bb      bb     '],
-    jump:['   SS  SS       ','   DD  DD       ','    BB  BB      ','    bb  bb      '],
+    idle:[
+      '        ODDDO           ',
+      '       ODD DDO          ',
+      '       ODD DDO          ',
+      '       ODD DDO          ',
+      '       OBB BBO          ',
+      '       OZZOZZP          ',
+    ],
+    run1:[
+      '        ODDO            ',
+      '       ODD  DO          ',
+      '       OD   DDO         ',
+      '       OB    BO         ',
+      '       OZZ  ZZO         ',
+      '       Ozz  zzO         ',
+    ],
+    run2:[
+      '         ODDO           ',
+      '       ODD  DDO         ',
+      '      ODD    DDO        ',
+      '      OB      BO        ',
+      '      OZZ    ZZO        ',
+      '      Ozz    zzO        ',
+    ],
+    run3:[
+      '        ODDDO           ',
+      '        OD DDO          ',
+      '       ODD DDO          ',
+      '       OBB BBO          ',
+      '       OZZOZZP          ',
+      '       OzzOzzP          ',
+    ],
+    jump:[
+      '       OD  DO           ',
+      '      ODD  DDO          ',
+      '      ODD  DDO          ',
+      '       OB  BO           ',
+      '       OZZ ZZO          ',
+      '        Oz zO           ',
+    ],
+    wallslide:[
+      '        ODDDO           ',
+      '        ODDDO           ',
+      '        ODDDO           ',
+      '        OBBBO           ',
+      '        OZZO            ',
+      '        OzzO            ',
+    ],
   };
-  S.idle=makeSprite([...st.base,...legs.idle],charColor,skinTone);
-  S.run1=makeSprite([...st.base,...legs.run1],charColor,skinTone);
-  S.run2=makeSprite([...st.base,...legs.run2],charColor,skinTone);
-  S.jump=makeSprite([...st.jumpHead,...legs.jump],charColor,skinTone);
+  const hs=heads[style]||heads.fade;
+  const ts=torsos[style]||torsos.fade;
+  // Combine head + torso + legs, pad to 32 rows
+  function combine(h,t,l){const rows=[...h,...t,...l];while(rows.length<32)rows.push('');return rows;}
+  S.idle=makeSprite25D(combine(hs,ts.idle,legs.idle),charColor,skinTone);
+  S.run1=makeSprite25D(combine(hs,ts.idle,legs.run1),charColor,skinTone);
+  S.run2=makeSprite25D(combine(hs,ts.idle,legs.run2),charColor,skinTone);
+  S.run3=makeSprite25D(combine(hs,ts.idle,legs.run3),charColor,skinTone);
+  S.jump=makeSprite25D(combine(hs,ts.idle,legs.jump),charColor,skinTone);
+  S.wallslide=makeSprite25D(combine(hs,ts.idle,legs.wallslide),charColor,skinTone);
   return S;
 }
 
@@ -558,7 +873,7 @@ const TICK=1/60,GRAVITY=1800,MAX_FALL=900,JUMP_VEL=-580,WALL_SLIDE_SPEED=120,WAL
 // Safe character data lookup — returns defaults for enemies
 const DEFAULT_CHAR={hp:150,speed:280,jumpMul:1,ability:{name:'None',cooldown:99,duration:0},passiveFn(){return 1;},abilityFn(){},abilityEnd(){},color:'#888',skin:'#3a2a1a'};
 function getChar(name){return CHARACTERS[name]||DEFAULT_CHAR;}
-const PLAYER_W=28,PLAYER_H=44,RESPAWN_TIME=3,PICKUP_SPAWN_INTERVAL=6;
+const PLAYER_W=32,PLAYER_H=56,RESPAWN_TIME=3,PICKUP_SPAWN_INTERVAL=6;
 
 const W_={
   Pistol:{name:'Pistol',damage:12,pellets:1,spread:.03,rate:.3,ammo:15,reload:1.0,range:500,speed:1100,size:2,color:'#ff8',base:true,sfx:'shoot_pistol',weight:1},
@@ -566,8 +881,8 @@ const W_={
   Sniper:{name:'Sniper',damage:55,pellets:1,spread:.003,rate:1.1,ammo:5,reload:2.0,range:1200,speed:2200,size:2,color:'#ff4',base:true,sfx:'shoot_sniper',weight:4},
   Rocket:{name:'Rocket',damage:40,pellets:1,spread:.02,rate:.9,ammo:4,reload:2.2,range:800,speed:650,size:5,color:'#f84',base:true,sfx:'shoot_rocket',weight:5,explosive:true,blastRadius:80},
   SMG:{name:'SMG',damage:7,pellets:1,spread:.07,rate:.07,ammo:35,reload:1.6,range:380,speed:1000,size:2,color:'#8ef',base:true,sfx:'shoot_smg',weight:2},
-  Minigun:{name:'Minigun',damage:5,pellets:1,spread:.1,rate:.04,ammo:80,reload:3.0,range:420,speed:1100,size:2,color:'#f88',sfx:'shoot_minigun',weight:6},
-  Railgun:{name:'Railgun',damage:70,pellets:1,spread:0,rate:1.6,ammo:3,reload:2.5,range:1300,speed:3000,size:3,color:'#4ff',sfx:'shoot_laser',weight:4,piercing:true},
+  Minigun:{name:'Minigun',damage:6,pellets:1,spread:.09,rate:.04,ammo:100,reload:3.0,range:450,speed:1100,size:2,color:'#f88',sfx:'shoot_minigun',weight:6},
+  Railgun:{name:'Railgun',damage:65,pellets:1,spread:0,rate:1.4,ammo:4,reload:2.5,range:1300,speed:3000,size:3,color:'#4ff',sfx:'shoot_laser',weight:4,piercing:true},
   'Grenade Lnchr':{name:'Grenade Lnchr',damage:35,pellets:1,spread:.05,rate:.7,ammo:6,reload:2.0,range:500,speed:550,size:4,color:'#8f4',sfx:'shoot_rocket',weight:4,explosive:true,blastRadius:70,arc:true},
   Flamethrower:{name:'Flamethrower',damage:3,pellets:3,spread:.25,rate:.04,ammo:60,reload:2.5,range:160,speed:450,size:3,color:'#fa0',sfx:'shoot_flame',weight:3},
   'Dual Pistols':{name:'Dual Pistols',damage:10,pellets:2,spread:.05,rate:.18,ammo:28,reload:1.5,range:440,speed:1100,size:2,color:'#ff8',sfx:'shoot_pistol',weight:2},
@@ -597,6 +912,10 @@ const POWERUP_TYPES=[
   {name:'Cooldown Reset',type:'cd',color:'#f4f',icon:'C',effect(e){e.abilityCooldown=0;}},
   {name:'Double Damage',type:'ddmg',color:'#f00',icon:'2',effect(e){e.dmgBuff=6;e.dmgMul=2;}},
   {name:'Mega Health',type:'mega',color:'#0ff',icon:'M',effect(e){e.hp=e.maxHp*1.5;e.maxHpBuff=15;}},
+  {name:'Gravity Flip',type:'gflip',color:'#a4f',icon:'G',effect(e){e.vy=-600;e.canDoubleJump=true;}},
+  {name:'Vampiric',type:'vamp',color:'#d04',icon:'V',effect(e){e.vampBuff=10;}},
+  {name:'EMP',type:'emp',color:'#88f',icon:'E',effect(e,g){if(g)g.entities.filter(en=>en!==e&&!en.dead&&g.isEnemy(e,en)).forEach(en=>{en.abilityCooldown=Math.max(en.abilityCooldown,8);en.slowed=true;en.slowTimer=2;});}},
+  {name:'Berserk',type:'berserk',color:'#f20',icon:'B',effect(e){e.dmgBuff=6;e.dmgMul=1.8;e.speedBuff=6;e.speedMul=1.3;}},
 ];
 
 const CHARACTERS={
@@ -762,7 +1081,769 @@ function renderAchievementPopups(c,W,H,dt){
   }
 }
 
-function mp(name,bg,bgA,plats,spawns,dY,extras){return{name,bg,bgAccent:bgA,width:1280,height:688,platforms:plats,spawns,pickupSpawns:spawns,weaponSpawns:spawns.slice(0,3),deathY:dY||750,jumpPads:[],hazards:[],gravity:1,...(extras||{})};}
+// ═══════════════════════════════════════════════════════════════════════
+// COSMETICS / CASE / KEY / INVENTORY SYSTEM — The Drip Check Update
+// ═══════════════════════════════════════════════════════════════════════
+const RARITY={COMMON:{name:'Common',color:'#b0b0b0',weight:45},UNCOMMON:{name:'Uncommon',color:'#4488ff',weight:28},RARE:{name:'Rare',color:'#aa44ff',weight:16},EPIC:{name:'Epic',color:'#ff44aa',weight:8},LEGENDARY:{name:'Legendary',color:'#ffaa00',weight:3}};
+const RARITY_CSS={Common:'rarity-common',Uncommon:'rarity-uncommon',Rare:'rarity-rare',Epic:'rarity-epic',Legendary:'rarity-legendary'};
+
+// All cosmetic items in the game
+const COSMETIC_DB = [
+  // ── SKINS (character color variants) ──
+  {id:'skin_gold_keshawn',name:'Gold Rush',type:'skin',char:'Keshawn',rarity:'Legendary',icon:'👑',desc:'Golden Keshawn variant',colorOverride:'#ffd700'},
+  {id:'skin_chrome_keshawn',name:'Chrome',type:'skin',char:'Keshawn',rarity:'Epic',icon:'🪞',desc:'Chrome Keshawn variant',colorOverride:'#c0c0e0'},
+  {id:'skin_neon_keshawn',name:'Neon',type:'skin',char:'Keshawn',rarity:'Rare',icon:'💚',desc:'Neon green Keshawn',colorOverride:'#00ff80'},
+  {id:'skin_shadow_keshawn',name:'Shadow',type:'skin',char:'Keshawn',rarity:'Uncommon',icon:'🖤',desc:'Stealth Keshawn',colorOverride:'#222'},
+  {id:'skin_gold_sean',name:'Gold Rush',type:'skin',char:'Sean',rarity:'Legendary',icon:'👑',desc:'Golden Sean variant',colorOverride:'#ffd700'},
+  {id:'skin_chrome_sean',name:'Chrome',type:'skin',char:'Sean',rarity:'Epic',icon:'🪞',desc:'Chrome Sean variant',colorOverride:'#c0c0e0'},
+  {id:'skin_neon_sean',name:'Neon',type:'skin',char:'Sean',rarity:'Rare',icon:'💛',desc:'Neon yellow Sean',colorOverride:'#ffff00'},
+  {id:'skin_shadow_sean',name:'Shadow',type:'skin',char:'Sean',rarity:'Uncommon',icon:'🖤',desc:'Stealth Sean',colorOverride:'#222'},
+  {id:'skin_gold_dart',name:'Gold Rush',type:'skin',char:'Dart',rarity:'Legendary',icon:'👑',desc:'Golden Dart variant',colorOverride:'#ffd700'},
+  {id:'skin_chrome_dart',name:'Chrome',type:'skin',char:'Dart',rarity:'Epic',icon:'🪞',desc:'Chrome Dart variant',colorOverride:'#c0c0e0'},
+  {id:'skin_neon_dart',name:'Neon',type:'skin',char:'Dart',rarity:'Rare',icon:'❤️',desc:'Neon red Dart',colorOverride:'#ff0040'},
+  {id:'skin_shadow_dart',name:'Shadow',type:'skin',char:'Dart',rarity:'Uncommon',icon:'🖤',desc:'Stealth Dart',colorOverride:'#222'},
+  {id:'skin_gold_amari',name:'Gold Rush',type:'skin',char:'Amari',rarity:'Legendary',icon:'👑',desc:'Golden Amari variant',colorOverride:'#ffd700'},
+  {id:'skin_chrome_amari',name:'Chrome',type:'skin',char:'Amari',rarity:'Epic',icon:'🪞',desc:'Chrome Amari variant',colorOverride:'#c0c0e0'},
+  {id:'skin_neon_amari',name:'Neon',type:'skin',char:'Amari',rarity:'Rare',icon:'💙',desc:'Neon blue Amari',colorOverride:'#00bbff'},
+  {id:'skin_shadow_amari',name:'Shadow',type:'skin',char:'Amari',rarity:'Uncommon',icon:'🖤',desc:'Stealth Amari',colorOverride:'#222'},
+  {id:'skin_ice',name:'Frostbite',type:'skin',char:'*',rarity:'Epic',icon:'🧊',desc:'Icy blue on anyone',colorOverride:'#88ddff'},
+  {id:'skin_fire',name:'Inferno',type:'skin',char:'*',rarity:'Epic',icon:'🔥',desc:'Red flame on anyone',colorOverride:'#ff4400'},
+  {id:'skin_void',name:'Void Walker',type:'skin',char:'*',rarity:'Legendary',icon:'🌀',desc:'Dark purple void',colorOverride:'#6600cc'},
+  {id:'skin_camo',name:'Digital Camo',type:'skin',char:'*',rarity:'Common',icon:'🌿',desc:'Green camo pattern',colorOverride:'#556b2f'},
+  {id:'skin_urban',name:'Urban Camo',type:'skin',char:'*',rarity:'Common',icon:'🏙️',desc:'Gray urban camo',colorOverride:'#666680'},
+  {id:'skin_blood',name:'Blood Moon',type:'skin',char:'*',rarity:'Rare',icon:'🌙',desc:'Deep crimson red',colorOverride:'#880022'},
+  {id:'skin_electric',name:'Electric',type:'skin',char:'*',rarity:'Rare',icon:'⚡',desc:'Electric blue spark',colorOverride:'#00ccff'},
+  {id:'skin_toxic',name:'Toxic',type:'skin',char:'*',rarity:'Uncommon',icon:'☣️',desc:'Toxic green glow',colorOverride:'#88ff00'},
+  // ── KILL EFFECTS ──
+  {id:'kfx_skull',name:'Skull Pop',type:'kill_effect',rarity:'Rare',icon:'💀',desc:'Skulls burst on kill'},
+  {id:'kfx_confetti',name:'Confetti',type:'kill_effect',rarity:'Uncommon',icon:'🎉',desc:'Party confetti on kill'},
+  {id:'kfx_pixel',name:'Pixel Burst',type:'kill_effect',rarity:'Common',icon:'🟩',desc:'Pixelated explosion'},
+  {id:'kfx_fire',name:'Incinerate',type:'kill_effect',rarity:'Epic',icon:'🔥',desc:'Enemy burns to ash'},
+  {id:'kfx_ice',name:'Shatter',type:'kill_effect',rarity:'Epic',icon:'❄️',desc:'Enemy freezes and shatters'},
+  {id:'kfx_electric',name:'Electrocute',type:'kill_effect',rarity:'Rare',icon:'⚡',desc:'Lightning arcs on kill'},
+  {id:'kfx_hearts',name:'Heartbreak',type:'kill_effect',rarity:'Uncommon',icon:'💔',desc:'Hearts scatter on kill'},
+  {id:'kfx_money',name:'Cash Out',type:'kill_effect',rarity:'Legendary',icon:'💰',desc:'Money flies everywhere'},
+  {id:'kfx_void',name:'Void Collapse',type:'kill_effect',rarity:'Legendary',icon:'🌑',desc:'Enemy collapses into void'},
+  {id:'kfx_glitch',name:'Glitch',type:'kill_effect',rarity:'Rare',icon:'📺',desc:'Screen glitch effect'},
+  // ── TRAILS ──
+  {id:'trail_fire',name:'Fire Trail',type:'trail',rarity:'Rare',icon:'🔥',desc:'Leave flames when running'},
+  {id:'trail_ice',name:'Ice Trail',type:'trail',rarity:'Rare',icon:'🧊',desc:'Leave frost when running'},
+  {id:'trail_spark',name:'Spark Trail',type:'trail',rarity:'Uncommon',icon:'✨',desc:'Sparkles behind you'},
+  {id:'trail_smoke',name:'Smoke Trail',type:'trail',rarity:'Common',icon:'💨',desc:'Wispy smoke trail'},
+  {id:'trail_rainbow',name:'Rainbow',type:'trail',rarity:'Epic',icon:'🌈',desc:'Rainbow streak behind you'},
+  {id:'trail_shadow',name:'Shadow Clone',type:'trail',rarity:'Epic',icon:'👤',desc:'Dark afterimages follow you'},
+  {id:'trail_neon',name:'Neon Streak',type:'trail',rarity:'Uncommon',icon:'💜',desc:'Neon color trail'},
+  {id:'trail_stars',name:'Starfall',type:'trail',rarity:'Legendary',icon:'⭐',desc:'Stars cascade behind you'},
+  {id:'trail_blood',name:'Blood Trail',type:'trail',rarity:'Rare',icon:'🩸',desc:'Dark red drips behind you'},
+  {id:'trail_glitch',name:'Glitch Trail',type:'trail',rarity:'Rare',icon:'📡',desc:'Glitchy pixels trail'},
+  // ── BADGES / TITLES ──
+  {id:'badge_og',name:'OG',type:'badge',rarity:'Legendary',icon:'🏆',desc:'Day one player'},
+  {id:'badge_killer',name:'Born Killer',type:'badge',rarity:'Epic',icon:'🎯',desc:'500+ career kills'},
+  {id:'badge_survivor',name:'Survivor',type:'badge',rarity:'Rare',icon:'🛡️',desc:'Wave 20+ in survival'},
+  {id:'badge_sniper',name:'Headhunter',type:'badge',rarity:'Rare',icon:'🔫',desc:'100+ sniper kills'},
+  {id:'badge_crew',name:'Crew Chief',type:'badge',rarity:'Epic',icon:'👑',desc:'Won 50+ crew matches'},
+  {id:'badge_streak',name:'Unstoppable',type:'badge',rarity:'Epic',icon:'🔥',desc:'15+ killstreak'},
+  {id:'badge_ghost',name:'Ghost',type:'badge',rarity:'Uncommon',icon:'👻',desc:'Won without dying'},
+  {id:'badge_collector',name:'Collector',type:'badge',rarity:'Uncommon',icon:'📦',desc:'Opened 50 cases'},
+  {id:'badge_addict',name:'Arena Addict',type:'badge',rarity:'Common',icon:'🎮',desc:'Played 100+ matches'},
+  {id:'badge_nuker',name:'Nuclear',type:'badge',rarity:'Legendary',icon:'☢️',desc:'Earned a tactical nuke'},
+  // ── EMOTES ──
+  {id:'emote_flex',name:'Flex',type:'emote',rarity:'Uncommon',icon:'💪',desc:'Show off those gains'},
+  {id:'emote_dance',name:'Smooth',type:'emote',rarity:'Rare',icon:'🕺',desc:'Hit that smooth move'},
+  {id:'emote_laugh',name:'LOL',type:'emote',rarity:'Common',icon:'😂',desc:'Point and laugh'},
+  {id:'emote_salute',name:'Salute',type:'emote',rarity:'Common',icon:'🫡',desc:'Respect'},
+  {id:'emote_rage',name:'Rage',type:'emote',rarity:'Uncommon',icon:'😤',desc:'Pure frustration'},
+  {id:'emote_pray',name:'Mercy',type:'emote',rarity:'Uncommon',icon:'🙏',desc:'Beg for mercy'},
+  {id:'emote_crown',name:'King',type:'emote',rarity:'Epic',icon:'👑',desc:'Claim the throne'},
+  {id:'emote_wave',name:'Wave',type:'emote',rarity:'Common',icon:'👋',desc:'Friendly wave'},
+  {id:'emote_sleep',name:'Boring',type:'emote',rarity:'Uncommon',icon:'😴',desc:'You bore me'},
+  {id:'emote_think',name:'Hmm',type:'emote',rarity:'Rare',icon:'🤔',desc:'Thinking about it'},
+  // ── WEAPON SKINS ──
+  {id:'wskin_gold_shotgun',name:'Gold Shotgun',type:'weapon_skin',weapon:'Shotgun',rarity:'Legendary',icon:'🔫',desc:'Gold plated shotgun',wcolor:'#ffd700'},
+  {id:'wskin_gold_sniper',name:'Gold Sniper',type:'weapon_skin',weapon:'Sniper',rarity:'Legendary',icon:'🔫',desc:'Gold plated sniper',wcolor:'#ffd700'},
+  {id:'wskin_gold_smg',name:'Gold SMG',type:'weapon_skin',weapon:'SMG',rarity:'Legendary',icon:'🔫',desc:'Gold plated SMG',wcolor:'#ffd700'},
+  {id:'wskin_gold_rocket',name:'Gold Rocket',type:'weapon_skin',weapon:'Rocket',rarity:'Legendary',icon:'🔫',desc:'Gold plated launcher',wcolor:'#ffd700'},
+  {id:'wskin_neon_shotgun',name:'Neon Shotgun',type:'weapon_skin',weapon:'Shotgun',rarity:'Rare',icon:'💚',desc:'Neon green shotgun',wcolor:'#00ff80'},
+  {id:'wskin_neon_sniper',name:'Neon Sniper',type:'weapon_skin',weapon:'Sniper',rarity:'Rare',icon:'💛',desc:'Neon yellow sniper',wcolor:'#ffff00'},
+  {id:'wskin_neon_smg',name:'Neon SMG',type:'weapon_skin',weapon:'SMG',rarity:'Rare',icon:'💙',desc:'Neon cyan SMG',wcolor:'#00ccff'},
+  {id:'wskin_red_pistol',name:'Crimson Pistol',type:'weapon_skin',weapon:'Pistol',rarity:'Uncommon',icon:'🔴',desc:'Deep red pistol',wcolor:'#cc0000'},
+  {id:'wskin_ice_minigun',name:'Frost Minigun',type:'weapon_skin',weapon:'Minigun',rarity:'Epic',icon:'🧊',desc:'Ice cold minigun',wcolor:'#88ddff'},
+  {id:'wskin_void_railgun',name:'Void Railgun',type:'weapon_skin',weapon:'Railgun',rarity:'Epic',icon:'🌀',desc:'Void energy railgun',wcolor:'#8800ff'},
+  // ═══ MASSIVE EXPANSION — 150+ additional items ═══
+  // ── MORE CHARACTER SKINS ──
+  {id:'skin_midnight',name:'Midnight',type:'skin',char:'*',rarity:'Uncommon',icon:'🌙',desc:'Deep midnight blue',colorOverride:'#1a1a44'},
+  {id:'skin_sunset',name:'Sunset',type:'skin',char:'*',rarity:'Uncommon',icon:'🌅',desc:'Warm sunset orange',colorOverride:'#ff6633'},
+  {id:'skin_ocean',name:'Deep Ocean',type:'skin',char:'*',rarity:'Rare',icon:'🌊',desc:'Ocean blue depths',colorOverride:'#0055aa'},
+  {id:'skin_forest',name:'Forest',type:'skin',char:'*',rarity:'Common',icon:'🌲',desc:'Deep forest green',colorOverride:'#2d5a27'},
+  {id:'skin_desert',name:'Desert Storm',type:'skin',char:'*',rarity:'Common',icon:'🏜️',desc:'Sandy desert tan',colorOverride:'#c2a569'},
+  {id:'skin_arctic',name:'Arctic',type:'skin',char:'*',rarity:'Uncommon',icon:'🧊',desc:'White arctic camo',colorOverride:'#dde8f0'},
+  {id:'skin_lava',name:'Lava',type:'skin',char:'*',rarity:'Epic',icon:'🌋',desc:'Molten lava red-orange',colorOverride:'#dd4400'},
+  {id:'skin_plasma',name:'Plasma',type:'skin',char:'*',rarity:'Epic',icon:'💜',desc:'Hot plasma purple',colorOverride:'#cc00ff'},
+  {id:'skin_rust',name:'Rust',type:'skin',char:'*',rarity:'Common',icon:'🟤',desc:'Rusted brown',colorOverride:'#8b4513'},
+  {id:'skin_mint',name:'Mint',type:'skin',char:'*',rarity:'Uncommon',icon:'🟢',desc:'Fresh mint green',colorOverride:'#44cc88'},
+  {id:'skin_coral',name:'Coral',type:'skin',char:'*',rarity:'Uncommon',icon:'🪸',desc:'Living coral pink',colorOverride:'#ff6b6b'},
+  {id:'skin_titanium',name:'Titanium',type:'skin',char:'*',rarity:'Rare',icon:'⚙️',desc:'Brushed titanium gray',colorOverride:'#8a8a9a'},
+  {id:'skin_sapphire',name:'Sapphire',type:'skin',char:'*',rarity:'Rare',icon:'💎',desc:'Deep sapphire blue',colorOverride:'#0044cc'},
+  {id:'skin_emerald',name:'Emerald',type:'skin',char:'*',rarity:'Rare',icon:'💚',desc:'Rich emerald green',colorOverride:'#00aa44'},
+  {id:'skin_ruby',name:'Ruby',type:'skin',char:'*',rarity:'Rare',icon:'❤️',desc:'Deep ruby red',colorOverride:'#cc0033'},
+  {id:'skin_amethyst',name:'Amethyst',type:'skin',char:'*',rarity:'Rare',icon:'💜',desc:'Purple amethyst crystal',colorOverride:'#8844cc'},
+  {id:'skin_obsidian',name:'Obsidian',type:'skin',char:'*',rarity:'Epic',icon:'🖤',desc:'Pure black obsidian',colorOverride:'#111118'},
+  {id:'skin_diamond',name:'Diamond',type:'skin',char:'*',rarity:'Legendary',icon:'💎',desc:'Brilliant diamond white',colorOverride:'#e0e8ff'},
+  {id:'skin_hologram',name:'Hologram',type:'skin',char:'*',rarity:'Legendary',icon:'🌈',desc:'Shifting holographic',colorOverride:'#88aaff'},
+  {id:'skin_demon',name:'Demon',type:'skin',char:'*',rarity:'Legendary',icon:'😈',desc:'Dark demon crimson',colorOverride:'#880022'},
+  {id:'skin_angel',name:'Angel',type:'skin',char:'*',rarity:'Legendary',icon:'😇',desc:'Heavenly white-gold',colorOverride:'#ffe8cc'},
+  {id:'skin_galaxy',name:'Galaxy',type:'skin',char:'*',rarity:'Legendary',icon:'🌌',desc:'Deep space galaxy',colorOverride:'#220066'},
+  {id:'skin_neon_pink',name:'Neon Pink',type:'skin',char:'*',rarity:'Uncommon',icon:'💗',desc:'Hot neon pink',colorOverride:'#ff0088'},
+  {id:'skin_neon_orange',name:'Neon Orange',type:'skin',char:'*',rarity:'Uncommon',icon:'🟠',desc:'Bright neon orange',colorOverride:'#ff6600'},
+  {id:'skin_matrix',name:'Matrix',type:'skin',char:'*',rarity:'Epic',icon:'🟩',desc:'Matrix code green',colorOverride:'#00cc00'},
+  {id:'skin_stealth',name:'Stealth',type:'skin',char:'*',rarity:'Rare',icon:'🥷',desc:'Near-invisible dark',colorOverride:'#0a0a14'},
+  {id:'skin_bubblegum',name:'Bubblegum',type:'skin',char:'*',rarity:'Common',icon:'🫧',desc:'Pink bubblegum',colorOverride:'#ff88cc'},
+  {id:'skin_bronze',name:'Bronze',type:'skin',char:'*',rarity:'Common',icon:'🥉',desc:'Aged bronze',colorOverride:'#cd7f32'},
+  {id:'skin_silver',name:'Silver',type:'skin',char:'*',rarity:'Uncommon',icon:'🥈',desc:'Polished silver',colorOverride:'#c0c0c0'},
+  // Character-specific unique skins
+  {id:'skin_king_keshawn',name:'King Kesh',type:'skin',char:'Keshawn',rarity:'Legendary',icon:'🤴',desc:'Royal Keshawn',colorOverride:'#ffd700'},
+  {id:'skin_ice_sean',name:'Ice Sean',type:'skin',char:'Sean',rarity:'Epic',icon:'🥶',desc:'Sub-zero Sean',colorOverride:'#66ddff'},
+  {id:'skin_hellfire_dart',name:'Hellfire',type:'skin',char:'Dart',rarity:'Legendary',icon:'👹',desc:'Dart from hell',colorOverride:'#cc0000'},
+  {id:'skin_phantom_amari',name:'Phantom',type:'skin',char:'Amari',rarity:'Epic',icon:'👻',desc:'Ghost Amari',colorOverride:'#aabbcc'},
+  // ── MORE KILL EFFECTS ──
+  {id:'kfx_lightning',name:'Lightning Strike',type:'kill_effect',rarity:'Epic',icon:'🌩️',desc:'Lightning bolt on kill'},
+  {id:'kfx_roses',name:'Roses',type:'kill_effect',rarity:'Rare',icon:'🌹',desc:'Rose petals scatter'},
+  {id:'kfx_matrix',name:'Matrix',type:'kill_effect',rarity:'Epic',icon:'🟩',desc:'Green code rain on kill'},
+  {id:'kfx_bubbles',name:'Bubbles',type:'kill_effect',rarity:'Common',icon:'🫧',desc:'Bubble pop on kill'},
+  {id:'kfx_snow',name:'Snowfall',type:'kill_effect',rarity:'Uncommon',icon:'❄️',desc:'Snowflakes on kill'},
+  {id:'kfx_fireworks',name:'Fireworks',type:'kill_effect',rarity:'Epic',icon:'🎆',desc:'Firework explosion'},
+  {id:'kfx_bats',name:'Bats',type:'kill_effect',rarity:'Rare',icon:'🦇',desc:'Bats fly out on kill'},
+  {id:'kfx_smoke',name:'Smoke Out',type:'kill_effect',rarity:'Common',icon:'💨',desc:'Smoke cloud on kill'},
+  {id:'kfx_portal',name:'Portal',type:'kill_effect',rarity:'Legendary',icon:'🌀',desc:'Portal opens on kill'},
+  {id:'kfx_gold_coins',name:'Jackpot',type:'kill_effect',rarity:'Legendary',icon:'🪙',desc:'Gold coins rain down'},
+  {id:'kfx_chains',name:'Chains',type:'kill_effect',rarity:'Rare',icon:'⛓️',desc:'Chain reaction effect'},
+  {id:'kfx_stars',name:'Seeing Stars',type:'kill_effect',rarity:'Uncommon',icon:'⭐',desc:'Stars circle the victim'},
+  {id:'kfx_shatter_screen',name:'Screen Break',type:'kill_effect',rarity:'Legendary',icon:'📱',desc:'Screen cracks effect'},
+  {id:'kfx_tornado',name:'Tornado',type:'kill_effect',rarity:'Epic',icon:'🌪️',desc:'Tornado vortex on kill'},
+  {id:'kfx_nuclear',name:'Nuclear Flash',type:'kill_effect',rarity:'Legendary',icon:'☢️',desc:'Bright nuclear flash'},
+  {id:'kfx_petals',name:'Cherry Blossoms',type:'kill_effect',rarity:'Rare',icon:'🌸',desc:'Cherry petals scatter'},
+  // ── MORE TRAILS ──
+  {id:'trail_lightning',name:'Lightning Trail',type:'trail',rarity:'Epic',icon:'⚡',desc:'Electric arcs behind you'},
+  {id:'trail_cherry',name:'Cherry Blossom',type:'trail',rarity:'Rare',icon:'🌸',desc:'Pink petals trail'},
+  {id:'trail_money',name:'Money Trail',type:'trail',rarity:'Legendary',icon:'💰',desc:'Bills fly behind you'},
+  {id:'trail_pixel',name:'Pixel Trail',type:'trail',rarity:'Common',icon:'🟩',desc:'Pixelated blocks'},
+  {id:'trail_bubbles',name:'Bubble Trail',type:'trail',rarity:'Common',icon:'🫧',desc:'Floating bubbles'},
+  {id:'trail_confetti',name:'Confetti Trail',type:'trail',rarity:'Uncommon',icon:'🎉',desc:'Party confetti'},
+  {id:'trail_ghost',name:'Ghost Trail',type:'trail',rarity:'Rare',icon:'👻',desc:'Ghostly white wisps'},
+  {id:'trail_toxic',name:'Toxic Trail',type:'trail',rarity:'Uncommon',icon:'☣️',desc:'Green toxic drip'},
+  {id:'trail_gold',name:'Gold Trail',type:'trail',rarity:'Epic',icon:'✨',desc:'Golden sparkle trail'},
+  {id:'trail_void',name:'Void Trail',type:'trail',rarity:'Legendary',icon:'🕳️',desc:'Reality tears behind you'},
+  {id:'trail_roses',name:'Rose Trail',type:'trail',rarity:'Rare',icon:'🌹',desc:'Rose petals fall'},
+  {id:'trail_snowflake',name:'Snow Trail',type:'trail',rarity:'Uncommon',icon:'❄️',desc:'Snowflakes behind you'},
+  {id:'trail_lava',name:'Lava Trail',type:'trail',rarity:'Epic',icon:'🌋',desc:'Molten lava drips'},
+  {id:'trail_matrix',name:'Matrix Trail',type:'trail',rarity:'Epic',icon:'🟩',desc:'Green code cascades'},
+  {id:'trail_hearts',name:'Heart Trail',type:'trail',rarity:'Uncommon',icon:'❤️',desc:'Hearts float behind'},
+  // ── MORE BADGES ──
+  {id:'badge_first_blood',name:'First Blood',type:'badge',rarity:'Common',icon:'🩸',desc:'Got first blood'},
+  {id:'badge_marksman',name:'Marksman',type:'badge',rarity:'Rare',icon:'🎯',desc:'50+ headshots'},
+  {id:'badge_grinder',name:'Grinder',type:'badge',rarity:'Uncommon',icon:'⚙️',desc:'Played 500+ matches'},
+  {id:'badge_untouchable',name:'Untouchable',type:'badge',rarity:'Legendary',icon:'🛡️',desc:'20-0 in a match'},
+  {id:'badge_speedrun',name:'Speedrunner',type:'badge',rarity:'Epic',icon:'⏱️',desc:'Won in under 2 min'},
+  {id:'badge_clutch',name:'Clutch',type:'badge',rarity:'Rare',icon:'🤞',desc:'Won at 1 HP'},
+  {id:'badge_dominator',name:'Dominator',type:'badge',rarity:'Epic',icon:'💀',desc:'1000+ career kills'},
+  {id:'badge_legend',name:'Legend',type:'badge',rarity:'Legendary',icon:'⭐',desc:'5000+ career kills'},
+  {id:'badge_veteran',name:'Veteran',type:'badge',rarity:'Rare',icon:'🎖️',desc:'200+ matches played'},
+  {id:'badge_wave30',name:'Wave Master',type:'badge',rarity:'Epic',icon:'🌊',desc:'Wave 30+ survival'},
+  {id:'badge_allchars',name:'Versatile',type:'badge',rarity:'Uncommon',icon:'🔄',desc:'Won with all 4 chars'},
+  {id:'badge_noscope',name:'No Scope',type:'badge',rarity:'Rare',icon:'🔭',desc:'Sniper hipfire kill'},
+  {id:'badge_bomber',name:'Demolitions',type:'badge',rarity:'Uncommon',icon:'💣',desc:'100+ explosive kills'},
+  {id:'badge_pacifist',name:'Pacifist',type:'badge',rarity:'Legendary',icon:'☮️',desc:'Win a match with 0 kills'},
+  {id:'badge_throw_master',name:'Throw Master',type:'badge',rarity:'Epic',icon:'🪃',desc:'50+ weapon throw kills'},
+  {id:'badge_collector_pro',name:'Hoarder',type:'badge',rarity:'Rare',icon:'🏪',desc:'Opened 200 cases'},
+  {id:'badge_whale',name:'Whale',type:'badge',rarity:'Legendary',icon:'🐋',desc:'Opened 500 cases'},
+  {id:'badge_lucky',name:'Lucky',type:'badge',rarity:'Epic',icon:'🍀',desc:'Got 3 legendaries'},
+  // ── MORE EMOTES ──
+  {id:'emote_dab',name:'Dab',type:'emote',rarity:'Common',icon:'🙆',desc:'Hit the dab'},
+  {id:'emote_clap',name:'Slow Clap',type:'emote',rarity:'Uncommon',icon:'👏',desc:'Sarcastic applause'},
+  {id:'emote_shrug',name:'Shrug',type:'emote',rarity:'Common',icon:'🤷',desc:'Whatever man'},
+  {id:'emote_facepalm',name:'Facepalm',type:'emote',rarity:'Uncommon',icon:'🤦',desc:'Disappointed'},
+  {id:'emote_chef',name:'Chef Kiss',type:'emote',rarity:'Rare',icon:'🤌',desc:'Perfection'},
+  {id:'emote_peace',name:'Peace',type:'emote',rarity:'Common',icon:'✌️',desc:'Peace out'},
+  {id:'emote_bow',name:'Bow',type:'emote',rarity:'Uncommon',icon:'🙇',desc:'Respectful bow'},
+  {id:'emote_rofl',name:'ROFL',type:'emote',rarity:'Rare',icon:'🤣',desc:'Rolling on the floor'},
+  {id:'emote_evil',name:'Evil Laugh',type:'emote',rarity:'Epic',icon:'😈',desc:'Menacing laugh'},
+  {id:'emote_ghost',name:'Ghost Face',type:'emote',rarity:'Rare',icon:'👻',desc:'Spooky ghost face'},
+  {id:'emote_robot',name:'Robot',type:'emote',rarity:'Uncommon',icon:'🤖',desc:'Robotic dance'},
+  {id:'emote_skull',name:'Dead',type:'emote',rarity:'Common',icon:'💀',desc:'I am dead'},
+  {id:'emote_fire',name:'Fire',type:'emote',rarity:'Uncommon',icon:'🔥',desc:'That was fire'},
+  {id:'emote_cold',name:'Cold',type:'emote',rarity:'Uncommon',icon:'🥶',desc:'Ice cold'},
+  {id:'emote_money_mouth',name:'Money',type:'emote',rarity:'Rare',icon:'🤑',desc:'Money on my mind'},
+  {id:'emote_100',name:'Hundred',type:'emote',rarity:'Common',icon:'💯',desc:'Keep it 100'},
+  {id:'emote_pray_hands',name:'Blessed',type:'emote',rarity:'Uncommon',icon:'🙏',desc:'Grateful'},
+  {id:'emote_ninja',name:'Ninja',type:'emote',rarity:'Epic',icon:'🥷',desc:'Silent and deadly'},
+  {id:'emote_alien',name:'Alien',type:'emote',rarity:'Rare',icon:'👽',desc:'Out of this world'},
+  {id:'emote_diamond_hands',name:'Diamond Hands',type:'emote',rarity:'Legendary',icon:'💎',desc:'Never letting go'},
+  // ── MORE WEAPON SKINS ──
+  {id:'wskin_gold_pistol',name:'Gold Pistol',type:'weapon_skin',weapon:'Pistol',rarity:'Legendary',icon:'🔫',desc:'Gold plated pistol',wcolor:'#ffd700'},
+  {id:'wskin_gold_minigun',name:'Gold Minigun',type:'weapon_skin',weapon:'Minigun',rarity:'Legendary',icon:'🔫',desc:'Gold plated minigun',wcolor:'#ffd700'},
+  {id:'wskin_gold_railgun',name:'Gold Railgun',type:'weapon_skin',weapon:'Railgun',rarity:'Legendary',icon:'🔫',desc:'Gold plated railgun',wcolor:'#ffd700'},
+  {id:'wskin_neon_rocket',name:'Neon Rocket',type:'weapon_skin',weapon:'Rocket',rarity:'Rare',icon:'💜',desc:'Neon purple launcher',wcolor:'#cc00ff'},
+  {id:'wskin_neon_pistol',name:'Neon Pistol',type:'weapon_skin',weapon:'Pistol',rarity:'Rare',icon:'💚',desc:'Neon green pistol',wcolor:'#00ff80'},
+  {id:'wskin_neon_minigun',name:'Neon Minigun',type:'weapon_skin',weapon:'Minigun',rarity:'Rare',icon:'💗',desc:'Neon pink minigun',wcolor:'#ff0088'},
+  {id:'wskin_ice_shotgun',name:'Frost Shotgun',type:'weapon_skin',weapon:'Shotgun',rarity:'Epic',icon:'🧊',desc:'Frozen shotgun',wcolor:'#88ddff'},
+  {id:'wskin_ice_sniper',name:'Frost Sniper',type:'weapon_skin',weapon:'Sniper',rarity:'Epic',icon:'🧊',desc:'Frozen sniper',wcolor:'#88ddff'},
+  {id:'wskin_ice_smg',name:'Frost SMG',type:'weapon_skin',weapon:'SMG',rarity:'Epic',icon:'🧊',desc:'Frozen SMG',wcolor:'#88ddff'},
+  {id:'wskin_fire_shotgun',name:'Flame Shotgun',type:'weapon_skin',weapon:'Shotgun',rarity:'Epic',icon:'🔥',desc:'Burning shotgun',wcolor:'#ff4400'},
+  {id:'wskin_fire_sniper',name:'Flame Sniper',type:'weapon_skin',weapon:'Sniper',rarity:'Epic',icon:'🔥',desc:'Burning sniper',wcolor:'#ff4400'},
+  {id:'wskin_fire_rocket',name:'Flame Rocket',type:'weapon_skin',weapon:'Rocket',rarity:'Epic',icon:'🔥',desc:'Burning launcher',wcolor:'#ff4400'},
+  {id:'wskin_void_shotgun',name:'Void Shotgun',type:'weapon_skin',weapon:'Shotgun',rarity:'Epic',icon:'🌀',desc:'Void shotgun',wcolor:'#8800ff'},
+  {id:'wskin_void_smg',name:'Void SMG',type:'weapon_skin',weapon:'SMG',rarity:'Epic',icon:'🌀',desc:'Void SMG',wcolor:'#8800ff'},
+  {id:'wskin_camo_shotgun',name:'Camo Shotgun',type:'weapon_skin',weapon:'Shotgun',rarity:'Common',icon:'🌿',desc:'Forest camo shotgun',wcolor:'#556b2f'},
+  {id:'wskin_camo_sniper',name:'Camo Sniper',type:'weapon_skin',weapon:'Sniper',rarity:'Common',icon:'🌿',desc:'Forest camo sniper',wcolor:'#556b2f'},
+  {id:'wskin_camo_smg',name:'Camo SMG',type:'weapon_skin',weapon:'SMG',rarity:'Common',icon:'🌿',desc:'Forest camo SMG',wcolor:'#556b2f'},
+  {id:'wskin_camo_rocket',name:'Camo Rocket',type:'weapon_skin',weapon:'Rocket',rarity:'Common',icon:'🌿',desc:'Forest camo launcher',wcolor:'#556b2f'},
+  {id:'wskin_blood_shotgun',name:'Blood Shotgun',type:'weapon_skin',weapon:'Shotgun',rarity:'Rare',icon:'🩸',desc:'Blood-red shotgun',wcolor:'#880022'},
+  {id:'wskin_blood_sniper',name:'Blood Sniper',type:'weapon_skin',weapon:'Sniper',rarity:'Rare',icon:'🩸',desc:'Blood-red sniper',wcolor:'#880022'},
+  {id:'wskin_obsidian_pistol',name:'Obsidian Pistol',type:'weapon_skin',weapon:'Pistol',rarity:'Rare',icon:'🖤',desc:'Obsidian black pistol',wcolor:'#111'},
+  {id:'wskin_diamond_pistol',name:'Diamond Pistol',type:'weapon_skin',weapon:'Pistol',rarity:'Legendary',icon:'💎',desc:'Diamond encrusted',wcolor:'#e0e8ff'},
+  {id:'wskin_diamond_sniper',name:'Diamond Sniper',type:'weapon_skin',weapon:'Sniper',rarity:'Legendary',icon:'💎',desc:'Diamond encrusted',wcolor:'#e0e8ff'},
+  {id:'wskin_galaxy_shotgun',name:'Galaxy Shotgun',type:'weapon_skin',weapon:'Shotgun',rarity:'Legendary',icon:'🌌',desc:'Deep space shotgun',wcolor:'#4400aa'},
+  {id:'wskin_galaxy_smg',name:'Galaxy SMG',type:'weapon_skin',weapon:'SMG',rarity:'Legendary',icon:'🌌',desc:'Deep space SMG',wcolor:'#4400aa'},
+];
+
+// ── THEMED CASES — each has a showcase legendary ──
+function buildCasePool(showcaseId, extraIds){
+  const showcase=COSMETIC_DB.find(i=>i.id===showcaseId);
+  const extras=extraIds.map(id=>COSMETIC_DB.find(i=>i.id===id)).filter(Boolean);
+  // Fill remaining with random from DB
+  const filler=COSMETIC_DB.filter(i=>i.id!==showcaseId&&!extraIds.includes(i.id)).sort(()=>Math.random()-.5).slice(0,10);
+  return[showcase,...extras,...filler].filter(Boolean);
+}
+
+const CASE_TYPES=[
+  {id:'case_street',name:'Street Case',icon:'📦',desc:'Basic street drops',showcase:'skin_camo',color:'#888',
+    pool:COSMETIC_DB.filter(i=>['Common','Uncommon'].includes(i.rarity))},
+  {id:'case_rainbow',name:'Rainbow Case',icon:'🌈',desc:'Chase the Rainbow Trail',showcase:'trail_rainbow',color:'#ff44aa',
+    get pool(){return buildCasePool('trail_rainbow',['skin_neon_keshawn','skin_neon_sean','skin_neon_dart','skin_neon_amari','trail_neon','kfx_confetti','emote_dance','trail_spark','skin_electric','badge_collector']);}},
+  {id:'case_shadow',name:'Shadow Case',icon:'🌑',desc:'Chase the Void Walker skin',showcase:'skin_void',color:'#6600cc',
+    get pool(){return buildCasePool('skin_void',['trail_shadow','kfx_void','skin_shadow_keshawn','skin_shadow_sean','skin_shadow_dart','skin_shadow_amari','badge_ghost','emote_sleep','kfx_glitch','trail_smoke']);}},
+  {id:'case_gold',name:'Gold Case',icon:'👑',desc:'Chase the Cash Out effect',showcase:'kfx_money',color:'#ffaa00',
+    get pool(){return buildCasePool('kfx_money',['skin_gold_keshawn','skin_gold_sean','skin_gold_dart','skin_gold_amari','wskin_gold_shotgun','wskin_gold_sniper','wskin_gold_smg','wskin_gold_rocket','badge_og','emote_crown']);}},
+  {id:'case_fire',name:'Inferno Case',icon:'🔥',desc:'Chase the Incinerate effect',showcase:'kfx_fire',color:'#ff4400',
+    get pool(){return buildCasePool('kfx_fire',['skin_fire','trail_fire','skin_blood','wskin_neon_shotgun','kfx_electric','badge_killer','emote_rage','kfx_skull','trail_blood','badge_nuker']);}},
+  {id:'case_ice',name:'Frost Case',icon:'❄️',desc:'Chase the Shatter effect',showcase:'kfx_ice',color:'#88ddff',
+    get pool(){return buildCasePool('kfx_ice',['skin_ice','trail_ice','wskin_ice_minigun','wskin_neon_smg','kfx_pixel','badge_survivor','emote_salute','trail_spark','skin_chrome_keshawn','skin_chrome_amari']);}},
+  {id:'case_arsenal',name:'Arsenal Case',icon:'🔫',desc:'Chase the Void Railgun',showcase:'wskin_void_railgun',color:'#8800ff',
+    get pool(){return buildCasePool('wskin_void_railgun',['wskin_gold_shotgun','wskin_gold_sniper','wskin_gold_smg','wskin_gold_rocket','wskin_neon_shotgun','wskin_neon_sniper','wskin_neon_smg','wskin_red_pistol','wskin_ice_minigun','kfx_electric']);}},
+  {id:'case_flex',name:'Flex Case',icon:'💪',desc:'Chase the Starfall trail',showcase:'trail_stars',color:'#ffcc00',
+    get pool(){return buildCasePool('trail_stars',['badge_og','badge_killer','badge_nuker','emote_crown','emote_flex','emote_dance','emote_think','badge_crew','badge_streak','kfx_hearts']);}},
+  {id:'case_drip',name:'Drip Case',icon:'💧',desc:'Chase the Chrome skins',showcase:'skin_chrome_sean',color:'#c0c0e0',
+    get pool(){return buildCasePool('skin_chrome_sean',['skin_chrome_keshawn','skin_chrome_dart','skin_chrome_amari','skin_toxic','skin_urban','trail_neon','trail_glitch','kfx_glitch','emote_flex','badge_addict']);}},
+  {id:'case_galaxy',name:'Galaxy Case',icon:'🌌',desc:'Chase the Galaxy skins',showcase:'skin_galaxy',color:'#4400aa',
+    get pool(){return buildCasePool('skin_galaxy',['wskin_galaxy_shotgun','wskin_galaxy_smg','skin_midnight','skin_void','trail_void','kfx_portal','badge_legend','emote_alien','trail_stars','kfx_nuclear']);}},
+  {id:'case_diamond',name:'Diamond Case',icon:'💎',desc:'Chase the Diamond skin',showcase:'skin_diamond',color:'#e0e8ff',
+    get pool(){return buildCasePool('skin_diamond',['wskin_diamond_pistol','wskin_diamond_sniper','skin_silver','skin_titanium','skin_obsidian','kfx_shatter_screen','badge_untouchable','emote_diamond_hands','trail_gold','kfx_gold_coins']);}},
+  {id:'case_nature',name:'Nature Case',icon:'🌿',desc:'Chase Cherry Blossom trail',showcase:'trail_cherry',color:'#ff88aa',
+    get pool(){return buildCasePool('trail_cherry',['skin_forest','skin_ocean','skin_desert','skin_coral','wskin_camo_shotgun','wskin_camo_sniper','kfx_petals','kfx_roses','trail_roses','emote_peace']);}},
+  {id:'case_chaos',name:'Chaos Case',icon:'🌪️',desc:'Chase the Tornado effect',showcase:'kfx_tornado',color:'#888',
+    get pool(){return buildCasePool('kfx_tornado',['kfx_lightning','kfx_chains','kfx_bats','skin_lava','skin_plasma','trail_lightning','trail_lava','badge_dominator','emote_evil','wskin_fire_rocket']);}},
+  {id:'case_party',name:'Party Case',icon:'🎉',desc:'Chase the Fireworks effect',showcase:'kfx_fireworks',color:'#ff4488',
+    get pool(){return buildCasePool('kfx_fireworks',['kfx_confetti','kfx_bubbles','trail_confetti','trail_bubbles','skin_bubblegum','skin_neon_pink','skin_neon_orange','emote_dab','emote_rofl','badge_lucky']);}},
+  {id:'case_royalty',name:'Royalty Case',icon:'👑',desc:'Chase the King Kesh skin',showcase:'skin_king_keshawn',color:'#ffd700',
+    get pool(){return buildCasePool('skin_king_keshawn',['skin_hellfire_dart','skin_ice_sean','skin_phantom_amari','skin_angel','skin_demon','wskin_gold_pistol','wskin_gold_minigun','emote_crown','badge_whale','trail_money']);}},
+];
+
+// KEY TYPES — each case has its own key
+const KEY_TYPES=[
+  {id:'key_street',name:'Street Key',icon:'🔑',caseId:'case_street',color:'#888'},
+  {id:'key_rainbow',name:'Rainbow Key',icon:'🌈',caseId:'case_rainbow',color:'#ff44aa'},
+  {id:'key_shadow',name:'Shadow Key',icon:'🌑',caseId:'case_shadow',color:'#6600cc'},
+  {id:'key_gold',name:'Gold Key',icon:'👑',caseId:'case_gold',color:'#ffaa00'},
+  {id:'key_fire',name:'Inferno Key',icon:'🔥',caseId:'case_fire',color:'#ff4400'},
+  {id:'key_ice',name:'Frost Key',icon:'❄️',caseId:'case_ice',color:'#88ddff'},
+  {id:'key_arsenal',name:'Arsenal Key',icon:'🔫',caseId:'case_arsenal',color:'#8800ff'},
+  {id:'key_flex',name:'Flex Key',icon:'💪',caseId:'case_flex',color:'#ffcc00'},
+  {id:'key_drip',name:'Drip Key',icon:'💧',caseId:'case_drip',color:'#c0c0e0'},
+  {id:'key_galaxy',name:'Galaxy Key',icon:'🌌',caseId:'case_galaxy',color:'#4400aa'},
+  {id:'key_diamond',name:'Diamond Key',icon:'💎',caseId:'case_diamond',color:'#e0e8ff'},
+  {id:'key_nature',name:'Nature Key',icon:'🌿',caseId:'case_nature',color:'#ff88aa'},
+  {id:'key_chaos',name:'Chaos Key',icon:'🌪️',caseId:'case_chaos',color:'#888'},
+  {id:'key_party',name:'Party Key',icon:'🎉',caseId:'case_party',color:'#ff4488'},
+  {id:'key_royalty',name:'Royalty Key',icon:'👑',caseId:'case_royalty',color:'#ffd700'},
+];
+
+// Player inventory (persisted to localStorage)
+let playerInventory={
+  items:[],       // array of item IDs the player owns
+  cases:{},       // { case_id: count }
+  keys:{},        // { key_id: count }
+  equipped:{      // what's currently equipped
+    skin:null,    // cosmetic item ID
+    kill_effect:null,
+    trail:null,
+    badge:null,
+    emote:null,
+    weapon_skins:{} // { weaponName: item_id }
+  },
+  stats:{casesOpened:0,totalDrops:0}
+};
+function loadInventory(){const s=localStorage.getItem('obh_inventory');if(s)try{const d=JSON.parse(s);playerInventory={...playerInventory,...d,equipped:{...playerInventory.equipped,...(d.equipped||{})}};}catch(e){}}
+function saveInventory(){localStorage.setItem('obh_inventory',JSON.stringify(playerInventory));}
+loadInventory();
+
+// ── FIRST-TIME DRIP CHECK BONUS — 10 Street Cases + 10 Street Keys ──
+// Protected: uses a separate flag with timestamp hash to prevent reset exploits
+const BONUS_VERSION='drip_check_v065';
+function checkFirstTimeBonus(){
+  const flag=localStorage.getItem('obh_bonus_'+BONUS_VERSION);
+  if(flag)return; // Already claimed
+  // Award bonus
+  playerInventory.cases['case_street']=(playerInventory.cases['case_street']||0)+10;
+  playerInventory.keys['key_street']=(playerInventory.keys['key_street']||0)+10;
+  // Mark as claimed with timestamp to prevent replay
+  localStorage.setItem('obh_bonus_'+BONUS_VERSION,Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8));
+  saveInventory();
+  // Show notification after a short delay
+  setTimeout(()=>{
+    showDropNotification([
+      {type:'case',item:{icon:'📦📦📦',name:'10× Street Cases — Welcome Bonus!'}},
+      {type:'key',item:{icon:'🔑🔑🔑',name:'10× Street Keys — Welcome Bonus!'}},
+    ]);
+  },2000);
+}
+// Anti-exploit: inventory is timestamped on every save
+const _origSave=saveInventory;
+saveInventory=function(){
+  playerInventory._ts=Date.now();
+  playerInventory._hash=(playerInventory.stats?.casesOpened||0).toString(36)+'-'+(playerInventory.items?.length||0).toString(36);
+  _origSave();
+};
+// Call bonus check after profile select (deferred)
+const _origSelectProfile=selectProfile;
+function selectProfileWithBonus(crew){
+  _origSelectProfile?.(crew);
+  checkFirstTimeBonus();
+}
+// We'll hook this in selectProfile
+
+// ── DROP LOGIC ──
+function awardMatchDrops(won, mode){
+  const drops=[];
+  // Everyone gets a case for completing a match
+  const casePool=won?CASE_TYPES:CASE_TYPES.filter(c=>c.id!=='case_legendary');
+  const caseType=casePool[Math.floor(Math.random()*casePool.length)];
+  playerInventory.cases[caseType.id]=(playerInventory.cases[caseType.id]||0)+1;
+  playerInventory.stats.totalDrops++;
+  drops.push({type:'case',item:caseType});
+
+  // Winners get a key — but it's random, NOT guaranteed to match your cases
+  if(won){
+    const keyType=KEY_TYPES[Math.floor(Math.random()*KEY_TYPES.length)];
+    playerInventory.keys[keyType.id]=(playerInventory.keys[keyType.id]||0)+1;
+    drops.push({type:'key',item:keyType});
+  }
+
+  // Survival bonus: extra case if wave 10+
+  if((mode==='Survival'||mode==='Co-op Survival')&&game&&game.survivalWave>=10){
+    const bonus=CASE_TYPES[Math.floor(Math.random()*CASE_TYPES.length)];
+    playerInventory.cases[bonus.id]=(playerInventory.cases[bonus.id]||0)+1;
+    drops.push({type:'case',item:bonus});
+  }
+
+  saveInventory();
+  return drops;
+}
+
+function showDropNotification(drops){
+  const container=document.getElementById('dropNotifs');
+  drops.forEach((d,i)=>{
+    setTimeout(()=>{
+      const card=document.createElement('div');card.className='drop-card';
+      card.innerHTML=`<span class="dc-icon">${d.item.icon}</span><div><div class="dc-text">${d.type==='case'?'CASE':'KEY'} DROP</div><div class="dc-sub">${d.item.name}</div></div>`;
+      container.appendChild(card);
+      SFX.play('pickup');
+      setTimeout(()=>{card.style.transition='opacity .5s';card.style.opacity='0';setTimeout(()=>card.remove(),500);},3500);
+    },i*600);
+  });
+}
+
+// ── UNBOXING ──
+let unboxState={caseType:null,spinning:false,result:null};
+
+function canOpenCase(caseId){
+  if(!playerInventory.cases[caseId]||playerInventory.cases[caseId]<=0)return false;
+  const keyType=KEY_TYPES.find(k=>k.caseId===caseId);
+  if(!keyType)return false;
+  return(playerInventory.keys[keyType.id]||0)>0;
+}
+
+function startUnbox(caseId){
+  const ct=CASE_TYPES.find(c=>c.id===caseId);if(!ct)return;
+  if(!canOpenCase(caseId)){SFX.play('hit');return;}
+  unboxState.caseType=ct;unboxState.spinning=false;unboxState.result=null;
+  document.getElementById('unboxCaseName').textContent=ct.name.toUpperCase();
+  document.getElementById('unboxResult').style.display='none';
+  document.getElementById('unboxOpenBtn').style.display='';
+  // Build strip with 40 random items, the winner at position 30
+  const pool=ct.pool;if(!pool.length)return;
+  const winner=pickWeightedItem(pool);
+  const strip=[];
+  for(let i=0;i<40;i++){if(i===30)strip.push(winner);else strip.push(pool[Math.floor(Math.random()*pool.length)]);}
+  const inner=document.getElementById('unboxStrip');inner.innerHTML='';inner.style.transition='none';inner.style.left='0px';
+  strip.forEach(item=>{
+    const div=document.createElement('div');div.className='unbox-item';
+    const rc=RARITY[item.rarity.toUpperCase()]||RARITY.COMMON;
+    div.style.borderBottomColor=rc.color;div.style.borderBottom='3px solid '+rc.color;
+    div.innerHTML=`<span class="ui-icon">${item.icon}</span><span class="ui-name" style="color:${rc.color}">${item.name}</span>`;
+    inner.appendChild(div);
+  });
+  unboxState._strip=strip;unboxState._winner=winner;
+  document.getElementById('unboxOverlay').classList.add('active');
+}
+
+function pickWeightedItem(pool){
+  // Weight by rarity
+  const weights=pool.map(i=>{const r=RARITY[i.rarity.toUpperCase()];return r?r.weight:10;});
+  const total=weights.reduce((a,b)=>a+b,0);let r=Math.random()*total;
+  for(let i=0;i<pool.length;i++){r-=weights[i];if(r<=0)return pool[i];}
+  return pool[pool.length-1];
+}
+
+function unboxOpen(){
+  if(unboxState.spinning)return;
+  const ct=unboxState.caseType;if(!ct)return;
+  // Consume case + key
+  const keyType=KEY_TYPES.find(k=>k.caseId===ct.id);
+  playerInventory.cases[ct.id]--;
+  playerInventory.keys[keyType.id]--;
+  playerInventory.stats.casesOpened++;
+  saveInventory();
+  unboxState.spinning=true;
+  document.getElementById('unboxOpenBtn').style.display='none';
+  SFX.play('reload');
+  // Animate strip scroll — item 30 should land at center (pointer)
+  const inner=document.getElementById('unboxStrip');
+  const targetX=-(30*110)+(660/2)-(110/2)+(Math.random()*60-30);
+  inner.style.transition='left 4s cubic-bezier(0.1, 0.7, 0.1, 1)';
+  inner.style.left=targetX+'px';
+  setTimeout(()=>{
+    unboxState.spinning=false;
+    const winner=unboxState._winner;
+    // Add to inventory
+    if(!playerInventory.items.includes(winner.id)){
+      playerInventory.items.push(winner.id);
+    }
+    saveInventory();
+    // Show result
+    const rc=RARITY[winner.rarity.toUpperCase()]||RARITY.COMMON;
+    const res=document.getElementById('unboxResult');res.style.display='';
+    res.innerHTML=`<div class="ur-rarity" style="color:${rc.color}">${winner.rarity}</div><div class="ur-icon" style="color:${rc.color}">${winner.icon}</div><div class="ur-name">${winner.name}</div><div class="ur-desc">${winner.desc}</div>`;
+    SFX.play(winner.rarity==='Legendary'?'streak':(winner.rarity==='Epic'?'kill':'pickup'));
+    // Report to server
+    try{
+      NGame.submitSession({score:0,outcome:'unbox',data:{item_id:winner.id,rarity:winner.rarity,case:ct.id}});
+      // Post rare+ unboxes to the crew wall
+      if(['Rare','Epic','Legendary'].includes(winner.rarity)){
+        const rarityEmoji=winner.rarity==='Legendary'?'🌟':winner.rarity==='Epic'?'✨':'💜';
+        NGame.postToWall(`${rarityEmoji} ${activeProfile?.name||'???'} unboxed ${winner.rarity} ${winner.icon} ${winner.name} from ${ct.name}!`);
+      }
+    }catch(e){}
+  },4200);
+}
+
+function unboxClose(){
+  document.getElementById('unboxOverlay').classList.remove('active');
+  unboxState={caseType:null,spinning:false,result:null};
+}
+
+// ── INVENTORY UI ──
+function openInventory(){
+  showScreen('inventoryScreen');invShowTab('customize',document.querySelector('.inv-tab'));
+}
+
+function invShowTab(tab,btn){
+  document.querySelectorAll('.inv-tab').forEach(t=>t.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  const body=document.getElementById('invBody');body.innerHTML='';
+  if(tab==='customize'){renderCustomize(body);}
+  else if(tab==='cases'){renderCases(body);}
+  else if(tab==='battlepass'){renderBattlePass(body);}
+  else{renderItemGrid(body,tab);}
+}
+
+function renderCustomize(container){
+  const eq=playerInventory.equipped;
+  const charName=selectedChar||'Keshawn';
+  const ch=getChar(charName);
+  let html=`<div class="customize-panel"><div class="customize-preview"><canvas id="custPreview" width="120" height="120"></canvas><div class="cp-name">${charName}</div></div><div class="customize-slots">`;
+  const slots=[
+    {key:'skin',label:'Character Skin',val:eq.skin?COSMETIC_DB.find(i=>i.id===eq.skin)?.name:'Default'},
+    {key:'kill_effect',label:'Kill Effect',val:eq.kill_effect?COSMETIC_DB.find(i=>i.id===eq.kill_effect)?.name:'Default'},
+    {key:'trail',label:'Trail',val:eq.trail?COSMETIC_DB.find(i=>i.id===eq.trail)?.name:'None'},
+    {key:'badge',label:'Badge',val:eq.badge?COSMETIC_DB.find(i=>i.id===eq.badge)?.name:'None'},
+    {key:'emote',label:'Emote',val:eq.emote?COSMETIC_DB.find(i=>i.id===eq.emote)?.name:'None'},
+  ];
+  slots.forEach(s=>{
+    html+=`<div class="customize-slot" onclick="invShowTab('${s.key==='kill_effect'?'effects':(s.key+'s')}',null)"><div class="cs-label">${s.label}</div><div class="cs-value ${s.val==='None'||s.val==='Default'?'empty':''}">${s.val}</div></div>`;
+  });
+  // Weapon skins
+  const weps=['Pistol','Shotgun','Sniper','SMG','Rocket'];
+  weps.forEach(w=>{
+    const wsId=eq.weapon_skins?.[w];const ws=wsId?COSMETIC_DB.find(i=>i.id===wsId):null;
+    html+=`<div class="customize-slot" onclick="invShowTab('skins',null)"><div class="cs-label">${w} Skin</div><div class="cs-value ${ws?'':'empty'}">${ws?ws.name:'Default'}</div></div>`;
+  });
+  html+=`</div></div>`;
+  container.innerHTML=html;
+  // Render preview sprite
+  setTimeout(()=>{
+    const can=document.getElementById('custPreview');if(!can)return;
+    const ctx=can.getContext('2d');ctx.imageSmoothingEnabled=false;ctx.clearRect(0,0,120,120);
+    // Get skin color override if equipped
+    let color=ch.color;
+    if(eq.skin){const si=COSMETIC_DB.find(i=>i.id===eq.skin);if(si&&si.colorOverride&&(si.char==='*'||si.char===charName))color=si.colorOverride;}
+    const sprites=createCharSprites(color,ch.skin,ch.hair);
+    if(sprites?.idle)ctx.drawImage(sprites.idle,10,10,100,100);
+  },50);
+}
+
+function renderCases(container){
+  let html=`<div class="inv-keys">🔑 Keys: `;
+  KEY_TYPES.forEach(k=>{const cnt=playerInventory.keys[k.id]||0;html+=`<span style="color:${k.color}">${k.icon}${cnt}</span> `;});
+  html+=`</div><div class="inv-cases">`;
+  CASE_TYPES.forEach(ct=>{
+    const cnt=playerInventory.cases[ct.id]||0;if(cnt<=0)return;
+    const canOpen=canOpenCase(ct.id);
+    const keyType=KEY_TYPES.find(k=>k.caseId===ct.id);
+    const keyCnt=keyType?(playerInventory.keys[keyType.id]||0):0;
+    html+=`<div class="case-card" onclick="startUnbox('${ct.id}')"><span class="cc-icon">${ct.icon}</span><span class="cc-name">${ct.name}</span><span class="cc-count">×${cnt}</span><span class="cc-status ${canOpen?'has-key':'no-key'}">${canOpen?'🔑 Open ('+keyCnt+' keys)':'Need '+keyType?.name}</span></div>`;
+  });
+  if(!Object.values(playerInventory.cases).some(v=>v>0))html+=`<div style="color:#444;font:12px var(--font);padding:20px">No cases yet. Play matches to earn drops!</div>`;
+  html+=`</div>`;
+  container.innerHTML=html;
+}
+
+function renderItemGrid(container,type){
+  const typeMap={skins:'skin',effects:'kill_effect',trails:'trail',badges:'badge',emotes:'emote'};
+  const filterType=typeMap[type]||type;
+  const owned=playerInventory.items;
+  const items=COSMETIC_DB.filter(i=>{
+    if(filterType==='skin')return i.type==='skin'||i.type==='weapon_skin';
+    return i.type===filterType;
+  });
+  let html=`<div class="inv-grid">`;
+  items.forEach(item=>{
+    const has=owned.includes(item.id);
+    const rc=RARITY[item.rarity.toUpperCase()]||RARITY.COMMON;
+    const isEquipped=isItemEquipped(item);
+    html+=`<div class="inv-item ${RARITY_CSS[item.rarity]||''} ${isEquipped?'equipped':''}" style="opacity:${has?1:.35};${has?'cursor:pointer':'cursor:default'}" onclick="${has?`equipItem('${item.id}')`:''}" title="${item.desc}">`;
+    html+=`<span class="ii-icon">${item.icon}</span>`;
+    html+=`<span class="ii-name">${item.name}</span>`;
+    if(item.char&&item.char!=='*')html+=`<span style="font:8px var(--font);color:#555">${item.char}</span>`;
+    if(item.weapon)html+=`<span style="font:8px var(--font);color:#555">${item.weapon}</span>`;
+    html+=`<span class="ii-rarity">${item.rarity}</span>`;
+    if(isEquipped)html+=`<span class="ii-equipped">EQUIPPED</span>`;
+    if(!has)html+=`<span style="font:7px var(--font);color:#333;margin-top:2px">LOCKED</span>`;
+    html+=`</div>`;
+  });
+  html+=`</div>`;
+  container.innerHTML=html;
+}
+
+function renderBattlePass(container){
+  refreshWeeklies();
+  let html=`<div style="width:100%;max-width:1000px">`;
+  // Header
+  html+=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><div><div style="font:bold 24px var(--display);letter-spacing:3px;color:#fff">SEASON 1 BATTLE PASS</div><div style="font:10px var(--font);color:#666;letter-spacing:1px">Earn XP from matches and weekly challenges</div></div><div style="text-align:right"><div style="font:bold 18px var(--display);color:var(--accent)">${battlePass.xp} XP</div><div style="font:10px var(--font);color:#888">Tier ${battlePass.tier}/30</div></div></div>`;
+  // Weekly challenges
+  html+=`<div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:16px"><div style="font:700 11px var(--display);letter-spacing:2px;color:var(--accent);margin-bottom:10px">WEEKLY CHALLENGES</div>`;
+  (battlePass.weeklyAssigned||[]).forEach(ch=>{
+    const pct=Math.min(100,Math.round((ch.progress/ch.target)*100));
+    html+=`<div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #111"><span style="font:11px var(--font);color:${ch.completed?'#4f4':'#ccc'};flex:1">${ch.completed?'✅':''} ${ch.desc}</span><span style="font:10px var(--font);color:#888">${ch.progress||0}/${ch.target}</span><span style="font:700 10px var(--font);color:#ffaa00">+${ch.xp} XP</span><div style="width:60px;height:4px;background:#1a1a28;border-radius:2px;overflow:hidden"><div style="width:${pct}%;height:100%;background:${ch.completed?'#4f4':'var(--accent)'};border-radius:2px"></div></div></div>`;
+  });
+  html+=`</div>`;
+  // Tier track
+  html+=`<div style="display:flex;flex-wrap:wrap;gap:6px">`;
+  BATTLE_PASS_TIERS.forEach(tier=>{
+    const claimed=battlePass.claimed.includes(tier.tier);
+    const canClaim=battlePass.xp>=tier.xp;
+    const border=claimed?'#4f4':(canClaim?'var(--accent)':'#1a1a28');
+    html+=`<div style="width:90px;padding:8px;border:1px solid ${border};border-radius:6px;background:var(--panel);text-align:center;opacity:${claimed||canClaim?1:.5}"><div style="font:700 8px var(--font);color:${claimed?'#4f4':'#888'};letter-spacing:1px">TIER ${tier.tier}</div><div style="font:600 9px var(--font);color:#ccc;margin:4px 0">${tier.name}</div><div style="font:8px var(--font);color:#666">${tier.xp} XP</div>${claimed?'<div style="font:700 7px var(--font);color:#4f4;margin-top:2px">CLAIMED</div>':''}</div>`;
+  });
+  html+=`</div></div>`;
+  container.innerHTML=html;
+}
+
+function isItemEquipped(item){
+  const eq=playerInventory.equipped;
+  if(item.type==='skin')return eq.skin===item.id;
+  if(item.type==='kill_effect')return eq.kill_effect===item.id;
+  if(item.type==='trail')return eq.trail===item.id;
+  if(item.type==='badge')return eq.badge===item.id;
+  if(item.type==='emote')return eq.emote===item.id;
+  if(item.type==='weapon_skin')return eq.weapon_skins?.[item.weapon]===item.id;
+  return false;
+}
+
+function equipItem(itemId){
+  const item=COSMETIC_DB.find(i=>i.id===itemId);if(!item)return;
+  if(!playerInventory.items.includes(itemId))return;
+  const eq=playerInventory.equipped;
+  // Toggle — if already equipped, unequip
+  if(item.type==='skin'){eq.skin=eq.skin===itemId?null:itemId;}
+  else if(item.type==='kill_effect'){eq.kill_effect=eq.kill_effect===itemId?null:itemId;}
+  else if(item.type==='trail'){eq.trail=eq.trail===itemId?null:itemId;}
+  else if(item.type==='badge'){eq.badge=eq.badge===itemId?null:itemId;}
+  else if(item.type==='emote'){eq.emote=eq.emote===itemId?null:itemId;}
+  else if(item.type==='weapon_skin'){
+    if(!eq.weapon_skins)eq.weapon_skins={};
+    eq.weapon_skins[item.weapon]=eq.weapon_skins[item.weapon]===itemId?null:itemId;
+  }
+  saveInventory();SFX.play('menu_select');
+  // Re-render current tab
+  const activeTab=document.querySelector('.inv-tab.active');
+  if(activeTab){const tabName=activeTab.textContent.toLowerCase();invShowTab(tabName,activeTab);}
+}
+
+// ── GET EQUIPPED COSMETICS FOR RENDERING ──
+function getEquippedSkinColor(charName){
+  const sid=playerInventory.equipped.skin;if(!sid)return null;
+  const item=COSMETIC_DB.find(i=>i.id===sid);if(!item)return null;
+  if(item.char==='*'||item.char===charName)return item.colorOverride;
+  return null;
+}
+function getEquippedWeaponColor(weaponName){
+  const wsId=playerInventory.equipped.weapon_skins?.[weaponName];if(!wsId)return null;
+  const item=COSMETIC_DB.find(i=>i.id===wsId);return item?.wcolor||null;
+}
+function getEquippedTrail(){return playerInventory.equipped.trail?COSMETIC_DB.find(i=>i.id===playerInventory.equipped.trail):null;}
+function getEquippedKillEffect(){return playerInventory.equipped.kill_effect?COSMETIC_DB.find(i=>i.id===playerInventory.equipped.kill_effect):null;}
+function getEquippedBadge(){return playerInventory.equipped.badge?COSMETIC_DB.find(i=>i.id===playerInventory.equipped.badge):null;}
+function getEquippedEmote(){return playerInventory.equipped.emote?COSMETIC_DB.find(i=>i.id===playerInventory.equipped.emote):null;}
+
+// ── COSMETICS SYNC FOR MULTIPLAYER ──
+function getCosmetics(){
+  return{
+    skin:playerInventory.equipped.skin,
+    kill_effect:playerInventory.equipped.kill_effect,
+    trail:playerInventory.equipped.trail,
+    badge:playerInventory.equipped.badge,
+    emote:playerInventory.equipped.emote,
+    weapon_skins:playerInventory.equipped.weapon_skins||{}
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// BATTLE PASS — earned through weekly challenges, gives cosmetics
+// ═══════════════════════════════════════════════════════════════════════
+const BATTLE_PASS_SEASON='season1';
+const BATTLE_PASS_TIERS=[
+  {tier:1,xp:100,reward:{type:'case',id:'case_street',count:2},name:'2× Street Cases'},
+  {tier:2,xp:200,reward:{type:'item',id:'skin_midnight'},name:'Midnight Skin'},
+  {tier:3,xp:350,reward:{type:'key',id:'key_street',count:3},name:'3× Street Keys'},
+  {tier:4,xp:500,reward:{type:'item',id:'trail_smoke'},name:'Smoke Trail'},
+  {tier:5,xp:700,reward:{type:'case',id:'case_rainbow',count:1},name:'Rainbow Case'},
+  {tier:6,xp:950,reward:{type:'item',id:'emote_dab'},name:'Dab Emote'},
+  {tier:7,xp:1200,reward:{type:'item',id:'kfx_bubbles'},name:'Bubbles Kill Effect'},
+  {tier:8,xp:1500,reward:{type:'key',id:'key_rainbow',count:1},name:'Rainbow Key'},
+  {tier:9,xp:1850,reward:{type:'item',id:'skin_sunset'},name:'Sunset Skin'},
+  {tier:10,xp:2200,reward:{type:'case',id:'case_gold',count:1},name:'Gold Case'},
+  {tier:11,xp:2600,reward:{type:'item',id:'badge_first_blood'},name:'First Blood Badge'},
+  {tier:12,xp:3000,reward:{type:'item',id:'trail_confetti'},name:'Confetti Trail'},
+  {tier:13,xp:3450,reward:{type:'case',id:'case_fire',count:1},name:'Inferno Case'},
+  {tier:14,xp:3900,reward:{type:'item',id:'kfx_snow'},name:'Snowfall Kill Effect'},
+  {tier:15,xp:4400,reward:{type:'key',id:'key_fire',count:1},name:'Inferno Key'},
+  {tier:16,xp:4900,reward:{type:'item',id:'emote_chef'},name:'Chef Kiss Emote'},
+  {tier:17,xp:5500,reward:{type:'case',id:'case_shadow',count:1},name:'Shadow Case'},
+  {tier:18,xp:6100,reward:{type:'item',id:'trail_ghost'},name:'Ghost Trail'},
+  {tier:19,xp:6800,reward:{type:'key',id:'key_shadow',count:1},name:'Shadow Key'},
+  {tier:20,xp:7500,reward:{type:'item',id:'skin_matrix'},name:'Matrix Skin'},
+  {tier:21,xp:8300,reward:{type:'case',id:'case_galaxy',count:1},name:'Galaxy Case'},
+  {tier:22,xp:9100,reward:{type:'item',id:'kfx_lightning'},name:'Lightning Strike Effect'},
+  {tier:23,xp:10000,reward:{type:'key',id:'key_galaxy',count:1},name:'Galaxy Key'},
+  {tier:24,xp:11000,reward:{type:'item',id:'trail_lightning'},name:'Lightning Trail'},
+  {tier:25,xp:12000,reward:{type:'case',id:'case_royalty',count:1},name:'Royalty Case'},
+  {tier:26,xp:13200,reward:{type:'item',id:'emote_ninja'},name:'Ninja Emote'},
+  {tier:27,xp:14500,reward:{type:'key',id:'key_royalty',count:1},name:'Royalty Key'},
+  {tier:28,xp:16000,reward:{type:'item',id:'skin_hologram'},name:'Hologram Skin'},
+  {tier:29,xp:17500,reward:{type:'item',id:'kfx_portal'},name:'Portal Kill Effect'},
+  {tier:30,xp:20000,reward:{type:'item',id:'emote_diamond_hands'},name:'Diamond Hands Emote'},
+];
+
+const WEEKLY_CHALLENGES=[
+  {id:'wk_kills_20',desc:'Get 20 kills',xp:150,target:20,stat:'kills'},
+  {id:'wk_wins_3',desc:'Win 3 matches',xp:200,target:3,stat:'wins'},
+  {id:'wk_survival_10',desc:'Reach Wave 10 in Survival',xp:250,target:10,stat:'survivalWave'},
+  {id:'wk_streak_5',desc:'Get a 5-killstreak',xp:175,target:5,stat:'bestStreak'},
+  {id:'wk_kills_50',desc:'Get 50 kills',xp:300,target:50,stat:'kills'},
+  {id:'wk_games_10',desc:'Play 10 matches',xp:200,target:10,stat:'gamesPlayed'},
+  {id:'wk_headshots_10',desc:'Get 10 headshots',xp:200,target:10,stat:'headshots'},
+  {id:'wk_throws_5',desc:'Get 5 weapon throw kills',xp:175,target:5,stat:'throwKills'},
+  {id:'wk_allchars',desc:'Play a match with each character',xp:250,target:4,stat:'uniqueChars'},
+  {id:'wk_survival_20',desc:'Reach Wave 20 in Survival',xp:400,target:20,stat:'survivalWave'},
+];
+
+let battlePass={xp:0,tier:0,claimed:[],weeklyProgress:{},weeklyAssigned:[],weeklyRefresh:0};
+function loadBattlePass(){const s=localStorage.getItem('obh_bp_'+BATTLE_PASS_SEASON);if(s)try{battlePass={...battlePass,...JSON.parse(s)};}catch(e){}}
+function saveBattlePass(){localStorage.setItem('obh_bp_'+BATTLE_PASS_SEASON,JSON.stringify(battlePass));}
+loadBattlePass();
+
+// Assign 3 random weekly challenges, refresh weekly
+function refreshWeeklies(){
+  const now=Date.now(),week=7*24*60*60*1000;
+  if(!battlePass.weeklyRefresh||now-battlePass.weeklyRefresh>week){
+    const shuffled=[...WEEKLY_CHALLENGES].sort(()=>Math.random()-.5);
+    battlePass.weeklyAssigned=shuffled.slice(0,3).map(c=>({...c,progress:0,completed:false}));
+    battlePass.weeklyRefresh=now;battlePass.weeklyProgress={};saveBattlePass();
+  }
+}
+refreshWeeklies();
+
+function addBattlePassXP(amount){
+  battlePass.xp+=amount;
+  let claimed=false;
+  for(const tier of BATTLE_PASS_TIERS){
+    if(battlePass.xp>=tier.xp&&!battlePass.claimed.includes(tier.tier)){
+      battlePass.claimed.push(tier.tier);battlePass.tier=Math.max(battlePass.tier,tier.tier);
+      // Award reward
+      const r=tier.reward;
+      if(r.type==='item'){if(!playerInventory.items.includes(r.id))playerInventory.items.push(r.id);}
+      else if(r.type==='case'){playerInventory.cases[r.id]=(playerInventory.cases[r.id]||0)+(r.count||1);}
+      else if(r.type==='key'){playerInventory.keys[r.id]=(playerInventory.keys[r.id]||0)+(r.count||1);}
+      saveInventory();
+      showDropNotification([{type:r.type,item:{icon:r.type==='item'?'🎁':'📦',name:'BP Tier '+tier.tier+': '+tier.name}}]);
+      claimed=true;
+    }
+  }
+  saveBattlePass();return claimed;
+}
+
+function updateWeeklyProgress(stat,value){
+  if(!battlePass.weeklyAssigned)return;
+  for(const ch of battlePass.weeklyAssigned){
+    if(ch.completed||ch.stat!==stat)continue;
+    ch.progress=Math.max(ch.progress,value);
+    if(ch.progress>=ch.target){ch.completed=true;addBattlePassXP(ch.xp);SFX.play('streak');}
+  }
+  saveBattlePass();
+}
+
+// Called after every match
+function updateBattlePassAfterMatch(stats){
+  // Base XP for completing a match
+  addBattlePassXP(25+(stats.won?50:0)+stats.kills*5);
+  // Update weekly challenges
+  updateWeeklyProgress('kills',(battlePass.weeklyProgress.kills||0)+stats.kills);
+  battlePass.weeklyProgress.kills=(battlePass.weeklyProgress.kills||0)+stats.kills;
+  if(stats.won){battlePass.weeklyProgress.wins=(battlePass.weeklyProgress.wins||0)+1;updateWeeklyProgress('wins',battlePass.weeklyProgress.wins);}
+  battlePass.weeklyProgress.gamesPlayed=(battlePass.weeklyProgress.gamesPlayed||0)+1;updateWeeklyProgress('gamesPlayed',battlePass.weeklyProgress.gamesPlayed);
+  if(stats.wave)updateWeeklyProgress('survivalWave',stats.wave);
+  if(stats.bestStreak)updateWeeklyProgress('bestStreak',stats.bestStreak);
+  if(stats.throwKills){battlePass.weeklyProgress.throwKills=(battlePass.weeklyProgress.throwKills||0)+stats.throwKills;updateWeeklyProgress('throwKills',battlePass.weeklyProgress.throwKills);}
+  if(stats.character){
+    if(!battlePass.weeklyProgress.charsPlayed)battlePass.weeklyProgress.charsPlayed=new Set();
+    if(typeof battlePass.weeklyProgress.charsPlayed==='object'&&!(battlePass.weeklyProgress.charsPlayed instanceof Set))battlePass.weeklyProgress.charsPlayed=new Set(Object.values(battlePass.weeklyProgress.charsPlayed));
+    battlePass.weeklyProgress.charsPlayed.add(stats.character);
+    updateWeeklyProgress('uniqueChars',battlePass.weeklyProgress.charsPlayed.size);
+  }
+  saveBattlePass();
+}
+
+function mp(name,bg,bgA,plats,spawns,dY,extras){return{name,bg,bgAccent:bgA,width:1280,height:688,platforms:plats,spawns,pickupSpawns:spawns,weaponSpawns:spawns.slice(0,3),deathY:dY||750,jumpPads:[],hazards:[],gravity:1,env:'city',weather:'none',ambientColor:null,softPlatforms:[],movingPlatforms:[],destructibles:[],decorations:[],platformStyle:'concrete',...(extras||{})};}
 
 const MAPS={
 'The Pit':mp('The Pit','#0a0a14','#0f0f1e',[{x:0,y:620,w:440,h:68},{x:840,y:620,w:440,h:68},{x:200,y:480,w:200,h:16},{x:880,y:480,w:200,h:16},{x:490,y:380,w:300,h:16},{x:60,y:320,w:160,h:16},{x:1060,y:320,w:160,h:16},{x:540,y:220,w:200,h:16},{x:420,y:520,w:20,h:100},{x:840,y:520,w:20,h:100}],[{x:100,y:580},{x:1180,y:580},{x:640,y:340},{x:640,y:180}]),
@@ -818,7 +1899,112 @@ MAPS['Towers'].jumpPads=[{x:100,y:636,w:24,h:8,power:-1100},{x:1160,y:636,w:24,h
 MAPS['Bridges'].jumpPads=[{x:630,y:636,w:24,h:8,power:-900}];
 MAPS['Skyline'].jumpPads=[{x:620,y:556,w:24,h:8,power:-850}];
 MAPS['Favela'].jumpPads=[{x:640,y:636,w:24,h:8,power:-900},{x:300,y:636,w:24,h:8,power:-850},{x:980,y:636,w:24,h:8,power:-850}];
-const MODES=['Deathmatch','Team DM','Last Man','CTF','Survival','Co-op Survival'];
+
+// v0.6.0 maps
+MAPS['Graveyard']=mp('Graveyard','#080608','#0e0c0e',[
+  {x:0,y:640,w:1280,h:48},
+  {x:60,y:540,w:100,h:14},{x:250,y:500,w:80,h:14},{x:420,y:540,w:100,h:14},{x:600,y:510,w:80,h:14},{x:760,y:540,w:100,h:14},{x:940,y:500,w:80,h:14},{x:1120,y:540,w:100,h:14},
+  {x:150,y:400,w:120,h:14},{x:450,y:380,w:140,h:14},{x:690,y:380,w:140,h:14},{x:1010,y:400,w:120,h:14},
+  {x:300,y:270,w:160,h:14},{x:820,y:270,w:160,h:14},
+  {x:520,y:200,w:240,h:14},{x:400,y:110,w:120,h:14},{x:760,y:110,w:120,h:14},
+],[{x:100,y:600},{x:1180,y:600},{x:640,y:470},{x:640,y:160}],750,{
+  jumpPads:[{x:340,y:636,w:24,h:8,power:-900},{x:940,y:636,w:24,h:8,power:-900}],
+  hazards:[{x:550,y:636,w:180,h:12,damage:3,type:'fog'}],
+});
+
+MAPS['Dojo']=mp('Dojo','#0c0804','#14100a',[
+  {x:0,y:640,w:1280,h:48},
+  {x:200,y:520,w:200,h:10},{x:520,y:520,w:240,h:10},{x:880,y:520,w:200,h:10},
+  {x:100,y:400,w:140,h:10},{x:400,y:400,w:120,h:10},{x:760,y:400,w:120,h:10},{x:1040,y:400,w:140,h:10},
+  {x:250,y:300,w:180,h:10},{x:580,y:280,w:120,h:10},{x:850,y:300,w:180,h:10},
+  {x:450,y:180,w:160,h:10},{x:670,y:180,w:160,h:10},
+  {x:540,y:90,w:200,h:10},
+],[{x:100,y:600},{x:1180,y:600},{x:640,y:240},{x:640,y:50}],750,{
+  jumpPads:[{x:300,y:636,w:24,h:8,power:-850},{x:960,y:636,w:24,h:8,power:-850},{x:630,y:516,w:24,h:8,power:-800}],
+});
+
+MAPS['Neon City']=mp('Neon City','#06040c','#0c0818',[
+  {x:0,y:640,w:280,h:48},{x:500,y:640,w:280,h:48},{x:1000,y:640,w:280,h:48},
+  {x:280,y:580,w:220,h:12},{x:780,y:580,w:220,h:12},
+  {x:100,y:480,w:150,h:12},{x:400,y:460,w:120,h:12},{x:640,y:440,w:160,h:12},{x:760,y:460,w:120,h:12},{x:1030,y:480,w:150,h:12},
+  {x:200,y:360,w:120,h:12},{x:500,y:340,w:140,h:12},{x:640,y:320,w:140,h:12},{x:960,y:360,w:120,h:12},
+  {x:350,y:240,w:100,h:12},{x:830,y:240,w:100,h:12},
+  {x:500,y:160,w:280,h:12},{x:440,y:80,w:120,h:12},{x:720,y:80,w:120,h:12},
+],[{x:140,y:600},{x:1140,y:600},{x:640,y:400},{x:640,y:40}],750,{
+  jumpPads:[{x:390,y:636,w:28,h:8,power:-1000},{x:890,y:636,w:28,h:8,power:-1000},{x:640,y:436,w:24,h:8,power:-900}],
+});
+// ── Apply 2.5D environment themes to all maps ──
+const MAP_ENVS={
+  'The Pit':{env:'underground',platformStyle:'concrete',ambientColor:'#ff220008',
+    softPlatforms:[{x:200,y:480,w:200,h:16},{x:880,y:480,w:200,h:16}],
+    movingPlatforms:[{x:490,y:380,w:120,h:16,pathX:0,pathY:-100,speed:40}],
+    destructibles:[{x:600,y:600,w:30,h:30,hp:40,type:'crate'},{x:680,y:600,w:30,h:30,hp:40,type:'crate'}],
+    decorations:[{x:50,y:580,type:'lamp'},{x:1230,y:580,type:'lamp'}]},
+  'Rooftop':{env:'rooftop',weather:'none',platformStyle:'concrete',
+    softPlatforms:[{x:100,y:460,w:150,h:16},{x:1080,y:480,w:140,h:16}],
+    movingPlatforms:[{x:500,y:300,w:100,h:12,pathX:200,pathY:0,speed:50}],
+    destructibles:[{x:300,y:560,w:25,h:25,hp:30,type:'crate'}],
+    decorations:[{x:50,y:580,type:'ac_unit'},{x:1200,y:580,type:'ac_unit'},{x:600,y:310,type:'antenna'}]},
+  'Warehouse':{env:'warehouse',platformStyle:'metal',
+    softPlatforms:[{x:80,y:520,w:200,h:16},{x:1000,y:520,w:200,h:16}],
+    movingPlatforms:[{x:350,y:300,w:100,h:12,pathX:180,pathY:0,speed:35}],
+    destructibles:[{x:150,y:620,w:30,h:30,hp:40,type:'crate'},{x:500,y:620,w:30,h:30,hp:40,type:'crate'},{x:800,y:620,w:30,h:30,hp:40,type:'crate'},{x:1100,y:620,w:30,h:30,hp:40,type:'barrel'}],
+    decorations:[{x:300,y:600,type:'crate_stack'},{x:900,y:600,type:'crate_stack'}]},
+  'Subway':{env:'subway',platformStyle:'concrete',weather:'none',
+    softPlatforms:[{x:350,y:500,w:580,h:16}],
+    movingPlatforms:[{x:300,y:440,w:120,h:12,pathX:300,pathY:0,speed:60}],
+    decorations:[{x:200,y:600,type:'bench'},{x:1000,y:600,type:'bench'}]},
+  'Towers':{env:'city',platformStyle:'concrete',
+    softPlatforms:[{x:80,y:540,w:80,h:16},{x:1120,y:540,w:80,h:16}],
+    movingPlatforms:[{x:400,y:400,w:80,h:12,pathY:-120,pathX:0,speed:30}],
+    decorations:[{x:40,y:600,type:'lamp'},{x:1220,y:600,type:'lamp'}]},
+  'Bridges':{env:'city',platformStyle:'concrete',weather:'rain',ambientColor:'#0044ff08',
+    softPlatforms:[{x:200,y:540,w:200,h:12},{x:880,y:540,w:200,h:12}],
+    destructibles:[{x:350,y:620,w:40,h:25,hp:50,type:'car'},{x:750,y:620,w:40,h:25,hp:50,type:'car'}],
+    decorations:[{x:100,y:600,type:'lamp'},{x:500,y:600,type:'lamp'},{x:900,y:600,type:'lamp'}]},
+  'Courtyard':{env:'city',platformStyle:'concrete',
+    softPlatforms:[{x:440,y:460,w:400,h:16}],
+    movingPlatforms:[{x:200,y:360,w:80,h:12,pathX:0,pathY:-80,speed:25}],
+    decorations:[{x:600,y:600,type:'tree'},{x:640,y:600,type:'bench'},{x:700,y:600,type:'tree'}]},
+  'Favela':{env:'favela',platformStyle:'wood',
+    softPlatforms:[{x:560,y:350,w:160,h:16},{x:350,y:320,w:120,h:16}],
+    decorations:[{x:300,y:600,type:'tree'},{x:800,y:600,type:'barrel'}]},
+  'Skyline':{env:'construction',platformStyle:'metal',weather:'none',
+    softPlatforms:[{x:60,y:500,w:120,h:12},{x:1100,y:500,w:120,h:12}],
+    movingPlatforms:[{x:300,y:350,w:100,h:10,pathX:200,pathY:0,speed:45},{x:700,y:250,w:100,h:10,pathY:-80,pathX:0,speed:30}],
+    decorations:[{x:640,y:200,type:'crane'}]},
+  'Arena':{env:'underground',platformStyle:'metal',ambientColor:'#ff000006',
+    softPlatforms:[{x:400,y:480,w:120,h:16},{x:760,y:480,w:120,h:16}],
+    destructibles:[{x:630,y:400,w:25,h:25,hp:35,type:'crate'}],
+    decorations:[{x:300,y:600,type:'spotlight'},{x:980,y:600,type:'spotlight'}]},
+  'Moon':{env:'moon',platformStyle:'stone',ambientColor:'#0000ff04',
+    softPlatforms:[{x:400,y:480,w:140,h:12},{x:740,y:480,w:140,h:12}],
+    movingPlatforms:[{x:300,y:300,w:80,h:10,pathX:200,pathY:0,speed:20}],
+    decorations:[{x:200,y:600,type:'crater'},{x:700,y:600,type:'crater'},{x:1000,y:600,type:'module'}]},
+  'Volcano':{env:'volcano',weather:'embers',platformStyle:'stone',ambientColor:'#ff220008',
+    softPlatforms:[{x:300,y:440,w:140,h:14},{x:840,y:440,w:140,h:14}],
+    destructibles:[{x:500,y:580,w:30,h:30,hp:25,type:'barrel'}]},
+  'Space Station':{env:'space',platformStyle:'metal',ambientColor:'#0022ff06',
+    softPlatforms:[{x:200,y:540,w:160,h:10},{x:920,y:540,w:160,h:10}],
+    movingPlatforms:[{x:400,y:350,w:120,h:10,pathX:0,pathY:-100,speed:35}],
+    doors:[{x:50,y:590,w:30,h:50,targetX:1200,targetY:590},{x:1200,y:590,w:30,h:50,targetX:50,targetY:590}]},
+  'Graveyard':{env:'graveyard',weather:'fog',platformStyle:'stone',ambientColor:'#aaaaff04',
+    softPlatforms:[{x:250,y:480,w:120,h:14},{x:910,y:480,w:120,h:14}],
+    destructibles:[{x:400,y:610,w:25,h:25,hp:20,type:'crate'},{x:800,y:610,w:25,h:25,hp:20,type:'crate'}],
+    decorations:[{x:150,y:600,type:'tombstone'},{x:350,y:600,type:'tombstone'},{x:500,y:600,type:'dead_tree'},{x:800,y:600,type:'tombstone'},{x:1050,y:600,type:'dead_tree'}]},
+  'Dojo':{env:'dojo',platformStyle:'wood',
+    softPlatforms:[{x:200,y:450,w:140,h:14},{x:940,y:450,w:140,h:14}],
+    movingPlatforms:[{x:520,y:300,w:100,h:12,pathX:160,pathY:0,speed:35}],
+    decorations:[{x:100,y:600,type:'tree'},{x:1150,y:600,type:'tree'}]},
+  'Neon City':{env:'neon',weather:'rain',platformStyle:'neon',ambientColor:'#ff00ff04',
+    softPlatforms:[{x:280,y:580,w:220,h:12},{x:780,y:580,w:220,h:12}],
+    movingPlatforms:[{x:400,y:400,w:80,h:10,pathX:0,pathY:-80,speed:40}],
+    decorations:[{x:200,y:600,type:'lamp'},{x:640,y:600,type:'neon_sign'},{x:1050,y:600,type:'lamp'}]},
+};
+// Apply envs to maps
+for(const[name,env]of Object.entries(MAP_ENVS)){if(MAPS[name])Object.assign(MAPS[name],env);}
+
+const MODES=['Deathmatch','Team DM','Last Man','CTF','Gun Game','Infection','Survival','Co-op Survival'];
 
 // ═══════════════════════════════════════════════════════════════════════
 // STATE
@@ -976,8 +2162,12 @@ let activeBGs={}; // managed in showScreen()
 // ═══════════════════════════════════════════════════════════════════════
 const menuScreens=['mainMenu','charSelect','mapSelect','modeSelect'];
 function showScreen(id){
+  const target=document.getElementById(id);if(!target)return;
+  // Fade transition
+  target.style.opacity='0';
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  target.classList.add('active');
+  requestAnimationFrame(()=>{target.style.transition='opacity .2s';target.style.opacity='1';setTimeout(()=>{target.style.transition='';},200);});
   // manage animated backgrounds
   const bgMap={profileScreen:'profileBg',mainMenu:'menuBg',charSelect:'charBg',mapSelect:'mapBg',modeSelect:'modeBg',mpCharSelect:'mpCharBg',lobbyScreen:'lobbyBg'};
   for(const[screenId,canvasId]of Object.entries(bgMap)){
@@ -1027,6 +2217,7 @@ function selectProfile(crew){
   document.getElementById('profileName').textContent=crew.name;
   startTitlePolling();setupGodPanelListener();
   buildCharSelect();buildMapSelect();buildModeSelect();loadSocial();showScreen('mainMenu');
+  checkFirstTimeBonus();
 }
 
 let menuFlow='single';
@@ -1035,6 +2226,8 @@ const MODE_DESC={
   'Team DM':'2v2 teams. First team to 30 kills.',
   'Last Man':'Limited lives. Last one standing wins.',
   'CTF':'Capture the enemy flag 3 times to win.',
+  'Gun Game':'Get a kill with each weapon to advance. First to cycle all wins.',
+  'Infection':'One player starts infected. Tag others to spread. Last human wins.',
   'Survival':'Survive waves of enemies. Solo.',
   'Co-op Survival':'Survive together. Online co-op.',
 };
@@ -1103,7 +2296,7 @@ function buildModeSelect(){
   });
 }
 
-const MP_MODES=['Deathmatch','Team DM','Last Man','CTF','Co-op Survival'];
+const MP_MODES=['Deathmatch','Team DM','Last Man','CTF','Gun Game','Infection','Co-op Survival'];
 const MP_MODE_DESC={
   'Deathmatch':'Free-for-all. First to 20 kills. Up to 4 players + bots.',
   'Team DM':'2v2 teams. First team to 30 kills.',
@@ -1164,7 +2357,9 @@ function showPauseTab(tab){
     <div class="setting-row"><label>Screen Shake</label><select onchange="settings.screenShake=this.value==='on';saveSetting()"><option ${settings.screenShake?'selected':''}>on</option><option ${!settings.screenShake?'selected':''}>off</option></select></div>
     <div class="setting-row"><label>Damage Numbers</label><select onchange="settings.damageNumbers=this.value==='on';saveSetting()"><option ${settings.damageNumbers?'selected':''}>on</option><option ${!settings.damageNumbers?'selected':''}>off</option></select></div>
     <div class="setting-row"><label>Show FPS</label><select onchange="settings.showFPS=this.value==='on';saveSetting()"><option ${settings.showFPS?'selected':''}>on</option><option ${!settings.showFPS?'selected':''}>off</option></select></div>
-    <div class="setting-row"><label>Crosshair</label><select onchange="settings.crosshair=this.value;saveSetting()"><option ${settings.crosshair==='dot'?'selected':''}>dot</option><option ${settings.crosshair==='cross'?'selected':''}>cross</option><option ${settings.crosshair==='circle'?'selected':''}>circle</option></select></div>`;
+    <div class="setting-row"><label>Crosshair</label><select onchange="settings.crosshair=this.value;saveSetting()"><option ${settings.crosshair==='dot'?'selected':''}>dot</option><option ${settings.crosshair==='cross'?'selected':''}>cross</option><option ${settings.crosshair==='circle'?'selected':''}>circle</option></select></div>
+    <div class="setting-row"><label>Announcer</label><select onchange="Announcer.enabled=this.value==='on';settings.announcer=this.value;saveSetting()"><option ${(settings.announcer||'on')==='on'?'selected':''}>on</option><option ${settings.announcer==='off'?'selected':''}>off</option></select></div>
+    <div class="setting-row"><label>Announcer Volume</label><input type="range" min="0" max="100" value="${Math.round(Announcer.vol*100)}" oninput="Announcer.vol=this.value/100"></div>`;
   }
   if(tab==='keybinds'){let html='<h2>KEYBINDS</h2><p style="color:#444;font-size:10px;margin-bottom:12px;letter-spacing:1px">CLICK TO REBIND / ESC TO CANCEL</p>';for(const[action,key]of Object.entries(binds))html+=`<div class="keybind-row"><span class="action">${action}</span><span class="key" data-action="${action}" onclick="startRebind(this)">${key}</span></div>`;html+='<p style="margin-top:16px;color:#333;font-size:10px">Gamepad: LS move, RS aim, RT shoot, LT ability, A jump, X reload, Y throw, B switch</p>';pc.innerHTML=html;}
   if(tab==='social'){let html='<h2>CREW</h2><div class="social-panel"><h3>STATUS</h3>';(Array.isArray(crewStatus)?crewStatus:[]).forEach(m=>{const cr=CREW.find(c=>c.id===m.profile_id);html+=`<div class="crew-member"><div class="online-dot" style="background:${m.online?'#4f4':'#333'}"></div><span class="cm-name" style="color:${cr?.color||'#666'}">${m.profile_id}</span><span class="cm-status">${m.online?(m.game_state?.screen||'online'):'offline'}</span></div>`;});html+='</div><div class="social-panel"><h3>WALL</h3>';wallPosts.slice(0,8).forEach(p=>{html+=`<div class="wall-post"><span class="wp-author">${p.profile_id||'?'}</span>: ${(p.content||'').substring(0,100)}</div>`;});html+='</div>';pc.innerHTML=html;}
@@ -1349,15 +2544,7 @@ function setupMultiplayerListeners(){
   NGame.on('player_left',msg=>{
     if(msg)delete remotePlayers[msg.profile_id];
   });
-  NGame.on('game_start',msg=>{
-    // Another player started the match
-    if(!gameRunning&&currentRoom){
-      isMultiplayer=true;stopLobbyPoll();
-      if(msg?.mode)selectedMode=msg.mode;
-      if(msg?.map)selectedMap=msg.map;
-      startGame();
-    }
-  });
+  // All multiplayer events come through room_event
   NGame.on('room_event',msg=>{
     if(!msg)return;
     // Game start broadcast
@@ -1365,7 +2552,7 @@ function setupMultiplayerListeners(){
       isMultiplayer=true;stopLobbyPoll();
       if(msg.data?.mode)selectedMode=msg.data.mode;
       if(msg.data?.map)selectedMap=msg.data.map;
-      if(msg.data?.bots)lobbyBots=msg.data.bots;
+      if(msg.data?.bots!==undefined)lobbyBots=msg.data.bots;
       startGame();
     }
     if(!game)return;
@@ -1463,25 +2650,152 @@ class Game{
   }
   renderDynamicBG(c){
     const W=this.map.width,H=this.map.height,t=this.time;
-    // base gradient
+    const px=this.player?this.player.x/W:0.5; // parallax factor based on player pos
+    // ── Sky gradient
     const g=c.createLinearGradient(0,0,0,H);g.addColorStop(0,this.map.bg);g.addColorStop(1,this.map.bgAccent);c.fillStyle=g;c.fillRect(0,0,W,H);
-    // stars
-    for(const s of this.bgStars){c.globalAlpha=.15+Math.sin(t*1.5+s.twinkle)*.1;c.fillStyle='#fff';c.beginPath();c.arc(s.x,s.y,s.size,0,Math.PI*2);c.fill();}c.globalAlpha=1;
-    // distant buildings
-    for(const b of this.bgBuildings){const d=b.layer===0?.03:.05;c.fillStyle=`rgba(10,10,20,${d*10})`;c.fillRect(b.x,b.y+5,b.w,b.h);
-      // lit windows
-      for(let wi=0;wi<b.windows;wi++){const wx=b.x+4+Math.floor(wi%3)*(b.w/3),wy=b.y+8+Math.floor(wi/3)*16;
-        c.fillStyle=Math.sin(t*.3+wi+b.x)>.2?'#ff8':'#440';c.globalAlpha=.04;c.fillRect(wx,wy,4,4);c.globalAlpha=1;}}
-    // floating dust/embers
-    for(const p of this.bgParticles){p.x+=p.vx;p.y+=p.vy;if(p.y<-5){p.y=H+5;p.x=Math.random()*W;}if(p.x<-5)p.x=W+5;if(p.x>W+5)p.x=-5;
-      c.globalAlpha=p.alpha*(0.6+0.4*Math.sin(t+p.x*.02));c.fillStyle=this.mapName==='Arena'||this.mapName==='The Pit'?'#f84':'#8af';c.beginPath();c.arc(p.x,p.y,p.size,0,Math.PI*2);c.fill();}c.globalAlpha=1;
-    // grid
-    c.globalAlpha=.015;c.strokeStyle='#fff';c.lineWidth=1;for(let x=0;x<W;x+=80){c.beginPath();c.moveTo(x,0);c.lineTo(x,H);c.stroke();}for(let y=0;y<H;y+=80){c.beginPath();c.moveTo(0,y);c.lineTo(W,y);c.stroke();}c.globalAlpha=1;
-    // map-specific atmosphere
-    if(this.mapName==='The Pit'){const pg=c.createRadialGradient(W/2,H+50,10,W/2,H+50,300);pg.addColorStop(0,'#f0400a');pg.addColorStop(1,'transparent');c.fillStyle=pg;c.fillRect(0,H-300,W,300);}
-    if(this.mapName==='Skyline'){c.globalAlpha=.03;const sg=c.createLinearGradient(0,0,0,H*.3);sg.addColorStop(0,'#0a0a20');sg.addColorStop(1,'#1a0a30');c.fillStyle=sg;c.fillRect(0,0,W,H*.3);c.globalAlpha=1;}
-    if(this.mapName==='Warehouse'){c.globalAlpha=.02;for(let i=0;i<3;i++){c.fillStyle='#fff';c.beginPath();c.arc(200+i*400,80,60+Math.sin(t+i)*10,0,Math.PI*2);c.fill();}c.globalAlpha=1;}
-    if(this.mapName==='Subway'){c.globalAlpha=.02;c.fillStyle='#fff';c.fillRect(0,H-60,W,2);c.fillRect(0,H-56,W,1);c.globalAlpha=1;}
+    // ── Stars (outdoor maps)
+    if(this.bgStars)for(const s of this.bgStars){c.globalAlpha=.2+Math.sin(t*1.5+s.twinkle)*.12;c.fillStyle='#fff';c.beginPath();c.arc(s.x,s.y,s.size,0,Math.PI*2);c.fill();}
+    c.globalAlpha=1;
+    // ── Far parallax layer (0.1x scroll)
+    const env=this.map.env||'city';
+    const farOff=(px-.5)*-60;
+    this._drawEnvFar(c,W,H,t,farOff,env);
+    // ── Mid parallax layer (0.3x scroll) — buildings/trees/structures
+    const midOff=(px-.5)*-160;
+    this._drawEnvMid(c,W,H,t,midOff,env);
+    // ── Near parallax layer (0.6x scroll) — foreground detail
+    const nearOff=(px-.5)*-260;
+    this._drawEnvNear(c,W,H,t,nearOff,env);
+    // ── Ambient overlay
+    if(this.map.ambientColor){c.fillStyle=this.map.ambientColor;c.fillRect(0,0,W,H);}
+    // ── Weather
+    this._drawWeather(c,W,H,t);
+  }
+  _drawEnvFar(c,W,H,t,off,env){
+    c.save();c.translate(off,0);
+    if(env==='city'||env==='rooftop'||env==='neon'){
+      // Distant skyline silhouettes
+      c.fillStyle='#0a0a18';
+      for(let i=0;i<12;i++){const bx=i*120-40,bw=40+Math.sin(i*7)*20,bh=60+Math.sin(i*3)*80;c.fillRect(bx,H-bh-180,bw,bh);}
+      c.fillStyle='#0c0c1e';
+      for(let i=0;i<8;i++){const bx=i*180-20,bw=60+Math.sin(i*5)*25,bh=80+Math.sin(i*2)*100;c.fillRect(bx,H-bh-150,bw,bh);}
+    }else if(env==='moon'){
+      c.fillStyle='#888';c.globalAlpha=.06;c.beginPath();c.arc(W*.8,H*.15,120,0,Math.PI*2);c.fill();// Earth
+      c.fillStyle='#4488ff';c.globalAlpha=.04;c.beginPath();c.arc(W*.8,H*.15,115,0,Math.PI*2);c.fill();c.globalAlpha=1;
+    }else if(env==='volcano'){
+      c.fillStyle='#1a0800';for(let i=0;i<6;i++){const mx=i*250-50;c.beginPath();c.moveTo(mx,H);c.lineTo(mx+80,H-200-Math.sin(i)*60);c.lineTo(mx+160,H);c.fill();}
+    }else if(env==='underground'){
+      c.fillStyle='#08060a';c.fillRect(0,0,W,H*.4);const sg=c.createLinearGradient(0,0,0,H*.4);sg.addColorStop(0,'#08060a');sg.addColorStop(1,'transparent');c.fillStyle=sg;c.fillRect(0,0,W,H*.5);
+    }else if(env==='dojo'){
+      c.fillStyle='#0a0808';c.fillRect(0,H*.6,W,H*.4);// wooden floor glow
+      c.fillStyle='#1a1008';c.globalAlpha=.15;c.fillRect(0,H*.7,W,H*.3);c.globalAlpha=1;
+    }else if(env==='graveyard'){
+      c.fillStyle='#0a0a10';c.globalAlpha=.5;const fg=c.createLinearGradient(0,H*.5,0,H);fg.addColorStop(0,'transparent');fg.addColorStop(1,'#0a0a1044');c.fillStyle=fg;c.fillRect(0,H*.5,W,H*.5);c.globalAlpha=1;
+    }else if(env==='space'){
+      for(let i=0;i<3;i++){c.fillStyle='#111';c.globalAlpha=.05;c.fillRect(i*450-30,H*.2+i*40,200,300);c.globalAlpha=1;}
+    }
+    c.restore();
+  }
+  _drawEnvMid(c,W,H,t,off,env){
+    c.save();c.translate(off,0);
+    if(env==='city'||env==='rooftop'){
+      // Mid-ground buildings with windows
+      const bldgs=[{x:20,w:80,h:220},{x:140,w:60,h:180},{x:240,w:100,h:260},{x:400,w:70,h:200},{x:520,w:90,h:240},{x:660,w:75,h:190},{x:780,w:110,h:270},{x:940,w:65,h:210},{x:1050,w:85,h:230},{x:1180,w:70,h:195}];
+      for(const b of bldgs){const by=H-b.h-80;
+        c.fillStyle='#10101e';c.fillRect(b.x,by,b.w,b.h);
+        c.fillStyle='#181828';c.fillRect(b.x,by,b.w,3);// roof edge
+        // Windows
+        for(let wy=by+12;wy<by+b.h-10;wy+=18)for(let wx=b.x+6;wx<b.x+b.w-8;wx+=14){
+          const lit=Math.sin(t*.2+wx*.1+wy*.07)>.1;
+          c.fillStyle=lit?'#ffcc44':'#1a1a28';c.globalAlpha=lit?.06:.02;c.fillRect(wx,wy,6,8);
+        }c.globalAlpha=1;
+      }
+    }else if(env==='neon'){
+      // Neon signs and holographic ads
+      const bldgs=[{x:30,w:90,h:240},{x:180,w:70,h:200},{x:310,w:120,h:280},{x:490,w:80,h:220},{x:630,w:100,h:260},{x:790,w:90,h:240},{x:940,w:110,h:270},{x:1100,w:80,h:210}];
+      for(const b of bldgs){const by=H-b.h-60;c.fillStyle='#0a0a16';c.fillRect(b.x,by,b.w,b.h);
+        // Neon sign
+        const colors=['#ff0066','#00ffcc','#ff6600','#6600ff','#00ff66','#ff0044'];
+        const nc=colors[Math.floor(b.x/100)%colors.length];c.fillStyle=nc;c.globalAlpha=.04+Math.sin(t*3+b.x)*.02;c.fillRect(b.x+5,by+20,b.w-10,12);c.globalAlpha=1;
+        for(let wy=by+40;wy<by+b.h-10;wy+=14)for(let wx=b.x+6;wx<b.x+b.w-8;wx+=12){c.fillStyle='#224';c.globalAlpha=.03;c.fillRect(wx,wy,4,6);c.globalAlpha=1;}
+      }
+    }else if(env==='warehouse'){
+      // Industrial structures — catwalks, chains
+      c.fillStyle='#121212';c.globalAlpha=.2;for(let i=0;i<5;i++){c.fillRect(i*280+40,H*.15,3,H*.5);}// chains
+      c.fillStyle='#0e0e0e';for(let i=0;i<3;i++){c.fillRect(i*450+20,H*.12,180,6);}// catwalks
+      c.globalAlpha=1;
+    }else if(env==='subway'){
+      // Tile walls and pillars
+      c.fillStyle='#14141e';c.fillRect(0,0,W,H*.15);c.fillRect(0,H*.85,W,H*.15);// ceiling/floor
+      for(let i=0;i<8;i++){c.fillStyle='#18182a';c.fillRect(i*170+60,H*.12,16,H*.75);}// pillars
+    }else if(env==='graveyard'){
+      // Dead trees silhouettes
+      c.fillStyle='#0a0a10';c.globalAlpha=.15;
+      for(let i=0;i<6;i++){const tx=i*230+80;c.fillRect(tx,H-280,4,120);c.beginPath();c.moveTo(tx-20,H-260);c.lineTo(tx+2,H-300);c.lineTo(tx+24,H-250);c.fill();}
+      c.globalAlpha=1;
+    }else if(env==='dojo'){
+      // Paper screens, wooden beams
+      c.fillStyle='#1a1408';c.globalAlpha=.1;
+      for(let i=0;i<5;i++){c.fillRect(i*280+80,H*.1,4,H*.7);}// pillars
+      c.fillStyle='#e8d8c0';c.globalAlpha=.02;
+      for(let i=0;i<4;i++){c.fillRect(i*280+84,H*.15,276,H*.6);}// shoji screens
+      c.globalAlpha=1;
+    }else if(env==='volcano'){
+      // Lava glow from below
+      const lg=c.createLinearGradient(0,H-100,0,H);lg.addColorStop(0,'transparent');lg.addColorStop(.5,'#ff220008');lg.addColorStop(1,'#ff440015');c.fillStyle=lg;c.fillRect(0,H-100,W,100);
+    }else if(env==='moon'){
+      // Crater rims
+      c.fillStyle='#222';c.globalAlpha=.1;
+      for(let i=0;i<5;i++){const cx=i*280+100;c.beginPath();c.ellipse(cx,H-40,60+i*10,15,0,0,Math.PI*2);c.fill();}
+      c.globalAlpha=1;
+    }else if(env==='favela'){
+      // Stacked colorful buildings
+      const fColors=['#2a1a1a','#1a2a1a','#1a1a2a','#2a2a1a','#2a1a2a'];
+      for(let i=0;i<10;i++){const bx=i*130-20,bw=60+Math.random()*40,bh=100+i%3*60;c.fillStyle=fColors[i%fColors.length];c.globalAlpha=.08;c.fillRect(bx,H-bh-100,bw,bh);c.globalAlpha=1;}
+    }else if(env==='construction'){
+      // Steel beams and scaffolding
+      c.strokeStyle='#333';c.lineWidth=2;c.globalAlpha=.08;
+      for(let i=0;i<6;i++){c.beginPath();c.moveTo(i*240+50,H);c.lineTo(i*240+80,H-300);c.stroke();c.beginPath();c.moveTo(i*240+80,H-300);c.lineTo(i*240+110,H);c.stroke();}
+      c.globalAlpha=1;
+    }
+    c.restore();
+  }
+  _drawEnvNear(c,W,H,t,off,env){
+    c.save();c.translate(off,0);
+    if(env==='city'||env==='rooftop'){
+      // Foreground street elements — fences, street lamps
+      for(let i=0;i<6;i++){const lx=i*240+100;
+        c.fillStyle='#222';c.fillRect(lx,H-100,3,50);// lamp pole
+        c.fillStyle='#ff8';c.globalAlpha=.04+Math.sin(t*2+i)*.01;c.beginPath();c.arc(lx+1,H-100,12,0,Math.PI*2);c.fill();c.globalAlpha=1;
+      }
+    }else if(env==='neon'){
+      // Glowing ground reflections
+      c.globalAlpha=.03;
+      const colors=['#ff0066','#00ffcc','#ff6600'];
+      for(let i=0;i<8;i++){c.fillStyle=colors[i%colors.length];c.fillRect(i*180+20,H-20,120,20);}
+      c.globalAlpha=1;
+    }
+    c.restore();
+  }
+  _drawWeather(c,W,H,t){
+    const w=this.map.weather;if(!w||w==='none')return;
+    if(w==='rain'){
+      c.strokeStyle='#8af';c.lineWidth=1;c.globalAlpha=.12;
+      for(let i=0;i<80;i++){const rx=((i*37+t*200)%W),ry=((i*53+t*400)%H);c.beginPath();c.moveTo(rx,ry);c.lineTo(rx-2,ry+8);c.stroke();}
+      c.globalAlpha=1;
+    }else if(w==='snow'){
+      c.fillStyle='#fff';c.globalAlpha=.15;
+      for(let i=0;i<40;i++){const sx=((i*47+t*30+Math.sin(t+i)*20)%W),sy=((i*37+t*40)%H);c.beginPath();c.arc(sx,sy,1+i%2,0,Math.PI*2);c.fill();}
+      c.globalAlpha=1;
+    }else if(w==='fog'){
+      c.globalAlpha=.06+Math.sin(t*.5)*.02;c.fillStyle='#aab';c.fillRect(0,H*.4,W,H*.6);
+      for(let i=0;i<5;i++){c.beginPath();c.arc((i*300+t*10)%W,H*.6+i*20,80+Math.sin(t*.3+i)*20,0,Math.PI*2);c.fill();}
+      c.globalAlpha=1;
+    }else if(w==='embers'){
+      c.fillStyle='#fa0';c.globalAlpha=.15;
+      for(let i=0;i<20;i++){const ex=((i*67+t*20)%W),ey=(H-((i*43+t*60)%H));c.beginPath();c.arc(ex,ey,1+Math.random(),0,Math.PI*2);c.fill();}
+      c.globalAlpha=1;
+    }
   }
   start(){
     this.resize();window.addEventListener('resize',this._onResize=()=>this.resize());
@@ -1502,12 +2816,23 @@ class Game{
       if(this.mode==='Last Man')this.entities.forEach(e=>{e.lives=3;});
       if(this.mode==='CTF'){this.flags=[{team:0,x:100,y:580,baseX:100,baseY:580,carrier:null,color:'#4488ff'},{team:1,x:1180,y:580,baseX:1180,baseY:580,carrier:null,color:'#ff4444'}];this.captures=[0,0];}
     }
+    // Gun Game — give each player their starting weapon from the gun list
+    if(this.mode==='Gun Game'){
+      this.gunGameWeapons=['Pistol','SMG','Shotgun','Sniper','Rocket','Minigun','Railgun','Crossbow','Plasma Cannon','Harpoon','Freeze Ray','Tesla Gun','Sawed-Off','Flamethrower','Bouncer'];
+      this.entities.forEach(e=>{e.gunGameLevel=0;e.weapons=[this.makeWeapon(this.gunGameWeapons[0])];e.activeWeaponIdx=0;});
+    }
+    // Infection — one random entity starts infected
+    if(this.mode==='Infection'){
+      this.entities.forEach(e=>{e.infected=false;e.team=0;});
+      const infIdx=Math.floor(Math.random()*this.entities.length);
+      this.entities[infIdx].infected=true;this.entities[infIdx].team=1;this.entities[infIdx].speed*=1.3;this.entities[infIdx].color='#a00';
+    }
     this.spawnPickup();this.running=true;this.lastTime=performance.now();this.loop(this.lastTime);
   }
   stop(){this.running=false;if(this.rafId)cancelAnimationFrame(this.rafId);window.removeEventListener('resize',this._onResize);}
   resize(){const r=this.canvas.parentElement.getBoundingClientRect();this.canvas.width=r.width;this.canvas.height=r.height;this.scale=Math.min(r.width/this.map.width,r.height/this.map.height);}
   makeWeapon(name){const d=W_[name];if(!d)return null;return{...d,currentAmmo:d.ammo,maxAmmo:d.ammo,reloading:false,reloadTimer:0,fireTimer:0};}
-  createPlayer(cn,x,y,isBot,idx){const ch=CHARACTERS[cn];return{type:'player',charName:cn,idx,x,y,vx:0,vy:0,w:PLAYER_W,h:PLAYER_H,hp:ch.hp,maxHp:ch.hp,speed:ch.speed,jumpMul:ch.jumpMul,facing:1,aimAngle:0,onGround:false,canDoubleJump:true,wallSliding:false,wallDir:0,weapons:[this.makeWeapon(ch.primaryName),this.makeWeapon(ch.secondaryName)],activeWeaponIdx:0,abilityCooldown:0,abilityActive:false,abilityTimer:0,invisible:false,slowed:false,slowTimer:0,speedMul:1,dmgMul:1,speedBuff:0,dmgBuff:0,rapidBuff:0,regenBuff:0,maxHpBuff:0,dead:false,respawnTimer:0,kills:0,deaths:0,assists:0,streak:0,streakAnnounced:new Set(),team:0,lives:999,isBot,isSurvivalEnemy:false,botTarget:null,botJumpTimer:0,botShootTimer:0,botAbilityTimer:0,color:ch.color,walkCycle:0,armor:0,armorTimer:0,_jumpHeld:false,_abilityHeld:false,_throwHeld:false};}
+  createPlayer(cn,x,y,isBot,idx){const ch=getChar(cn);return{type:'player',charName:cn,idx,x,y,vx:0,vy:0,w:PLAYER_W,h:PLAYER_H,hp:ch.hp,maxHp:ch.hp,speed:ch.speed,jumpMul:ch.jumpMul||1,facing:1,aimAngle:0,onGround:false,canDoubleJump:true,wallSliding:false,wallDir:0,weapons:[this.makeWeapon(ch.primaryName||'Pistol'),this.makeWeapon(ch.secondaryName||'Pistol')].filter(Boolean),activeWeaponIdx:0,abilityCooldown:0,abilityActive:false,abilityTimer:0,invisible:false,slowed:false,slowTimer:0,speedMul:1,dmgMul:1,speedBuff:0,dmgBuff:0,rapidBuff:0,regenBuff:0,maxHpBuff:0,vampBuff:0,dead:false,respawnTimer:0,kills:0,deaths:0,assists:0,streak:0,streakAnnounced:new Set(),team:0,lives:999,isBot,isSurvivalEnemy:false,isRemote:false,botTarget:null,botJumpTimer:0,botShootTimer:0,botAbilityTimer:0,color:ch.color,walkCycle:0,armor:0,armorTimer:0,_jumpHeld:false,_abilityHeld:false,_throwHeld:false};}
   createSurvivalEnemy(wave){
     // Pick an enemy type based on wave difficulty
     const pool=wave<3?ENEMY_TYPES.filter(t=>t.role==='basic'||t.role==='fast'):
@@ -1525,7 +2850,7 @@ class Game{
     if(wave>=5&&Math.random()<.3){const w=PICKUP_WEAPONS[Math.floor(Math.random()*PICKUP_WEAPONS.length)];e.weapons.push(this.makeWeapon(w));e.activeWeaponIdx=e.weapons.length-1;}
     return e;
   }
-  isEnemy(a,b){if(this.mode==='Team DM'||this.mode==='CTF')return a.team!==b.team;if(this.mode==='Survival'||this.mode==='Co-op Survival')return a.isSurvivalEnemy!==b.isSurvivalEnemy;return a!==b;}
+  isEnemy(a,b){if(this.mode==='Team DM'||this.mode==='CTF'||this.mode==='Infection')return a.team!==b.team;if(this.mode==='Survival'||this.mode==='Co-op Survival')return a.isSurvivalEnemy!==b.isSurvivalEnemy;return a!==b;}
 
   loop(now){if(!this.running)return;this.rafId=requestAnimationFrame(t=>this.loop(t));let dt=(now-this.lastTime)/1000;this.lastTime=now;if(dt>.1)dt=.1;this.fpsFrames++;this.fpsTime+=dt;if(this.fpsTime>=1){this.fps=this.fpsFrames;this.fpsFrames=0;this.fpsTime=0;}if(gamePaused){this.render();return;}pollGamepad();this.accumulator+=dt;while(this.accumulator>=TICK){this.update(TICK);this.accumulator-=TICK;}
     // Multiplayer sync
@@ -1534,7 +2859,7 @@ class Game{
     // Send local state to room every frame (60Hz) — only 4 players, tiny packets
     if(currentRoom&&this.player){
       const rid=currentRoom.room_id||currentRoom.id;const p=this.player;
-      NGame.sendRoomState(rid,{x:Math.round(p.x),y:Math.round(p.y),vx:Math.round(p.vx),vy:Math.round(p.vy),hp:Math.round(p.hp),facing:p.facing,aimAngle:+(p.aimAngle.toFixed(2)),character:p.charName,weapon:p.weapons[p.activeWeaponIdx]?.name,kills:p.kills,deaths:p.deaths,dead:p.dead,onGround:p.onGround});
+      NGame.sendRoomState(rid,{x:Math.round(p.x),y:Math.round(p.y),vx:Math.round(p.vx),vy:Math.round(p.vy),hp:Math.round(p.hp),facing:p.facing,aimAngle:+(p.aimAngle.toFixed(2)),character:p.charName,weapon:p.weapons[p.activeWeaponIdx]?.name,kills:p.kills,deaths:p.deaths,dead:p.dead,onGround:p.onGround,cosmetics:getCosmetics()});
     }}
 
   syncRemotePlayers(){
@@ -1560,6 +2885,11 @@ class Game{
       if(state.dead)ent.dead=true;else ent.dead=false;
       if(state.kills!==undefined)ent.kills=state.kills;
       if(state.deaths!==undefined)ent.deaths=state.deaths;
+      // Sync cosmetics from remote player
+      if(state.cosmetics){
+        ent._cosmetics=state.cosmetics;
+        if(state.cosmetics.skin){const si=COSMETIC_DB.find(i=>i.id===state.cosmetics.skin);if(si)ent._cosmetics.skinColor=si.colorOverride;}
+      }
       // Update walk cycle for animation
       if(Math.abs(ent.vx)>10)ent.walkCycle+=TICK*10;
       ent.onGround=ent.vy>=0&&ent.vy<50;
@@ -1579,6 +2909,7 @@ class Game{
       if(e.dmgBuff>0){e.dmgBuff-=dt;if(e.dmgBuff<=0)e.dmgMul=1;}
       if(e.rapidBuff>0)e.rapidBuff-=dt;
       if(e.regenBuff>0){e.regenBuff-=dt;e.hp=Math.min(e.maxHp,e.hp+10*dt);}
+      if(e.vampBuff>0)e.vampBuff-=dt;
       if(e.maxHpBuff>0){e.maxHpBuff-=dt;if(e.maxHpBuff<=0&&e.hp>getChar(e.charName).hp){e.maxHp=getChar(e.charName).hp;e.hp=Math.min(e.hp,e.maxHp);}}
       for(const w of e.weapons){if(w.fireTimer>0)w.fireTimer-=dt*(e.rapidBuff>0?2:1);if(w.reloading){w.reloadTimer-=dt;if(w.reloadTimer<=0){w.currentAmmo=w.ammo;w.reloading=false;}}}
       if(e.isRemote){/* remote players are positioned by syncRemotePlayers */}
@@ -1587,7 +2918,7 @@ class Game{
       if(!e.isRemote)this.applyPhysics(e,dt);
       if(Math.abs(e.vx)>10&&e.onGround)e.walkCycle+=dt*10;else if(e.onGround)e.walkCycle=0;
     }
-    this.updateBullets(dt);this.updateThrownWeapons(dt);this.updateParticles(dt);this.updatePickups(dt);this.updateWeaponDrops(dt);this.updateSentries(dt);
+    this.updateMovingPlatforms(dt);this.updateDestructibles(dt);this.updateBullets(dt);this.updateThrownWeapons(dt);this.updateParticles(dt);this.updatePickups(dt);this.updateWeaponDrops(dt);this.updateSentries(dt);this.updateDoors(dt);
     // muzzle flashes + bullet trails
     for(let i=this.muzzleFlashes.length-1;i>=0;i--){this.muzzleFlashes[i].life-=dt;if(this.muzzleFlashes[i].life<=0)this.muzzleFlashes.splice(i,1);}
     for(let i=this.bulletTrails.length-1;i>=0;i--){this.bulletTrails[i].life-=dt;if(this.bulletTrails[i].life<=0)this.bulletTrails.splice(i,1);}
@@ -1621,15 +2952,111 @@ class Game{
 
   throwWeapon(e){const w=e.weapons[e.activeWeaponIdx];if(!w||e.weapons.length<=1)return;const weight=w.weight||2;this.thrownWeapons.push({x:e.x,y:e.y-e.h*.5,vx:Math.cos(e.aimAngle)*(600/weight),vy:Math.sin(e.aimAngle)*(600/weight)-100,name:w.name,damage:10+weight*8,owner:e,spin:0,weight,life:4});e.weapons.splice(e.activeWeaponIdx,1);e.activeWeaponIdx=Math.min(e.activeWeaponIdx,e.weapons.length-1);SFX.play('throw');}
 
-  updateThrownWeapons(dt){for(let i=this.thrownWeapons.length-1;i>=0;i--){const tw=this.thrownWeapons[i];tw.vy+=GRAVITY*dt;tw.x+=tw.vx*dt;tw.y+=tw.vy*dt;tw.spin+=dt*15;tw.life-=dt;if(tw.life<=0||tw.y>this.map.deathY){this.thrownWeapons.splice(i,1);continue;}let removed=false;for(const p of this.map.platforms){if(this.pointInBox(tw.x,tw.y,p.x,p.y,p.w,p.h)){this.weaponDrops.push({x:tw.x,y:p.y-10,name:tw.name,life:20,bob:0,vy:0});this.thrownWeapons.splice(i,1);removed=true;break;}}if(removed)continue;for(const e of this.entities){if(e===tw.owner||e.dead||!this.isEnemy(tw.owner,e))continue;if(Math.hypot(e.x-tw.x,(e.y-e.h/2)-tw.y)<25){this.dealDamage(e,tw.damage,tw.owner);this.weaponDrops.push({x:tw.x,y:tw.y,name:tw.name,life:20,bob:0,vy:-100});this.thrownWeapons.splice(i,1);break;}}}}
+  updateThrownWeapons(dt){for(let i=this.thrownWeapons.length-1;i>=0;i--){const tw=this.thrownWeapons[i];tw.vy+=GRAVITY*(this.map.gravity||1)*dt;tw.x+=tw.vx*dt;tw.y+=tw.vy*dt;tw.spin+=dt*15;tw.life-=dt;if(tw.life<=0||tw.y>this.map.deathY){this.thrownWeapons.splice(i,1);continue;}let removed=false;for(const p of this.map.platforms){if(this.pointInBox(tw.x,tw.y,p.x,p.y,p.w,p.h)){this.weaponDrops.push({x:tw.x,y:p.y-10,name:tw.name,life:20,bob:0,vy:0});this.thrownWeapons.splice(i,1);removed=true;break;}}if(removed)continue;for(const e of this.entities){if(e===tw.owner||e.dead||!this.isEnemy(tw.owner,e))continue;if(Math.hypot(e.x-tw.x,(e.y-e.h/2)-tw.y)<25){this.dealDamage(e,tw.damage,tw.owner);this.weaponDrops.push({x:tw.x,y:tw.y,name:tw.name,life:20,bob:0,vy:-100});this.thrownWeapons.splice(i,1);break;}}}}
 
-  updateBot(e,dt){e.botShootTimer-=dt;e.botJumpTimer-=dt;e.botAbilityTimer-=dt;const enemies=this.entities.filter(p=>p!==e&&!p.dead&&this.isEnemy(e,p));if(!enemies.length){e.vx*=.9;return;}let closest=enemies[0],cd=Infinity;for(const en of enemies){const d=Math.hypot(en.x-e.x,en.y-e.y);if(d<cd){cd=d;closest=en;}}e.botTarget=closest;e.facing=closest.x-e.x>0?1:-1;e.aimAngle=Math.atan2(closest.y-closest.h/2-(e.y-e.h*.6),closest.x-e.x);const spd=e.speed*(e.slowed?.5:1)*(e.speedMul||1);const w=e.weapons[e.activeWeaponIdx];const ideal=w?.name==='Sniper'?400:(w?.name==='Flamethrower'||w?.name==='SMG'?150:220);if(cd>ideal+50)e.vx=spd*e.facing;else if(cd<ideal-50)e.vx=-spd*e.facing;else e.vx*=.8;if(e.botJumpTimer<=0&&(closest.y-e.y<-50||(e.onGround&&Math.random()<.02))){if(e.onGround){e.vy=JUMP_VEL*e.jumpMul;e.onGround=false;e.canDoubleJump=true;}else if(e.canDoubleJump&&Math.random()<.3){e.vy=JUMP_VEL*e.jumpMul;e.canDoubleJump=false;}e.botJumpTimer=.3+Math.random()*.5;}if(e.botShootTimer<=0&&cd<(w?.range||300)){this.tryShoot(e);e.botShootTimer=.05+Math.random()*.2;}if(w&&w.currentAmmo<=0&&!w.reloading){w.reloading=true;w.reloadTimer=w.reload;}if(w&&w.currentAmmo<=0&&e.weapons.length>1){const o=e.weapons.findIndex((ww,i)=>i!==e.activeWeaponIdx&&ww.currentAmmo>0);if(o>=0)e.activeWeaponIdx=o;}if(e.botAbilityTimer<=0&&e.abilityCooldown<=0&&!e.abilityActive&&cd<300){getChar(e.charName).abilityFn(e,this);e.abilityCooldown=getChar(e.charName).ability.cooldown;e.botAbilityTimer=5+Math.random()*10;}}
+  updateBot(e,dt){
+    e.botShootTimer-=dt;e.botJumpTimer-=dt;e.botAbilityTimer-=dt;
+    if(!e._botDodgeTimer)e._botDodgeTimer=0;e._botDodgeTimer-=dt;
+    if(!e._botSwitchTimer)e._botSwitchTimer=0;e._botSwitchTimer-=dt;
+    if(!e._botPickupSeek)e._botPickupSeek=0;e._botPickupSeek-=dt;
+    const enemies=this.entities.filter(p=>p!==e&&!p.dead&&this.isEnemy(e,p));
+    const spd=e.speed*(e.slowed?.5:1)*(e.speedMul||1);
+    const w=e.weapons[e.activeWeaponIdx];
+
+    // No enemies — seek pickups or patrol
+    if(!enemies.length){
+      if(this.pickups.length&&e._botPickupSeek<=0){
+        const cp=this.pickups.reduce((a,b)=>Math.hypot(a.x-e.x,a.y-e.y)<Math.hypot(b.x-e.x,b.y-e.y)?a:b);
+        e.facing=cp.x>e.x?1:-1;e.vx=spd*.6*e.facing;
+        if(cp.y<e.y-40&&e.onGround){e.vy=JUMP_VEL*e.jumpMul;e.onGround=false;e.canDoubleJump=true;}
+      }else{e.vx*=.9;}
+      return;
+    }
+
+    // Find closest + lowest HP enemy
+    let closest=enemies[0],cd=Infinity,weakest=enemies[0],wHP=Infinity;
+    for(const en of enemies){const d=Math.hypot(en.x-e.x,en.y-e.y);if(d<cd){cd=d;closest=en;}if(en.hp<wHP){wHP=en.hp;weakest=en;}}
+    // Prioritize low HP targets if nearby
+    const target=(wHP<40&&Math.hypot(weakest.x-e.x,weakest.y-e.y)<400)?weakest:closest;
+    e.botTarget=target;
+    const dx=target.x-e.x,dy=target.y-e.y;
+
+    // Aim with slight inaccuracy
+    const aimOff=(Math.random()-.5)*.08;
+    e.aimAngle=Math.atan2(target.y-target.h/2-(e.y-e.h*.6),dx)+aimOff;
+    e.facing=dx>0?1:-1;
+
+    // Smart weapon switching — pick best weapon for distance
+    if(e._botSwitchTimer<=0&&e.weapons.length>1){
+      e._botSwitchTimer=2+Math.random()*3;
+      let bestIdx=0,bestScore=-1;
+      for(let i=0;i<e.weapons.length;i++){const ww=e.weapons[i];if(ww.currentAmmo<=0&&ww.reloading)continue;
+        let sc=0;if(cd<150)sc=ww.pellets*2+ww.damage*.5;else if(cd<400)sc=ww.damage+(ww.rate<.15?20:0);else sc=ww.range/100+ww.damage*.3;
+        if(sc>bestScore){bestScore=sc;bestIdx=i;}
+      }
+      e.activeWeaponIdx=bestIdx;
+    }
+
+    // Movement — ideal range + dodge
+    const ideal=w?.name==='Sniper'||w?.name==='Railgun'?400:
+                w?.name==='Flamethrower'||w?.name==='Acid Gun'?120:
+                w?.name==='Shotgun'||w?.name==='Sawed-Off'?140:220;
+    if(cd>ideal+60)e.vx=spd*e.facing;
+    else if(cd<ideal-40)e.vx=-spd*e.facing;
+    else e.vx*=.7;
+
+    // Dodge incoming bullets
+    if(e._botDodgeTimer<=0){
+      for(const b of this.bullets){if(b.owner===e)continue;
+        const bd=Math.hypot(b.x-e.x,(b.y-(e.y-e.h/2)));
+        if(bd<80){e.vx=(b.x<e.x?1:-1)*spd;if(e.onGround&&Math.random()<.4){e.vy=JUMP_VEL*e.jumpMul*.8;e.onGround=false;}e._botDodgeTimer=.4;break;}
+      }
+    }
+
+    // Jump — reach higher platforms, dodge, or close vertical gap
+    if(e.botJumpTimer<=0){
+      const needsUp=dy<-60;const lowHP=e.hp<e.maxHp*.3;
+      if(needsUp||(e.onGround&&Math.random()<.03)||(lowHP&&Math.random()<.05)){
+        if(e.onGround){e.vy=JUMP_VEL*e.jumpMul;e.onGround=false;e.canDoubleJump=true;}
+        else if(e.canDoubleJump&&(needsUp||Math.random()<.4)){e.vy=JUMP_VEL*e.jumpMul;e.canDoubleJump=false;}
+        else if(e.wallSliding){e.vx=WALL_JUMP_VX*(-e.wallDir);e.vy=WALL_JUMP_VY*e.jumpMul;e.wallSliding=false;}
+        e.botJumpTimer=.2+Math.random()*.4;
+      }
+    }
+
+    // Shoot
+    if(e.botShootTimer<=0&&cd<(w?.range||300)*1.1){this.tryShoot(e);e.botShootTimer=.04+Math.random()*.15;}
+    // Reload + switch
+    if(w&&w.currentAmmo<=0&&!w.reloading){w.reloading=true;w.reloadTimer=w.reload;}
+    if(w&&w.currentAmmo<=0&&e.weapons.length>1){const o=e.weapons.findIndex((ww,i)=>i!==e.activeWeaponIdx&&ww.currentAmmo>0);if(o>=0)e.activeWeaponIdx=o;}
+    // Ability — smarter timing
+    if(e.botAbilityTimer<=0&&e.abilityCooldown<=0&&!e.abilityActive){
+      const useAbility=(cd<250)||(e.hp<e.maxHp*.35)||(enemies.length>=2&&cd<350);
+      if(useAbility){getChar(e.charName).abilityFn(e,this);e.abilityCooldown=getChar(e.charName).ability.cooldown;e.botAbilityTimer=4+Math.random()*8;}
+    }
+    // Throw weapon if low ammo and have spares
+    if(e.weapons.length>2&&w&&w.currentAmmo<=0&&cd<200&&Math.random()<.01)this.throwWeapon(e);
+  }
 
   applyPhysics(e,dt){const grav=GRAVITY*(this.map.gravity||1);e.vy+=grav*dt;if(e.vy>MAX_FALL)e.vy=MAX_FALL;e.wallSliding=false;if(!e.onGround&&e.vy>0){const dir=e.vx>0?1:(e.vx<0?-1:0);if(dir){const wx=dir>0?e.x+e.w/2:e.x-e.w/2;for(const p of this.map.platforms){if(wx>=p.x&&wx<=p.x+p.w&&e.y>p.y&&e.y-e.h<p.y+p.h){e.wallSliding=true;e.wallDir=dir;e.vy=Math.min(e.vy,WALL_SLIDE_SPEED);break;}}}}e.x+=e.vx*dt;for(const p of this.map.platforms){if(this.boxOverlap(e.x-e.w/2,e.y-e.h,e.w,e.h,p.x,p.y,p.w,p.h)){if(e.vx>0)e.x=p.x-e.w/2;else if(e.vx<0)e.x=p.x+p.w+e.w/2;e.vx=0;}}e.y+=e.vy*dt;e.onGround=false;for(const p of this.map.platforms){if(this.boxOverlap(e.x-e.w/2,e.y-e.h,e.w,e.h,p.x,p.y,p.w,p.h)){if(e.vy>0){e.y=p.y;e.vy=0;e.onGround=true;e.canDoubleJump=true;}else{e.y=p.y+p.h+e.h;e.vy=0;}}}if(e.x<e.w/2){e.x=e.w/2;e.vx=0;}if(e.x>this.map.width-e.w/2){e.x=this.map.width-e.w/2;e.vx=0;}if(e.y>this.map.deathY)this.killPlayer(e,null);
     // jump pads
-    if(this.map.jumpPads)for(const jp of this.map.jumpPads){if(this.boxOverlap(e.x-e.w/2,e.y-e.h,e.w,e.h,jp.x,jp.y,jp.w,jp.h)){e.vy=jp.power*(this.map.gravity||1);e.onGround=false;e.canDoubleJump=true;SFX.play('jump');for(let i=0;i<6;i++)this.particles.push({x:jp.x+jp.w/2,y:jp.y,vx:(Math.random()-.5)*100,vy:-Math.random()*150,life:.2,maxLife:.2,size:2,color:'#0ff',grav:false});break;}}
+    if(this.map.jumpPads)for(const jp of this.map.jumpPads){if(this.boxOverlap(e.x-e.w/2,e.y-e.h,e.w,e.h,jp.x,jp.y,jp.w,jp.h)){e.vy=jp.power;e.onGround=false;e.canDoubleJump=true;SFX.play('jump');for(let i=0;i<6;i++)this.particles.push({x:jp.x+jp.w/2,y:jp.y,vx:(Math.random()-.5)*100,vy:-Math.random()*150,life:.2,maxLife:.2,size:2,color:'#0ff',grav:false});break;}}
     // hazards (lava etc)
     if(this.map.hazards)for(const hz of this.map.hazards){if(this.boxOverlap(e.x-e.w/2,e.y-e.h,e.w,e.h,hz.x,hz.y,hz.w,hz.h)){this.dealDamage(e,hz.damage*dt*60,null,true);}}
+    // soft platforms — one-way, land on top only (hold down+jump to drop through)
+    if(this.map.softPlatforms)for(const sp of this.map.softPlatforms){
+      if(e.vy>0&&e.y<=sp.y+4&&e.y+e.vy*dt>=sp.y-2&&e.x+e.w/2>sp.x&&e.x-e.w/2<sp.x+sp.w){
+        if(!(isKeyDown&&isKeyDown('jump')&&(keys[binds?.moveLeft]||keys?.KeyS||gpState?.axes?.[1]>.5))){// not holding down
+          e.y=sp.y;e.vy=0;e.onGround=true;e.canDoubleJump=true;
+        }
+      }
+    }
+    // moving platforms as solid
+    if(this.map.movingPlatforms)for(const mp of this.map.movingPlatforms){
+      if(e.vy>=0&&this.boxOverlap(e.x-e.w/2,e.y-4,e.w,8,mp.x,mp.y,mp.w,mp.h)){
+        e.y=mp.y;e.vy=0;e.onGround=true;e.canDoubleJump=true;
+      }
+    }
   }
   boxOverlap(ax,ay,aw,ah,bx,by,bw,bh){return ax<bx+bw&&ax+aw>bx&&ay<by+bh&&ay+ah>by;}
   pointInBox(px,py,bx,by,bw,bh){return px>=bx&&px<=bx+bw&&py>=by&&py<=by+bh;}
@@ -1647,7 +3074,7 @@ class Game{
     for(let i=0;i<2;i++)this.particles.push({x:muzzleX,y:muzzleY,vx:Math.cos(ca)*80+Math.random()*40,vy:-80-Math.random()*60,life:.3+Math.random()*.2,maxLife:.5,size:1.5,color:'#da8',grav:true});
   }
 
-  updateBullets(dt){for(let i=this.bullets.length-1;i>=0;i--){const b=this.bullets[i];b.prevX=b.x;b.prevY=b.y;if(b.arc)b.vy+=GRAVITY*.5*dt;b.x+=b.vx*dt;b.y+=b.vy*dt;b.traveled+=Math.hypot(b.vx*dt,b.vy*dt);
+  updateBullets(dt){for(let i=this.bullets.length-1;i>=0;i--){const b=this.bullets[i];b.prevX=b.x;b.prevY=b.y;if(b.arc)b.vy+=GRAVITY*(this.map.gravity||1)*.5*dt;b.x+=b.vx*dt;b.y+=b.vy*dt;b.traveled+=Math.hypot(b.vx*dt,b.vy*dt);
     // bullet trail
     if(b.traveled>5)this.bulletTrails.push({x1:b.prevX,y1:b.prevY,x2:b.x,y2:b.y,color:b.color,life:.08,size:Math.max(1,b.size*.6)});
     let hit=false;for(const e of this.entities){if(e===b.owner||e.dead||e.invisible||!this.isEnemy(b.owner,e))continue;if(this.pointInBox(b.x,b.y,e.x-e.w/2,e.y-e.h,e.w,e.h)){if(b.explosive){this.spawnExplosion(b.x,b.y,b.blastRadius);this.aoeHit(b.x,b.y,b.blastRadius,b.damage,b.owner);}else this.dealDamage(e,b.damage,b.owner);if(!b.piercing){hit=true;break;}}}
@@ -1655,6 +3082,8 @@ class Game{
       // wall hit sparks
       for(let j=0;j<4;j++)this.particles.push({x:b.x,y:b.y,vx:(Math.random()-.5)*200,vy:-Math.random()*150,life:.15+Math.random()*.1,maxLife:.25,size:1.5+Math.random(),color:'#ff8',grav:true});
       hit=true;break;}}}
+    // destructible collision
+    if(!hit&&this._destructibles)for(const d of this._destructibles){if(d.alive&&this.pointInBox(b.x,b.y,d.x,d.y,d.w,d.h)){this.damageDestructible(d,b.damage);hit=true;break;}}
     if(b.traveled>b.range||b.x<-50||b.x>this.map.width+50||b.y<-50||b.y>this.map.height+50)hit=true;if(hit)this.bullets.splice(i,1);}}
 
   aoeHit(cx,cy,r,dmg,owner){for(const e of this.entities){if(e.dead||e===owner&&e.charName==='Dart')continue;if(!this.isEnemy(owner,e)&&e!==owner)continue;const d=Math.hypot(e.x-cx,(e.y-e.h/2)-cy);if(d<r)this.dealDamage(e,dmg*(1-d/r)*.8,owner);}this.screenShake=Math.max(this.screenShake,.3);SFX.play('explosion');}
@@ -1678,6 +3107,8 @@ class Game{
     if(settings.damageNumbers)this.damageNums.push({x:t.x+(Math.random()-.5)*20,y:t.y-t.h-10,text:Math.round(dmg),life:1,color:attacker?attacker.color:'#fff',scale:1});
     for(let i=0;i<6;i++)this.particles.push({x:t.x+(Math.random()-.5)*10,y:t.y-t.h/2,vx:(Math.random()-.5)*300,vy:(Math.random()-.5)*300,life:.2+Math.random()*.3,maxLife:.5,size:2+Math.random()*2,color:t.color,grav:true});
     SFX.play('hit');
+    // Vampiric — heal attacker on hit
+    if(attacker&&attacker.vampBuff>0){attacker.hp=Math.min(attacker.maxHp,attacker.hp+dmg*.25);}
     if(t.hp<=0){
       this.killPlayer(t,attacker);
       // In multiplayer: broadcast our death so others see it
@@ -1690,18 +3121,55 @@ class Game{
 
   killPlayer(t,attacker){t.dead=true;t.respawnTimer=t.isSurvivalEnemy?999:RESPAWN_TIME;t.deaths++;t.streak=0;t.streakAnnounced=new Set();if(this.mode==='Last Man')t.lives--;
     for(let i=t.weapons.length-1;i>=0;i--){if(!t.weapons[i].base){this.weaponDrops.push({x:t.x,y:t.y-20,name:t.weapons[i].name,life:20,bob:0,vy:-200});t.weapons.splice(i,1);}}t.activeWeaponIdx=0;
-    // death burst VFX — big explosion of character-colored particles
-    for(let i=0;i<30;i++){const ang=Math.random()*Math.PI*2;const spd=100+Math.random()*350;this.particles.push({x:t.x,y:t.y-t.h/2,vx:Math.cos(ang)*spd,vy:Math.sin(ang)*spd-100,life:.4+Math.random()*.6,maxLife:1,size:2+Math.random()*4,color:i%3===0?'#fff':t.color,grav:true});}
+    // death burst VFX — uses attacker's equipped kill effect if available
+    let kfxColor=t.color,kfxSize=4,kfxCount=30,kfxExtra='';
+    if(attacker&&attacker===this.player){
+      const kfx=getEquippedKillEffect();
+      if(kfx){
+        kfxExtra=kfx.id;
+        if(kfx.id==='kfx_fire'){kfxColor='#f84';kfxCount=40;}
+        else if(kfx.id==='kfx_ice'){kfxColor='#8df';kfxCount=35;}
+        else if(kfx.id==='kfx_electric'){kfxColor='#4ff';kfxCount=35;}
+        else if(kfx.id==='kfx_confetti'){kfxColor='rainbow';kfxCount=50;}
+        else if(kfx.id==='kfx_skull'){kfxColor='#fff';kfxCount=25;}
+        else if(kfx.id==='kfx_money'){kfxColor='#4f4';kfxCount=45;}
+        else if(kfx.id==='kfx_void'){kfxColor='#608';kfxCount=40;}
+        else if(kfx.id==='kfx_hearts'){kfxColor='#f4a';kfxCount=30;}
+        else if(kfx.id==='kfx_glitch'){kfxColor='glitch';kfxCount=35;}
+      }
+    }
+    for(let i=0;i<kfxCount;i++){const ang=Math.random()*Math.PI*2;const spd=100+Math.random()*350;
+      let pcolor=kfxColor==='rainbow'?`hsl(${Math.random()*360},90%,60%)`:(kfxColor==='glitch'?`hsl(${Math.random()*360},80%,50%)`:kfxColor);
+      if(i%3===0&&kfxColor!=='rainbow'&&kfxColor!=='glitch')pcolor='#fff';
+      this.particles.push({x:t.x,y:t.y-t.h/2,vx:Math.cos(ang)*spd,vy:Math.sin(ang)*spd-100,life:.4+Math.random()*.6,maxLife:1,size:2+Math.random()*kfxSize,color:pcolor,grav:true});}
     SFX.play('death');
-    if(attacker&&attacker!==t){attacker.kills++;attacker.streak++;this.matchBestStreak=Math.max(this.matchBestStreak,attacker.streak);if(this.mode==='Survival'||this.mode==='Co-op Survival')this.survivalTotalKills++;if(this.mode!=='Survival'&&this.mode!=='Co-op Survival')this.checkKillstreaks(attacker);const wn=attacker.weapons[attacker.activeWeaponIdx]?.name||'?';this.killFeed.push({killer:attacker.charName,victim:t.charName,killerColor:attacker.color,victimColor:t.color,weapon:wn,life:4});if(attacker===this.player){this.matchWeaponKills[wn]=(this.matchWeaponKills[wn]||0)+1;if(!attacker.onGround)this.matchAirKills++;if(attacker.abilityActive)this.matchAbilityKills++;}if(!attacker.isBot)SFX.play('kill');}
+    if(attacker&&attacker!==t){attacker.kills++;attacker.streak++;this.matchBestStreak=Math.max(this.matchBestStreak,attacker.streak);if(this.mode==='Survival'||this.mode==='Co-op Survival')this.survivalTotalKills++;if(this.mode!=='Survival'&&this.mode!=='Co-op Survival')this.checkKillstreaks(attacker);const wn=attacker.weapons[attacker.activeWeaponIdx]?.name||'?';this.killFeed.push({killer:attacker.charName,victim:t.charName,killerColor:attacker.color,victimColor:t.color,weapon:wn,life:4});if(attacker===this.player){this.matchWeaponKills[wn]=(this.matchWeaponKills[wn]||0)+1;if(!attacker.onGround)this.matchAirKills++;if(attacker.abilityActive)this.matchAbilityKills++;Announcer.onKillStreak(attacker.streak);if(attacker.kills===1&&this.time<30)Announcer.onEvent('first_blood');}if(!attacker.isBot)SFX.play('kill');}
     else this.killFeed.push({killer:null,victim:t.charName,killerColor:'#888',victimColor:t.color,weapon:'fell',life:4});
-    if(this.mode==='CTF'&&this.flags)for(const f of this.flags)if(f.carrier===t){f.carrier=null;f.x=t.x;f.y=t.y;}}
+    if(this.mode==='CTF'&&this.flags)for(const f of this.flags)if(f.carrier===t){f.carrier=null;f.x=t.x;f.y=t.y;}
+    // Gun Game — advance attacker's weapon
+    if(this.mode==='Gun Game'&&attacker&&attacker!==t&&this.gunGameWeapons){
+      attacker.gunGameLevel=(attacker.gunGameLevel||0)+1;
+      if(attacker.gunGameLevel<this.gunGameWeapons.length){
+        const nw=this.makeWeapon(this.gunGameWeapons[attacker.gunGameLevel]);
+        if(nw){attacker.weapons=[nw];attacker.activeWeaponIdx=0;}
+      }
+    }
+    // Infection — dead human becomes infected on respawn
+    if(this.mode==='Infection'&&attacker&&attacker.infected&&!t.infected){t._willInfect=true;}
+  }
 
   checkKillstreaks(p){for(const ks of KILLSTREAKS){if(p.streak>=ks.kills&&!p.streakAnnounced.has(ks.kills)){p.streakAnnounced.add(ks.kills);this.killFeed.push({killer:p.charName,victim:ks.name,killerColor:p.color,victimColor:'#ff0',weapon:'STREAK',life:5});SFX.play('streak');if(ks.name==='UAV')this.uavTimer=ks.duration;else if(ks.name==='Airstrike'){for(let i=0;i<8;i++){const bx=100+Math.random()*(this.map.width-200);setTimeout(()=>{if(!this.running)return;this.spawnExplosion(bx,300+Math.random()*250,90);this.entities.filter(e=>e!==p&&!e.dead&&this.isEnemy(p,e)).forEach(e=>{const d=Math.hypot(e.x-bx,e.y-400);if(d<120)this.dealDamage(e,40*(1-d/120),p);});this.screenShake=.4;},i*300);}}else if(ks.name==='Sentry Gun')this.sentries.push({x:p.x,y:p.y-60,owner:p,life:ks.duration,fireTimer:0,angle:0});else if(ks.name==='Juggernaut'){p.armor=100;p.armorTimer=ks.duration;}else if(ks.name==='Tactical Nuke'){this.matchNukes++;this.entities.filter(e=>e!==p&&!e.dead).forEach(e=>this.killPlayer(e,p));this.screenShake=1;this.spawnExplosion(this.map.width/2,this.map.height/2,500);SFX.play('nuke');}}}}
 
   updateSentries(dt){for(let i=this.sentries.length-1;i>=0;i--){const s=this.sentries[i];s.life-=dt;if(s.life<=0){this.sentries.splice(i,1);continue;}s.fireTimer-=dt;const enemies=this.entities.filter(e=>!e.dead&&e!==s.owner&&this.isEnemy(s.owner,e));if(enemies.length){let c=enemies[0],cd=Infinity;for(const e of enemies){const d=Math.hypot(e.x-s.x,e.y-s.y);if(d<cd){cd=d;c=e;}}s.angle=Math.atan2(c.y-c.h/2-s.y,c.x-s.x);if(s.fireTimer<=0&&cd<500){s.fireTimer=.2;this.bullets.push({x:s.x+Math.cos(s.angle)*15,y:s.y+Math.sin(s.angle)*15,vx:Math.cos(s.angle)*1200,vy:Math.sin(s.angle)*1200,damage:10,owner:s.owner,range:500,traveled:0,size:2,color:'#ff8',explosive:false,blastRadius:0,piercing:false,arc:false,prevX:s.x,prevY:s.y});}}}}
 
-  respawnPlayer(e){if(this.mode==='Last Man'&&e.lives<=0)return;const sp=this.map.spawns[Math.floor(Math.random()*this.map.spawns.length)];e.x=sp.x;e.y=sp.y;e.vx=0;e.vy=0;e.hp=e.maxHp;e.dead=false;e.invisible=false;e.slowed=false;e.abilityActive=false;e.speedMul=1;e.dmgMul=1;e.weapons=e.weapons.filter(w=>w.base);if(!e.weapons.length){const ch=CHARACTERS[e.charName];e.weapons=[this.makeWeapon(ch.primaryName),this.makeWeapon(ch.secondaryName)];}for(const w of e.weapons){w.currentAmmo=w.ammo;w.reloading=false;}e.activeWeaponIdx=0;
+  respawnPlayer(e){if(this.mode==='Last Man'&&e.lives<=0)return;const sp=this.map.spawns[Math.floor(Math.random()*this.map.spawns.length)];e.x=sp.x;e.y=sp.y;e.vx=0;e.vy=0;e.hp=e.maxHp;e.dead=false;e.invisible=false;e.slowed=false;e.abilityActive=false;e.speedMul=1;e.dmgMul=1;e.weapons=e.weapons.filter(w=>w.base);if(!e.weapons.length){const ch=getChar(e.charName);e.weapons=[this.makeWeapon(ch.primaryName||'Pistol'),this.makeWeapon(ch.secondaryName||'Pistol')].filter(Boolean);}for(const w of e.weapons){w.currentAmmo=w.ammo;w.reloading=false;}e.activeWeaponIdx=0;
+    // Gun Game — restore weapon for current level
+    if(this.mode==='Gun Game'&&this.gunGameWeapons){
+      const lvl=Math.min(e.gunGameLevel||0,this.gunGameWeapons.length-1);
+      e.weapons=[this.makeWeapon(this.gunGameWeapons[lvl])];e.activeWeaponIdx=0;
+    }
+    // Infection — convert killed humans
+    if(this.mode==='Infection'&&e._willInfect){e.infected=true;e.team=1;e.speed*=1.3;e.color='#a00';e._willInfect=false;}
     // Broadcast respawn in multiplayer
     if(this.isMultiplayer&&e===this.player&&currentRoom){const rid=currentRoom.room_id||currentRoom.id;NGame.sendRoomEvent(rid,'respawn',{playerId:e.onlineId,x:e.x,y:e.y});}
   }
@@ -1715,19 +3183,91 @@ class Game{
 
   spawnPickup(){if(this.pickups.length>=6)return;const sp=this.map.pickupSpawns[Math.floor(Math.random()*this.map.pickupSpawns.length)];const pu=POWERUP_TYPES[Math.floor(Math.random()*POWERUP_TYPES.length)];this.pickups.push({x:sp.x,y:sp.y-20,type:pu.type,name:pu.name,color:pu.color,icon:pu.icon,effect:pu.effect,life:20,bob:Math.random()*Math.PI*2});}
   spawnWeaponDrop(){if(this.weaponDrops.length>=4)return;const sp=(this.map.weaponSpawns||this.map.pickupSpawns)[Math.floor(Math.random()*(this.map.weaponSpawns||this.map.pickupSpawns).length)];this.weaponDrops.push({x:sp.x,y:sp.y-20,name:PICKUP_WEAPONS[Math.floor(Math.random()*PICKUP_WEAPONS.length)],life:25,bob:0,vy:0});}
-  updatePickups(dt){for(let i=this.pickups.length-1;i>=0;i--){const p=this.pickups[i];p.life-=dt;p.bob+=dt*3;if(p.life<=0){this.pickups.splice(i,1);continue;}for(const e of this.entities){if(e.dead||e.isRemote)continue;if(Math.hypot(e.x-p.x,(e.y-e.h/2)-p.y)<30){p.effect(e);SFX.play('pickup');for(let j=0;j<10;j++)this.particles.push({x:p.x,y:p.y,vx:(Math.random()-.5)*180,vy:-Math.random()*180,life:.25+Math.random()*.15,maxLife:.4,size:2+Math.random(),color:p.color,grav:false});
+  updatePickups(dt){for(let i=this.pickups.length-1;i>=0;i--){const p=this.pickups[i];p.life-=dt;p.bob+=dt*3;if(p.life<=0){this.pickups.splice(i,1);continue;}for(const e of this.entities){if(e.dead||e.isRemote)continue;if(Math.hypot(e.x-p.x,(e.y-e.h/2)-p.y)<30){p.effect(e,this);SFX.play('pickup');for(let j=0;j<10;j++)this.particles.push({x:p.x,y:p.y,vx:(Math.random()-.5)*180,vy:-Math.random()*180,life:.25+Math.random()*.15,maxLife:.4,size:2+Math.random(),color:p.color,grav:false});
       if(this.isMultiplayer&&currentRoom){const rid=currentRoom.room_id||currentRoom.id;NGame.sendRoomEvent(rid,'pickup',{x:p.x,y:p.y});}
       this.pickups.splice(i,1);break;}}}}
-  updateWeaponDrops(dt){for(let i=this.weaponDrops.length-1;i>=0;i--){const wd=this.weaponDrops[i];wd.life-=dt;wd.bob+=dt*2.5;if(wd.vy){wd.vy+=GRAVITY*dt;wd.y+=wd.vy*dt;for(const p of this.map.platforms){if(wd.x>=p.x&&wd.x<=p.x+p.w&&wd.y>=p.y&&wd.y<=p.y+10){wd.y=p.y;wd.vy=0;break;}}}if(wd.life<=0||wd.y>this.map.deathY){this.weaponDrops.splice(i,1);continue;}for(const e of this.entities){if(e.dead||e.isRemote)continue;if(Math.hypot(e.x-wd.x,(e.y-e.h/2)-wd.y)<35){if(e.weapons.length>=4){const nb=e.weapons.findIndex(w=>!w.base);if(nb>=0){this.weaponDrops.push({x:e.x,y:e.y-20,name:e.weapons[nb].name,life:15,bob:0,vy:-150});e.weapons.splice(nb,1);}else continue;}const nw=this.makeWeapon(wd.name);if(!nw)continue;e.weapons.push(nw);e.activeWeaponIdx=e.weapons.length-1;if(e===this.player){this.matchWeaponsPickedUp++;if(this.isMultiplayer&&currentRoom){const rid=currentRoom.room_id||currentRoom.id;NGame.sendRoomEvent(rid,'weapon_pickup',{x:wd.x,name:wd.name});}}SFX.play('pickup');for(let j=0;j<6;j++)this.particles.push({x:wd.x,y:wd.y,vx:(Math.random()-.5)*120,vy:-Math.random()*120,life:.3,maxLife:.3,size:2,color:'#8f8',grav:false});this.weaponDrops.splice(i,1);break;}}}}
-  updateSurvival(dt){if(this.player.dead&&this.player.lives<=0)return;if(this.survivalBetweenWaves){this.survivalWaveTimer-=dt;if(this.survivalWaveTimer<=0){this.survivalWave++;this.survivalBetweenWaves=false;SFX.play('wave');const count=Math.min(2+this.survivalWave,10);for(let i=0;i<count;i++)setTimeout(()=>{if(!this.running)return;const e=this.createSurvivalEnemy(this.survivalWave);e.team=1;this.entities.push(e);},i*700);}}else{const alive=this.entities.filter(e=>e.isSurvivalEnemy&&!e.dead);if(!alive.length&&this.time>4){this.survivalBetweenWaves=true;this.survivalWaveTimer=4;this.player.hp=Math.min(this.player.maxHp,this.player.hp+25);}}this.player.lives=1;}
+  updateWeaponDrops(dt){for(let i=this.weaponDrops.length-1;i>=0;i--){const wd=this.weaponDrops[i];wd.life-=dt;wd.bob+=dt*2.5;if(wd.vy){wd.vy+=GRAVITY*(this.map.gravity||1)*dt;wd.y+=wd.vy*dt;for(const p of this.map.platforms){if(wd.x>=p.x&&wd.x<=p.x+p.w&&wd.y>=p.y&&wd.y<=p.y+10){wd.y=p.y;wd.vy=0;break;}}}if(wd.life<=0||wd.y>this.map.deathY){this.weaponDrops.splice(i,1);continue;}for(const e of this.entities){if(e.dead||e.isRemote)continue;if(Math.hypot(e.x-wd.x,(e.y-e.h/2)-wd.y)<35){if(e.weapons.length>=4){const nb=e.weapons.findIndex(ww=>!ww.base);if(nb>=0){this.weaponDrops.push({x:e.x,y:e.y-20,name:e.weapons[nb].name,life:15,bob:0,vy:-150});e.weapons.splice(nb,1);}else{continue;}}const nw=this.makeWeapon(wd.name);if(!nw)continue;e.weapons.push(nw);e.activeWeaponIdx=e.weapons.length-1;if(e===this.player){this.matchWeaponsPickedUp++;if(this.isMultiplayer&&currentRoom){const rid=currentRoom.room_id||currentRoom.id;NGame.sendRoomEvent(rid,'weapon_pickup',{x:wd.x,name:wd.name});}}SFX.play('pickup');for(let j=0;j<6;j++)this.particles.push({x:wd.x,y:wd.y,vx:(Math.random()-.5)*120,vy:-Math.random()*120,life:.3,maxLife:.3,size:2,color:'#8f8',grav:false});this.weaponDrops.splice(i,1);break;}}}}
+  updateSurvival(dt){if(this.player.dead&&this.player.lives<=0)return;if(this.survivalBetweenWaves){this.survivalWaveTimer-=dt;if(this.survivalWaveTimer<=0){this.survivalWave++;this.survivalBetweenWaves=false;SFX.play('wave');Announcer.onEvent('wave',{wave:this.survivalWave});const count=Math.min(2+this.survivalWave,10);for(let i=0;i<count;i++)setTimeout(()=>{if(!this.running)return;const e=this.createSurvivalEnemy(this.survivalWave);e.team=1;this.entities.push(e);},i*700);}}else{const alive=this.entities.filter(e=>e.isSurvivalEnemy&&!e.dead);if(!alive.length&&this.time>4){this.survivalBetweenWaves=true;this.survivalWaveTimer=4;this.player.hp=Math.min(this.player.maxHp,this.player.hp+25);Announcer.onEvent('wave_clear');}}this.player.lives=1;}
   updateCTF(dt){if(!this.flags)return;for(const f of this.flags){if(f.carrier){f.x=f.carrier.x;f.y=f.carrier.y-f.carrier.h-10;const mf=this.flags.find(fl=>fl.team===f.carrier.team);if(mf&&Math.hypot(f.carrier.x-mf.baseX,f.carrier.y-mf.baseY)<40){this.captures[f.carrier.team]++;f.carrier=null;f.x=f.baseX;f.y=f.baseY;}}else{for(const e of this.entities){if(e.dead||e.team===f.team)continue;if(Math.hypot(e.x-f.x,e.y-f.y)<40){f.carrier=e;break;}}for(const e of this.entities){if(e.dead||e.team!==f.team)continue;if(Math.abs(f.x-f.baseX)<5)break;if(Math.hypot(e.x-f.x,e.y-f.y)<40){f.x=f.baseX;f.y=f.baseY;break;}}}}}
-  checkWinCondition(){if(this.matchOver)return;let w=null;if(this.mode==='Deathmatch'){for(const e of this.entities)if(e.kills>=20){w=e;break;}}else if(this.mode==='Team DM'){const tk=[0,0];this.entities.forEach(e=>{tk[e.team]+=e.kills;});if(tk[0]>=30)w={team:0};if(tk[1]>=30)w={team:1};}else if(this.mode==='Last Man'){const al=this.entities.filter(e=>e.lives>0||!e.dead);if(al.length<=1)w=al[0]||this.player;}else if(this.mode==='CTF'){if(this.captures&&this.captures[0]>=3)w={team:0};if(this.captures&&this.captures[1]>=3)w={team:1};}else if(this.mode==='Survival'||this.mode==='Co-op Survival'){if(this.player.dead&&this.player.lives<=0)w={team:1};}if(w)this.endMatch(w);}
+  checkWinCondition(){if(this.matchOver)return;let w=null;
+    if(this.mode==='Deathmatch'){for(const e of this.entities)if(e.kills>=20){w=e;break;}}
+    else if(this.mode==='Team DM'){const tk=[0,0];this.entities.forEach(e=>{tk[e.team]+=e.kills;});if(tk[0]>=30)w={team:0};if(tk[1]>=30)w={team:1};}
+    else if(this.mode==='Last Man'){const al=this.entities.filter(e=>e.lives>0||!e.dead);if(al.length<=1)w=al[0]||this.player;}
+    else if(this.mode==='CTF'){if(this.captures&&this.captures[0]>=3)w={team:0};if(this.captures&&this.captures[1]>=3)w={team:1};}
+    else if(this.mode==='Gun Game'&&this.gunGameWeapons){for(const e of this.entities)if((e.gunGameLevel||0)>=this.gunGameWeapons.length){w=e;break;}}
+    else if(this.mode==='Infection'){const humans=this.entities.filter(e=>!e.dead&&!e.infected);if(humans.length===0)w={team:1};else if(this.time>120){w=humans[0];}}
+    else if(this.mode==='Survival'||this.mode==='Co-op Survival'){if(this.player.dead&&this.player.lives<=0)w={team:1};}
+    if(w)this.endMatch(w);}
   endMatch(winner){this.matchOver=true;this.running=false;gameRunning=false;const p=this.player,won=winner===p||(winner&&winner.team===p.team);
+    Announcer.onEvent(won?'victory':'defeat');
     // achievements
     checkAchievements({kills:p.kills,deaths:p.deaths,won,character:p.charName,mode:this.mode,map:this.mapName,wave:this.survivalWave||0,bestStreak:this.matchBestStreak,weaponKills:this.matchWeaponKills,throwKills:this.matchThrowKills,weaponsPickedUp:this.matchWeaponsPickedUp,abilityKills:this.matchAbilityKills,airKills:this.matchAirKills,nukesEarned:this.matchNukes,flagsCapped:this.matchFlagsCaps});
-    try{NGame.submitSession({score:p.kills*100,outcome:won?'win':'bust',data:{kills:p.kills,deaths:p.deaths,mode:this.mode,map:this.mapName,character:p.charName,playtime:Math.round(this.time),wave:this.survivalWave||0}});NGame.postToWall(`${p.charName} \u00b7 ${p.kills}K/${p.deaths}D \u00b7 ${this.mode} on ${this.mapName} \u00b7 ${won?'WIN':'LOSS'}${(this.mode==='Survival'||this.mode==='Co-op Survival')?' \u00b7 Wave '+this.survivalWave:''}`);}catch(e){}const isSurv=this.mode==='Survival'||this.mode==='Co-op Survival';document.getElementById('resultTitle').textContent=won?'VICTORY':(isSurv?'GAME OVER':'DEFEAT');document.getElementById('resultTitle').style.color=won?'#80e060':'#e04040';let st=`Character: <span>${p.charName}</span><br>Kills: <span>${p.kills}</span> / Deaths: <span>${p.deaths}</span><br>Mode: <span>${this.mode}</span> \u00b7 Map: <span>${this.mapName}</span><br>Time: <span>${Math.round(this.time)}s</span>`;if(isSurv)st+=`<br>Wave: <span>${this.survivalWave}</span>`;document.getElementById('resultStats').innerHTML=st;showScreen('resultsScreen');}
+    try{NGame.submitSession({score:p.kills*100,outcome:won?'win':'bust',data:{kills:p.kills,deaths:p.deaths,mode:this.mode,map:this.mapName,character:p.charName,playtime:Math.round(this.time),wave:this.survivalWave||0}});NGame.postToWall(`${p.charName} \u00b7 ${p.kills}K/${p.deaths}D \u00b7 ${this.mode} on ${this.mapName} \u00b7 ${won?'WIN':'LOSS'}${(this.mode==='Survival'||this.mode==='Co-op Survival')?' \u00b7 Wave '+this.survivalWave:''}`);}catch(e){}const isSurv=this.mode==='Survival'||this.mode==='Co-op Survival';document.getElementById('resultTitle').textContent=won?'VICTORY':(isSurv?'GAME OVER':'DEFEAT');document.getElementById('resultTitle').style.color=won?'#80e060':'#e04040';let st=`Character: <span>${p.charName}</span><br>Kills: <span>${p.kills}</span> / Deaths: <span>${p.deaths}</span><br>Mode: <span>${this.mode}</span> \u00b7 Map: <span>${this.mapName}</span><br>Time: <span>${Math.round(this.time)}s</span>`;if(isSurv)st+=`<br>Wave: <span>${this.survivalWave}</span>`;document.getElementById('resultStats').innerHTML=st;
+    // Award case/key drops
+    // Update battle pass
+    updateBattlePassAfterMatch({kills:p.kills,deaths:p.deaths,won,character:p.charName,wave:this.survivalWave||0,bestStreak:this.matchBestStreak,throwKills:this.matchThrowKills});
+    const drops=awardMatchDrops(won,this.mode);
+    const dropsDiv=document.getElementById('resultDrops');dropsDiv.innerHTML='';
+    drops.forEach(d=>{
+      const card=document.createElement('div');card.style.cssText='display:inline-flex;align-items:center;gap:8px;background:#0c0c18;border:1px solid #222;border-radius:8px;padding:8px 14px;margin:4px;font:600 11px Inter;color:#ccc';
+      card.innerHTML=`<span style="font-size:20px">${d.item.icon}</span><span>${d.type==='case'?'CASE':'KEY'}: ${d.item.name}</span>`;
+      dropsDiv.appendChild(card);
+    });
+    showDropNotification(drops);
+    showScreen('resultsScreen');}
 
-  updateParticles(dt){for(let i=this.particles.length-1;i>=0;i--){const p=this.particles[i];p.x+=p.vx*dt;p.y+=p.vy*dt;if(p.grav)p.vy+=500*dt;else p.vy+=200*dt;p.life-=dt;if(p.life<=0)this.particles.splice(i,1);}}
+  // ── MOVING PLATFORMS ──
+  updateMovingPlatforms(dt){
+    if(!this.map.movingPlatforms)return;
+    for(const mp of this.map.movingPlatforms){
+      if(!mp._init){mp._init=true;mp._origX=mp.x;mp._origY=mp.y;mp._t=0;mp._prevX=mp.x;mp._prevY=mp.y;}
+      mp._prevX=mp.x;mp._prevY=mp.y;
+      mp._t+=dt*mp.speed/100;
+      const s=Math.sin(mp._t);
+      mp.x=mp._origX+(mp.pathX||0)*(.5+.5*s);
+      mp.y=mp._origY+(mp.pathY||0)*(.5+.5*s);
+      // Carry entities standing on this platform
+      const dx=mp.x-mp._prevX,dy=mp.y-mp._prevY;
+      for(const e of this.entities){
+        if(e.dead)continue;
+        if(e.onGround&&e.x>=mp.x&&e.x<=mp.x+mp.w&&Math.abs(e.y-mp.y)<4){e.x+=dx;e.y+=dy;}
+      }
+    }
+  }
+  // ── DESTRUCTIBLES ──
+  updateDestructibles(dt){
+    if(!this._destructibles)this._destructibles=(this.map.destructibles||[]).map(d=>({...d,currentHp:d.hp,alive:true}));
+    // Bullet damage handled in updateBullets
+  }
+  damageDestructible(d,dmg){
+    d.currentHp-=dmg;
+    if(d.currentHp<=0&&d.alive){
+      d.alive=false;
+      // Debris particles
+      const colors=d.type==='crate'?['#a86','#864','#c9a']:d.type==='barrel'?['#666','#888','#f84']:['#aac','#88a','#cce'];
+      for(let i=0;i<12;i++){const ang=Math.random()*Math.PI*2,spd=80+Math.random()*200;this.particles.push({x:d.x+d.w/2,y:d.y+d.h/2,vx:Math.cos(ang)*spd,vy:Math.sin(ang)*spd-100,life:.4+Math.random()*.4,maxLife:.8,size:2+Math.random()*3,color:colors[Math.floor(Math.random()*colors.length)],grav:true});}
+      if(d.type==='barrel'){this.spawnExplosion(d.x+d.w/2,d.y+d.h/2,60);this.aoeHit(d.x+d.w/2,d.y+d.h/2,60,25,null);}
+      SFX.play('explosion');
+      // Maybe drop pickup
+      if(d.drops!==false&&Math.random()<.3)this.spawnPickup();
+    }
+  }
+  // ── DOORS/TELEPORTERS ──
+  updateDoors(dt){
+    if(!this.map.doors)return;
+    for(const e of this.entities){
+      if(e.dead||e._doorCooldown>0){if(e._doorCooldown>0)e._doorCooldown-=dt;continue;}
+      for(const d of this.map.doors){
+        if(this.boxOverlap(e.x-e.w/2,e.y-e.h,e.w,e.h,d.x,d.y,d.w,d.h)){
+          e.x=d.targetX+15;e.y=d.targetY;e._doorCooldown=1.5;
+          SFX.play('ability');
+          for(let i=0;i<8;i++)this.particles.push({x:d.x+d.w/2,y:d.y+d.h/2,vx:(Math.random()-.5)*100,vy:(Math.random()-.5)*100,life:.3,maxLife:.3,size:2,color:'#4ff'});
+          break;
+        }
+      }
+    }
+  }
+  updateParticles(dt){const mg=this.map.gravity||1;for(let i=this.particles.length-1;i>=0;i--){const p=this.particles[i];p.x+=p.vx*dt;p.y+=p.vy*dt;if(p.grav)p.vy+=500*mg*dt;else p.vy+=200*mg*dt;p.life-=dt;if(p.life<=0)this.particles.splice(i,1);}}
 
   // ═══════════════════════════════════════════════════════════════════════
   // POLISHED RENDER
@@ -1742,12 +3282,28 @@ class Game{
     // dynamic bg
     this.renderDynamicBG(c);
 
-    // platforms — polished with top highlight and depth
-    for(const p of this.map.platforms){
-      c.fillStyle='#16162a';c.fillRect(p.x,p.y,p.w,p.h);
-      c.fillStyle='#1e1e38';c.fillRect(p.x,p.y,p.w,3);
-      c.fillStyle='#0e0e1a';c.fillRect(p.x,p.y+p.h-2,p.w,2);
-      c.strokeStyle='#22223a';c.lineWidth=.5;c.strokeRect(p.x,p.y,p.w,p.h);
+    // ── DECORATIONS (behind platforms) ──
+    if(this.map.decorations)for(const d of this.map.decorations)this._drawDecoration(c,d);
+
+    // ── PLATFORMS — styled per map theme ──
+    const pstyle=this.map.platformStyle||'concrete';
+    for(const p of this.map.platforms){this._drawPlatform(c,p,pstyle,false);}
+    // ── SOFT PLATFORMS (dashed top, pass-through) ──
+    if(this.map.softPlatforms)for(const sp of this.map.softPlatforms){this._drawPlatform(c,sp,pstyle,true);}
+    // ── MOVING PLATFORMS ──
+    if(this.map.movingPlatforms)for(const mp of this.map.movingPlatforms){this._drawPlatform(c,mp,pstyle,false);c.fillStyle='#0ff';c.globalAlpha=.08;c.fillRect(mp.x,mp.y-2,mp.w,mp.h+4);c.globalAlpha=1;}
+    // ── DESTRUCTIBLES ──
+    if(this._destructibles)for(const d of this._destructibles){if(!d.alive)continue;
+      const hp=d.currentHp/d.hp;c.fillStyle=d.type==='crate'?'#8a6530':(d.type==='barrel'?'#555':'#667');
+      c.fillRect(d.x,d.y,d.w,d.h);c.fillStyle=d.type==='crate'?'#a08050':'#666';c.fillRect(d.x,d.y,d.w,2);
+      c.strokeStyle=d.type==='crate'?'#6a4520':'#444';c.lineWidth=.5;c.strokeRect(d.x,d.y,d.w,d.h);
+      if(d.type==='crate'){c.strokeStyle='#6a4520';c.beginPath();c.moveTo(d.x,d.y);c.lineTo(d.x+d.w,d.y+d.h);c.moveTo(d.x+d.w,d.y);c.lineTo(d.x,d.y+d.h);c.stroke();}
+      if(hp<1){c.fillStyle='#f448';c.fillRect(d.x,d.y+d.h+2,d.w*hp,2);}
+    }
+    // ── DOORS ──
+    if(this.map.doors)for(const d of this.map.doors){
+      c.fillStyle='#224';c.fillRect(d.x,d.y,d.w,d.h);c.fillStyle='#4ff';c.globalAlpha=.15+Math.sin(this.time*3)*.08;
+      c.fillRect(d.x+2,d.y+2,d.w-4,d.h-4);c.globalAlpha=1;c.strokeStyle='#4ff';c.lineWidth=1;c.strokeRect(d.x,d.y,d.w,d.h);
     }
 
     // jump pads
@@ -1765,6 +3321,7 @@ class Game{
       if(hz.type==='lava'){c.fillStyle='#f40';c.globalAlpha=.4+Math.sin(this.time*3)*.1;c.fillRect(hz.x,hz.y,hz.w,hz.h);c.fillStyle='#fa0';c.globalAlpha=.2;c.fillRect(hz.x,hz.y,hz.w,4);c.globalAlpha=1;
         // lava particles
         if(Math.random()<.1)this.particles.push({x:hz.x+Math.random()*hz.w,y:hz.y,vx:(Math.random()-.5)*30,vy:-20-Math.random()*40,life:.3+Math.random()*.3,maxLife:.6,size:2+Math.random()*2,color:Math.random()>.5?'#f80':'#f40',grav:false});
+      }else if(hz.type==='fog'){c.fillStyle='#888';c.globalAlpha=.08+Math.sin(this.time*1.5)*.04;c.fillRect(hz.x,hz.y-20,hz.w,hz.h+20);c.globalAlpha=1;
       }else{c.fillStyle='#f00';c.globalAlpha=.3;c.fillRect(hz.x,hz.y,hz.w,hz.h);c.globalAlpha=1;}
     }
 
@@ -1825,99 +3382,202 @@ class Game{
   }
 
   renderEntity(c,e){
-    const spr=CHAR_SPRITES[e.charName];if(!spr)return;
-    let frame;if(!e.onGround)frame=spr.jump;else if(Math.abs(e.vx)>10)frame=(Math.floor(e.walkCycle)%2===0)?spr.run1:spr.run2;else frame=spr.idle;
+    // Get correct sprite — use skin color override for local player's equipped skin
+    let spriteSet=CHAR_SPRITES[e.charName];
+    let displayColor=e.color;
+    if(e===this.player||e._cosmetics?.skin){
+      const skinColor=e===this.player?getEquippedSkinColor(e.charName):(e._cosmetics?.skinColor||null);
+      if(skinColor){
+        displayColor=skinColor;
+        // Generate custom sprite with skin color (cached per color)
+        const cacheKey=e.charName+'_'+skinColor;
+        if(!this._spriteCache)this._spriteCache={};
+        if(!this._spriteCache[cacheKey]){
+          const ch=getChar(e.charName);
+          this._spriteCache[cacheKey]=createCharSprites(skinColor,ch.skin,ch.hair);
+        }
+        spriteSet=this._spriteCache[cacheKey];
+      }
+    }
+    if(!spriteSet)return;
+    let frame;
+    if(e.wallSliding)frame=spriteSet.wallslide||spriteSet.jump;
+    else if(!e.onGround)frame=spriteSet.jump;
+    else if(Math.abs(e.vx)>10){const f=Math.floor(e.walkCycle)%4;frame=f===0?spriteSet.idle:(f===1?spriteSet.run1:(f===2?spriteSet.run2:(spriteSet.run3||spriteSet.run1)));}
+    else frame=spriteSet.idle;
     if(!frame)return;
+
+    // Trail effect — render behind player
+    if(e===this.player&&Math.abs(e.vx)>50){
+      const trail=getEquippedTrail();
+      if(trail){
+        const tc=trail.id.includes('fire')?'#f84':trail.id.includes('ice')?'#8df':trail.id.includes('rainbow')?`hsl(${(this.time*200)%360},100%,70%)`:trail.id.includes('shadow')?displayColor+'44':trail.id.includes('neon')?displayColor:trail.id.includes('star')?'#ff8':trail.id.includes('blood')?'#800':trail.id.includes('glitch')?`hsl(${Math.random()*360},80%,60%)`:'#888';
+        for(let i=0;i<2;i++)this.particles.push({x:e.x+(Math.random()-.5)*8,y:e.y-(Math.random()*e.h*.3),vx:-e.vx*.1+(Math.random()-.5)*30,vy:-Math.random()*40,life:.2+Math.random()*.15,maxLife:.35,size:2+Math.random()*2,color:tc,grav:trail.id.includes('star')});
+      }
+    }
+    // Remote player trails via cosmetics sync
+    if(e.isRemote&&e._cosmetics?.trail&&Math.abs(e.vx)>50){
+      const tItem=COSMETIC_DB.find(i=>i.id===e._cosmetics.trail);
+      if(tItem){const tc=tItem.id.includes('fire')?'#f84':'#888';for(let i=0;i<2;i++)this.particles.push({x:e.x+(Math.random()-.5)*8,y:e.y-(Math.random()*e.h*.3),vx:-e.vx*.1,vy:-Math.random()*30,life:.2,maxLife:.3,size:2,color:tc});}
+    }
+
     c.save();c.translate(e.x,e.y);
     if(e.invisible)c.globalAlpha=e===this.player?.3:.15;
-    // ability glow
-    if(e.abilityActive){c.shadowColor=e.color;c.shadowBlur=20;}
+    if(e.abilityActive){c.shadowColor=displayColor;c.shadowBlur=20;}
     if(e.armor>0){c.shadowColor='#ff0';c.shadowBlur=12;}
     // sprite
-    c.save();if(e.facing<0)c.scale(-1,1);c.imageSmoothingEnabled=false;c.drawImage(frame,-24,-46,48,48);c.restore();
+    c.save();if(e.facing<0)c.scale(-1,1);c.imageSmoothingEnabled=false;c.drawImage(frame,-24,-58,48,64);c.restore();
     // gun arm
     const ga=e.aimAngle,gl=this.getGunLen(e.weapons[e.activeWeaponIdx]);
     c.strokeStyle=getChar(e.charName).skin;c.lineWidth=3;c.beginPath();c.moveTo(0,-e.h*.55);c.lineTo(Math.cos(ga)*gl,-e.h*.55+Math.sin(ga)*gl);c.stroke();
-    // gun
+    // gun — use weapon skin color if equipped
     c.save();c.translate(Math.cos(ga)*gl*.5,-e.h*.55+Math.sin(ga)*gl*.5);c.rotate(ga);
-    const w=e.weapons[e.activeWeaponIdx];drawWeaponIcon(c,w?.name||'Pistol',-gl*.3,-4,gl*.6,8,w?.color||'#888');c.restore();
+    const w=e.weapons[e.activeWeaponIdx];
+    let wcolor=w?.color||'#888';
+    if(e===this.player&&w){const ws=getEquippedWeaponColor(w.name);if(ws)wcolor=ws;}
+    drawWeaponIcon(c,w?.name||'Pistol',-gl*.3,-4,gl*.6,8,wcolor);c.restore();
     // hand
     c.fillStyle=getChar(e.charName).skin;c.beginPath();c.arc(Math.cos(ga)*6,-e.h*.55+Math.sin(ga)*6,3,0,Math.PI*2);c.fill();
     c.shadowBlur=0;c.globalAlpha=1;c.restore();
-    // HP bar
+    // HP bar + name + badge
     if(!e.invisible||e===this.player||this.uavTimer>0){
-      const bw=30,hp=Math.max(0,e.hp/e.maxHp);c.fillStyle='#0008';c.fillRect(e.x-bw/2,e.y-e.h-20,bw,4);
-      c.fillStyle=hp>.5?'#4f4':(hp>.25?'#ff4':'#f44');c.fillRect(e.x-bw/2,e.y-e.h-20,bw*hp,4);
-      if(e.armor>0){c.fillStyle='#ff08';c.fillRect(e.x-bw/2,e.y-e.h-24,bw*(e.armor/100),3);}
-      c.fillStyle=e.color;c.font='700 7px Inter';c.textAlign='center';c.fillText(e.charName,e.x,e.y-e.h-27);
+      const bw=34,hp=Math.max(0,e.hp/e.maxHp);c.fillStyle='#0008';c.fillRect(e.x-bw/2,e.y-e.h-22,bw,5);
+      c.fillStyle=hp>.5?'#4f4':(hp>.25?'#ff4':'#f44');c.fillRect(e.x-bw/2,e.y-e.h-22,bw*hp,5);
+      if(e.armor>0){c.fillStyle='#ff08';c.fillRect(e.x-bw/2,e.y-e.h-26,bw*(e.armor/100),3);}
+      // Badge icon next to name
+      let nameStr=e.charName;
+      const badge=e===this.player?getEquippedBadge():(e._cosmetics?.badge?COSMETIC_DB.find(i=>i.id===e._cosmetics.badge):null);
+      if(badge)nameStr=badge.icon+' '+nameStr;
+      c.fillStyle=displayColor;c.font='700 8px Inter';c.textAlign='center';c.fillText(nameStr,e.x,e.y-e.h-30);
     }
     if(this.uavTimer>0&&this.isEnemy(this.player,e)){c.strokeStyle='#f004';c.lineWidth=1;c.setLineDash([2,2]);c.strokeRect(e.x-e.w/2-4,e.y-e.h-4,e.w+8,e.h+8);c.setLineDash([]);}
   }
 
   getGunLen(w){if(!w)return 10;const n=w.name;if(n==='Sniper'||n==='Railgun')return 22;if(n==='Rocket'||n==='Minigun'||n==='Plasma Cannon')return 20;if(n==='Shotgun'||n==='Grenade Lnchr'||n==='Burst Rifle')return 17;if(n==='SMG'||n==='Laser Rifle')return 15;if(n==='Flamethrower')return 13;return 11;}
 
+  // ── STYLED PLATFORM RENDERER ──
+  _drawPlatform(c,p,style,isSoft){
+    const colors={
+      concrete:{fill:'#1a1a2e',top:'#262640',bottom:'#0e0e1a',stroke:'#282840'},
+      metal:{fill:'#1e1e28',top:'#30304a',bottom:'#101018',stroke:'#333350'},
+      wood:{fill:'#3a2a18',top:'#4a3a22',bottom:'#2a1a0a',stroke:'#4a3a20'},
+      stone:{fill:'#222228',top:'#303038',bottom:'#141418',stroke:'#2a2a32'},
+      neon:{fill:'#0c0c18',top:'#1a1a30',bottom:'#060610',stroke:'#333'},
+      organic:{fill:'#1a2a1a',top:'#2a3a2a',bottom:'#0a1a0a',stroke:'#2a3a28'},
+    };
+    const s=colors[style]||colors.concrete;
+    c.fillStyle=s.fill;c.fillRect(p.x,p.y,p.w,p.h);
+    c.fillStyle=s.top;c.fillRect(p.x,p.y,p.w,3);
+    c.fillStyle=s.bottom;c.fillRect(p.x,p.y+p.h-2,p.w,2);
+    // Subtle texture
+    c.globalAlpha=.04;c.fillStyle='#fff';
+    for(let tx=p.x;tx<p.x+p.w;tx+=8)if((tx/8)%2===0)c.fillRect(tx,p.y+3,4,p.h-5);
+    c.globalAlpha=1;
+    c.strokeStyle=s.stroke;c.lineWidth=.5;c.strokeRect(p.x,p.y,p.w,p.h);
+    // Soft platform indicator — dashed top line
+    if(isSoft){c.strokeStyle='#fff';c.globalAlpha=.15;c.lineWidth=1;c.setLineDash([4,4]);c.beginPath();c.moveTo(p.x,p.y);c.lineTo(p.x+p.w,p.y);c.stroke();c.setLineDash([]);c.globalAlpha=1;}
+    // Neon glow for neon style
+    if(style==='neon'){c.fillStyle='#f0f';c.globalAlpha=.03+Math.sin(this.time*2+p.x*.01)*.01;c.fillRect(p.x,p.y-1,p.w,2);c.globalAlpha=1;}
+  }
+
+  // ── DECORATION RENDERER ──
+  _drawDecoration(c,d){
+    c.save();c.translate(d.x,d.y);
+    switch(d.type){
+      case'tree':{c.fillStyle='#2a1a0a';c.fillRect(-3,-40,6,40);c.fillStyle='#1a3a1a';c.beginPath();c.moveTo(-20,-35);c.lineTo(0,-65);c.lineTo(20,-35);c.fill();c.fillStyle='#224a22';c.beginPath();c.moveTo(-15,-45);c.lineTo(0,-70);c.lineTo(15,-45);c.fill();break;}
+      case'dead_tree':{c.fillStyle='#1a1410';c.fillRect(-3,-50,6,50);c.fillRect(-15,-40,12,3);c.fillRect(5,-30,12,3);break;}
+      case'lamp':{c.fillStyle='#333';c.fillRect(-2,-50,4,50);c.fillRect(-8,-52,16,4);c.fillStyle='#ff8';c.globalAlpha=.08+Math.sin(this.time*2+d.x)*.03;c.beginPath();c.arc(0,-50,15,0,Math.PI*2);c.fill();c.globalAlpha=1;break;}
+      case'tombstone':{c.fillStyle='#444';c.fillRect(-8,-24,16,24);c.fillRect(-6,-28,12,6);c.beginPath();c.arc(0,-28,6,Math.PI,0);c.fill();c.fillStyle='#555';c.fillRect(-1,-20,2,10);c.fillRect(-4,-16,8,2);break;}
+      case'bench':{c.fillStyle='#444';c.fillRect(-15,-12,30,4);c.fillRect(-13,0,4,8);c.fillRect(9,0,4,8);c.fillStyle='#555';c.fillRect(-14,-12,28,2);break;}
+      case'barrel':{c.fillStyle='#555';c.fillRect(-10,-20,20,20);c.fillStyle='#666';c.fillRect(-10,-20,20,3);c.fillRect(-10,-5,20,3);break;}
+      case'crate_stack':{c.fillStyle='#6a4520';c.fillRect(-15,-15,30,15);c.fillRect(-12,-28,24,13);c.strokeStyle='#4a3010';c.lineWidth=.5;c.strokeRect(-15,-15,30,15);c.strokeRect(-12,-28,24,13);break;}
+      case'ac_unit':{c.fillStyle='#444';c.fillRect(-12,-16,24,16);c.fillStyle='#333';for(let i=0;i<4;i++)c.fillRect(-10+i*6,-14,4,12);break;}
+      case'antenna':{c.fillStyle='#333';c.fillRect(-1,-40,2,40);c.fillRect(-8,-40,16,2);c.fillStyle='#f00';c.globalAlpha=.5+Math.sin(this.time*3)*.3;c.beginPath();c.arc(0,-40,2,0,Math.PI*2);c.fill();c.globalAlpha=1;break;}
+      case'crater':{c.fillStyle='#1a1a1a';c.globalAlpha=.15;c.beginPath();c.ellipse(0,0,25,8,0,0,Math.PI*2);c.fill();c.globalAlpha=1;break;}
+      case'module':{c.fillStyle='#222';c.fillRect(-20,-30,40,30);c.fillStyle='#333';c.fillRect(-20,-30,40,3);c.fillStyle='#4ff';c.globalAlpha=.1;c.fillRect(-8,-20,6,10);c.globalAlpha=1;break;}
+      case'spotlight':{c.fillStyle='#333';c.fillRect(-3,-30,6,30);c.fillStyle='#fff';c.globalAlpha=.05;c.beginPath();c.moveTo(-20,0);c.lineTo(0,-30);c.lineTo(20,0);c.fill();c.globalAlpha=1;break;}
+      case'crane':{c.fillStyle='#333';c.fillRect(-3,-100,6,100);c.fillRect(-3,-100,80,4);c.fillRect(74,-100,4,20);c.strokeStyle='#444';c.lineWidth=.5;c.beginPath();c.moveTo(0,-80);c.lineTo(0,0);c.stroke();break;}
+      case'neon_sign':{const cols=['#ff0066','#00ffcc','#ff6600'];const col=cols[Math.floor(d.x/100)%3];c.fillStyle=col;c.globalAlpha=.08+Math.sin(this.time*3+d.x)*.04;c.fillRect(-20,-30,40,12);c.globalAlpha=1;break;}
+    }
+    c.restore();
+  }
+
   renderHUD(c,W,H){
-    const p=this.player,pad=14;
-    // bottom left — HP + weapon
-    c.fillStyle='#06060ccc';c.fillRect(pad,H-90,240,76);c.strokeStyle='#1a1a2a';c.lineWidth=1;c.strokeRect(pad,H-90,240,76);
-    const hp=Math.max(0,p.hp/p.maxHp);c.fillStyle='#111';c.fillRect(pad+8,H-80,160,10);
-    const hpGrad=c.createLinearGradient(pad+8,0,pad+168,0);
+    const p=this.player,pad=16,isSurv=this.mode==='Survival'||this.mode==='Co-op Survival';
+    // ── BOTTOM LEFT: HP + WEAPON ──
+    c.fillStyle='#06060cdd';c.fillRect(pad,H-130,300,116);c.strokeStyle='#1a1a2a';c.lineWidth=1;c.strokeRect(pad,H-130,300,116);
+    // HP bar — big
+    const hp=Math.max(0,p.hp/p.maxHp);c.fillStyle='#111';c.fillRect(pad+10,H-118,220,16);
+    const hpGrad=c.createLinearGradient(pad+10,0,pad+230,0);
     if(hp>.5){hpGrad.addColorStop(0,'#4f4');hpGrad.addColorStop(1,'#2a2');}else if(hp>.25){hpGrad.addColorStop(0,'#ff4');hpGrad.addColorStop(1,'#a80');}else{hpGrad.addColorStop(0,'#f44');hpGrad.addColorStop(1,'#a00');}
-    c.fillStyle=hpGrad;c.fillRect(pad+8,H-80,160*hp,10);
-    c.fillStyle='#fff';c.font='600 8px Inter';c.textAlign='left';c.fillText(`${Math.ceil(p.hp)} / ${Math.ceil(p.maxHp)}`,pad+12,H-73);
-    if(p.armor>0){c.fillStyle='#ff0';c.fillText(`ARM ${Math.ceil(p.armor)}`,pad+125,H-73);}
-    const w=p.weapons[p.activeWeaponIdx];c.fillStyle='#ccc';c.font='600 11px Inter';c.fillText(w?.name||'',pad+8,H-56);
-    c.fillStyle=w?.reloading?'#f84':'#fff';c.font='600 10px Inter';c.fillText(w?(w.reloading?'RELOADING...':w.currentAmmo+' / '+w.ammo):'',pad+8,H-42);
-    // weapon slots
-    for(let i=0;i<Math.min(p.weapons.length,4);i++){const wx=pad+180+i*14;c.fillStyle=i===p.activeWeaponIdx?p.color+'88':'#222';c.fillRect(wx,H-80,12,12);c.fillStyle=i===p.activeWeaponIdx?'#fff':'#555';c.font='600 7px Inter';c.textAlign='center';c.fillText(''+(i+1),wx+6,H-72);}
-    // buffs
-    let bx=pad+8;c.font='600 7px Inter';c.textAlign='left';
-    if(p.speedBuff>0){c.fillStyle='#f80';c.fillText('SPD',bx,H-28);bx+=26;}
-    if(p.dmgBuff>0){c.fillStyle='#f44';c.fillText('DMG',bx,H-28);bx+=26;}
-    if(p.rapidBuff>0){c.fillStyle='#ff0';c.fillText('RPD',bx,H-28);bx+=26;}
-    if(p.regenBuff>0){c.fillStyle='#0f8';c.fillText('REG',bx,H-28);bx+=26;}
+    c.fillStyle=hpGrad;c.fillRect(pad+10,H-118,220*hp,16);
+    c.fillStyle='#fff';c.font='bold 12px Inter';c.textAlign='left';c.fillText(`${Math.ceil(p.hp)} / ${Math.ceil(p.maxHp)}`,pad+14,H-105);
+    if(p.armor>0){c.fillStyle='#ff0';c.font='bold 11px Inter';c.fillText(`ARMOR ${Math.ceil(p.armor)}`,pad+160,H-105);}
+    // Armor bar
+    if(p.armor>0){c.fillStyle='#ff08';c.fillRect(pad+10,H-100,220*(p.armor/100),5);}
+    // Weapon name + ammo — big
+    const w=p.weapons[p.activeWeaponIdx];
+    c.fillStyle='#fff';c.font='bold 16px Inter';c.fillText(w?.name||'',pad+10,H-78);
+    c.fillStyle=w?.reloading?'#f84':'#aaa';c.font='bold 14px Inter';
+    c.fillText(w?(w.reloading?'RELOADING...':w.currentAmmo+' / '+w.ammo):'',pad+10,H-60);
+    // Weapon slots — bigger
+    for(let i=0;i<Math.min(p.weapons.length,4);i++){const wx=pad+10+i*24;const isActive=i===p.activeWeaponIdx;
+      c.fillStyle=isActive?p.color:'#1a1a2a';c.fillRect(wx,H-44,20,20);c.strokeStyle=isActive?p.color:'#333';c.strokeRect(wx,H-44,20,20);
+      c.fillStyle=isActive?'#fff':'#666';c.font='bold 11px Inter';c.textAlign='center';c.fillText(''+(i+1),wx+10,H-30);}
+    // Buffs — bigger
+    let bx=pad+120;c.font='bold 10px Inter';c.textAlign='left';
+    if(p.speedBuff>0){c.fillStyle='#f80';c.fillText('SPD',bx,H-32);bx+=34;}
+    if(p.dmgBuff>0){c.fillStyle='#f44';c.fillText('DMG',bx,H-32);bx+=34;}
+    if(p.rapidBuff>0){c.fillStyle='#ff0';c.fillText('RPD',bx,H-32);bx+=34;}
+    if(p.regenBuff>0){c.fillStyle='#0f8';c.fillText('REG',bx,H-32);bx+=34;}
 
-    // bottom right — ability
-    c.fillStyle='#06060ccc';c.fillRect(W-pad-170,H-90,170,76);c.strokeStyle='#1a1a2a';c.strokeRect(W-pad-170,H-90,170,76);
-    const ab=CHARACTERS[p.charName].ability;c.fillStyle=p.abilityCooldown<=0&&!p.abilityActive?p.color:'#555';c.font='700 11px Inter';c.textAlign='left';c.fillText(ab.name,W-pad-160,H-70);
-    c.fillStyle='#666';c.font='10px Inter';
-    if(p.abilityActive)c.fillText('ACTIVE '+p.abilityTimer.toFixed(1)+'s',W-pad-160,H-56);
-    else if(p.abilityCooldown>0)c.fillText('CD '+p.abilityCooldown.toFixed(1)+'s',W-pad-160,H-56);
-    else c.fillText('Ready [RMB / E]',W-pad-160,H-56);
-    if(p.abilityCooldown>0){const cd=1-p.abilityCooldown/ab.cooldown;c.fillStyle='#111';c.fillRect(W-pad-160,H-46,140,4);c.fillStyle=p.color;c.fillRect(W-pad-160,H-46,140*cd,4);}
-    c.fillStyle='#444';c.font='8px Inter';c.fillText('[G] Throw Weapon',W-pad-160,H-32);
+    // ── BOTTOM RIGHT: ABILITY ──
+    c.fillStyle='#06060cdd';c.fillRect(W-pad-240,H-130,240,116);c.strokeStyle='#1a1a2a';c.strokeRect(W-pad-240,H-130,240,116);
+    const ab=getChar(p.charName).ability;
+    c.fillStyle=p.abilityCooldown<=0&&!p.abilityActive?p.color:'#555';c.font='bold 18px "Bebas Neue"';c.textAlign='left';c.fillText(ab.name,W-pad-230,H-106);
+    c.fillStyle='#888';c.font='bold 13px Inter';
+    if(p.abilityActive)c.fillText('ACTIVE '+p.abilityTimer.toFixed(1)+'s',W-pad-230,H-86);
+    else if(p.abilityCooldown>0)c.fillText('CD '+p.abilityCooldown.toFixed(1)+'s',W-pad-230,H-86);
+    else c.fillText('Ready [RMB / E]',W-pad-230,H-86);
+    // Ability cooldown bar — big
+    if(p.abilityCooldown>0){const cd=1-p.abilityCooldown/ab.cooldown;c.fillStyle='#111';c.fillRect(W-pad-230,H-72,200,8);c.fillStyle=p.color;c.fillRect(W-pad-230,H-72,200*cd,8);}
+    else{c.fillStyle=p.color+'44';c.fillRect(W-pad-230,H-72,200,8);}
+    c.fillStyle='#555';c.font='11px Inter';c.fillText('[G] Throw Weapon',W-pad-230,H-50);
+    c.fillText('[R] Reload',W-pad-230,H-34);
 
-    // streak
-    if(this.mode!=='Survival'&&this.mode!=='Co-op Survival'&&p.streak>=2){c.fillStyle='#06060ccc';c.fillRect(W/2-75,H-38,150,28);c.fillStyle='#ff0';c.font='bold 10px Inter';c.textAlign='center';c.fillText(p.streak+' KILL STREAK',W/2,H-22);const next=KILLSTREAKS.find(ks=>ks.kills>p.streak);if(next){c.fillStyle='#555';c.font='8px Inter';c.fillText('Next: '+next.name+' ('+next.kills+')',W/2,H-14);}}
+    // ── BOTTOM CENTER: STREAK ──
+    if(this.mode!=='Survival'&&this.mode!=='Co-op Survival'&&p.streak>=2){c.fillStyle='#06060cdd';c.fillRect(W/2-90,H-50,180,36);c.fillStyle='#ff0';c.font='bold 14px "Bebas Neue"';c.textAlign='center';c.fillText(p.streak+' KILL STREAK',W/2,H-30);const next=KILLSTREAKS.find(ks=>ks.kills>p.streak);if(next){c.fillStyle='#666';c.font='10px Inter';c.fillText('Next: '+next.name+' ('+next.kills+')',W/2,H-18);}}
 
-    // top left — score
-    c.fillStyle='#06060ccc';c.fillRect(pad,pad,210,50);c.strokeStyle='#1a1a2a';c.strokeRect(pad,pad,210,50);
-    c.fillStyle='#fff';c.font='bold 12px Inter';c.textAlign='left';c.fillText(this.mode,pad+8,pad+16);
-    c.fillStyle='#888';c.font='10px Inter';
-    const isSurv=this.mode==='Survival'||this.mode==='Co-op Survival';
-    if(this.mode==='Deathmatch'){const so=[...this.entities].filter(e=>e.type==='player').sort((a,b)=>b.kills-a.kills);c.fillText(so.map(e=>e.charName.substr(0,4)+':'+e.kills).join('  '),pad+8,pad+32);c.fillText('First to 20',pad+8,pad+44);}
-    else if(this.mode==='Team DM'){const tk=[0,0];this.entities.forEach(e=>{tk[e.team]+=e.kills;});c.fillText('T1: '+tk[0]+' | T2: '+tk[1],pad+8,pad+32);}
-    else if(this.mode==='Last Man')c.fillText('Lives: '+p.lives+'  K: '+p.kills,pad+8,pad+32);
-    else if(this.mode==='CTF')c.fillText('Caps: '+this.captures[0]+'-'+this.captures[1]+'  K: '+p.kills,pad+8,pad+32);
-    else if(isSurv){c.fillText('Wave: '+this.survivalWave+'  K: '+this.survivalTotalKills,pad+8,pad+32);c.fillText('Enemies: '+this.entities.filter(e=>e.isSurvivalEnemy&&!e.dead).length,pad+8,pad+44);}
+    // ── TOP LEFT: SCOREBOARD ──
+    c.fillStyle='#06060cdd';c.fillRect(pad,pad,260,60);c.strokeStyle='#1a1a2a';c.strokeRect(pad,pad,260,60);
+    c.fillStyle='#fff';c.font='bold 16px "Bebas Neue"';c.textAlign='left';c.fillText(this.mode.toUpperCase(),pad+10,pad+20);
+    c.fillStyle='#aaa';c.font='bold 13px Inter';
+    if(this.mode==='Deathmatch'){const so=[...this.entities].filter(e=>e.type==='player'&&!e.isSurvivalEnemy).sort((a,b)=>b.kills-a.kills);c.fillText(so.slice(0,4).map(e=>(e===p?'YOU':e.charName.substr(0,4))+':'+e.kills).join('  '),pad+10,pad+38);c.fillStyle='#666';c.font='11px Inter';c.fillText('First to 20',pad+10,pad+52);}
+    else if(this.mode==='Team DM'){const tk=[0,0];this.entities.forEach(e=>{tk[e.team]+=e.kills;});c.fillText('TEAM 1: '+tk[0]+'  |  TEAM 2: '+tk[1],pad+10,pad+38);}
+    else if(this.mode==='Last Man')c.fillText('Lives: '+p.lives+'   Kills: '+p.kills,pad+10,pad+38);
+    else if(this.mode==='CTF')c.fillText('Caps: '+this.captures[0]+' - '+this.captures[1]+'   K: '+p.kills,pad+10,pad+38);
+    else if(this.mode==='Gun Game'&&this.gunGameWeapons){const lvl=p.gunGameLevel||0;c.fillText('Weapon '+(lvl+1)+'/'+this.gunGameWeapons.length+'  K:'+p.kills,pad+10,pad+38);c.fillStyle='#666';c.font='11px Inter';c.fillText(this.gunGameWeapons[Math.min(lvl,this.gunGameWeapons.length-1)],pad+10,pad+52);}
+    else if(this.mode==='Infection'){const humans=this.entities.filter(e=>!e.dead&&!e.infected).length;c.fillText('Humans: '+humans+'  Time: '+Math.ceil(120-this.time)+'s',pad+10,pad+38);c.fillStyle=p.infected?'#f44':'#4f4';c.font='11px Inter';c.fillText(p.infected?'INFECTED':'HUMAN',pad+10,pad+52);}
+    else if(isSurv){c.fillText('Wave '+this.survivalWave+'   Kills: '+this.survivalTotalKills,pad+10,pad+38);c.fillStyle='#666';c.font='11px Inter';c.fillText('Enemies: '+this.entities.filter(e=>e.isSurvivalEnemy&&!e.dead).length,pad+10,pad+52);}
 
-    // wave banner
-    if(isSurv&&this.survivalBetweenWaves){c.fillStyle='#06060cdd';c.fillRect(W/2-120,H/2-32,240,64);c.strokeStyle=p.color;c.lineWidth=1;c.strokeRect(W/2-120,H/2-32,240,64);c.fillStyle='#fff';c.font='bold 24px "Bebas Neue"';c.textAlign='center';c.fillText('WAVE '+(this.survivalWave+1),W/2,H/2+2);c.fillStyle='#888';c.font='10px Inter';c.fillText('Starting in '+Math.ceil(this.survivalWaveTimer)+'...',W/2,H/2+20);}
-    if(this.uavTimer>0){c.fillStyle='#f002';c.fillRect(W/2-55,pad,110,20);c.fillStyle='#f44';c.font='bold 9px Inter';c.textAlign='center';c.fillText('UAV ACTIVE '+this.uavTimer.toFixed(0)+'s',W/2,pad+14);}
+    // ── WAVE BANNER ──
+    if(isSurv&&this.survivalBetweenWaves){c.fillStyle='#06060cee';c.fillRect(W/2-150,H/2-40,300,80);c.strokeStyle=p.color;c.lineWidth=2;c.strokeRect(W/2-150,H/2-40,300,80);c.fillStyle='#fff';c.font='bold 32px "Bebas Neue"';c.textAlign='center';c.fillText('WAVE '+(this.survivalWave+1),W/2,H/2+4);c.fillStyle='#aaa';c.font='14px Inter';c.fillText('Starting in '+Math.ceil(this.survivalWaveTimer)+'...',W/2,H/2+26);}
+    if(this.uavTimer>0){c.fillStyle='#f002';c.fillRect(W/2-70,pad,140,26);c.fillStyle='#f44';c.font='bold 12px Inter';c.textAlign='center';c.fillText('UAV ACTIVE '+this.uavTimer.toFixed(0)+'s',W/2,pad+18);}
 
-    // kill feed
-    c.textAlign='right';for(let i=0;i<this.killFeed.length&&i<6;i++){const kf=this.killFeed[this.killFeed.length-1-i];const fy=pad+10+i*16;c.globalAlpha=Math.min(1,kf.life);c.font='10px Inter';
-      if(kf.killer){c.fillStyle=kf.killerColor;c.fillText(kf.killer,W-pad-90,fy);c.fillStyle='#444';c.fillText('['+kf.weapon+']',W-pad-40,fy);c.fillStyle=kf.victimColor;c.fillText(kf.victim,W-pad,fy);}
+    // ── KILL FEED — bigger ──
+    c.textAlign='right';for(let i=0;i<this.killFeed.length&&i<6;i++){const kf=this.killFeed[this.killFeed.length-1-i];const fy=pad+14+i*22;c.globalAlpha=Math.min(1,kf.life);c.font='bold 12px Inter';
+      if(kf.killer){c.fillStyle=kf.killerColor;c.fillText(kf.killer,W-pad-120,fy);c.fillStyle='#555';c.font='11px Inter';c.fillText('['+kf.weapon+']',W-pad-55,fy);c.fillStyle=kf.victimColor;c.font='bold 12px Inter';c.fillText(kf.victim,W-pad,fy);}
       else{c.fillStyle=kf.victimColor;c.fillText(kf.victim+' '+kf.weapon,W-pad,fy);}
     }c.globalAlpha=1;
 
-    if(p.dead){c.fillStyle='#06060cdd';c.fillRect(W/2-140,H/2-24,280,48);c.fillStyle='#fff';c.font='bold 22px "Bebas Neue"';c.textAlign='center';
-      if(this.mode==='Last Man'&&p.lives<=0)c.fillText('ELIMINATED',W/2,H/2+6);
-      else if(isSurv)c.fillText('GAME OVER',W/2,H/2+6);
-      else c.fillText('RESPAWNING IN '+Math.ceil(p.respawnTimer)+'...',W/2,H/2+6);}
+    // ── DEATH / RESPAWN ──
+    if(p.dead){c.fillStyle='#06060cee';c.fillRect(W/2-160,H/2-30,320,60);c.fillStyle='#fff';c.font='bold 28px "Bebas Neue"';c.textAlign='center';
+      if(this.mode==='Last Man'&&p.lives<=0)c.fillText('ELIMINATED',W/2,H/2+8);
+      else if(isSurv)c.fillText('GAME OVER',W/2,H/2+8);
+      else c.fillText('RESPAWNING IN '+Math.ceil(p.respawnTimer)+'...',W/2,H/2+8);}
 
-    if(this.time<4){c.globalAlpha=Math.max(0,1-this.time/4);c.fillStyle='#fff3';c.font='9px Inter';c.textAlign='center';c.fillText('WASD Move \u00b7 Space Jump \u00b7 Mouse Aim+Shoot \u00b7 RMB/E Ability \u00b7 R Reload \u00b7 G Throw \u00b7 1-4 Weapons \u00b7 ESC Pause',W/2,H-4);c.globalAlpha=1;}
-    if(settings.showFPS){c.fillStyle='#ff0';c.font='10px monospace';c.textAlign='right';c.fillText(this.fps+' FPS',W-pad,pad+70);}
+    if(this.time<4){c.globalAlpha=Math.max(0,1-this.time/4);c.fillStyle='#fff4';c.font='11px Inter';c.textAlign='center';c.fillText('WASD Move \u00b7 Space Jump \u00b7 Mouse Aim+Shoot \u00b7 RMB/E Ability \u00b7 R Reload \u00b7 G Throw \u00b7 1-4 Switch \u00b7 ESC Pause',W/2,H-6);c.globalAlpha=1;}
+    if(settings.showFPS){c.fillStyle='#ff0';c.font='12px monospace';c.textAlign='right';c.fillText(this.fps+' FPS',W-pad,pad+80);}
     renderAchievementPopups(c,W,H,TICK);
   }
 }
